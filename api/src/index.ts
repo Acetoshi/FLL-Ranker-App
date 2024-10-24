@@ -1,11 +1,11 @@
-import { ApolloServer } from "@apollo/server"; // preserve-line
+import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { dataSource } from "./db/data-source";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import * as dotenv from "dotenv";
-
 import TeamResolver from "./team/team.resolver";
+import CompetitionResolver from "./competition/competition.resolver";
 
 dotenv.config();
 const { API_PORT } = process.env;
@@ -13,7 +13,7 @@ const { API_PORT } = process.env;
 (async () => {
   await dataSource.initialize();
   const schema = await buildSchema({
-    resolvers: [TeamResolver],
+    resolvers: [TeamResolver, CompetitionResolver],
   });
 
   const server = new ApolloServer({
