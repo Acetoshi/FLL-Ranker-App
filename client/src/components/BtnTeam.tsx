@@ -1,12 +1,11 @@
-import { RefObject, Dispatch, SetStateAction } from "react";
 import { Button } from "@mui/material";
+import { GET_ALL_TEAMS } from "../schemas/queries";
 import {
   TeamInput,
   useCreateTeamMutation,
   useEditTeamMutation,
 } from "../types/graphql-types";
-import { GET_ALL_TEAMS } from "../schemas/queries";
-import { Mode, SnackStatus, BooleanMap, RefMap } from "../types/types";
+import { BtnTeamProps } from "../types/types";
 
 // This button is used in Team table to handle creating and editing
 export default function BtnTeam({
@@ -18,16 +17,7 @@ export default function BtnTeam({
   validateInput,
   setSnackStatus,
   setDisplayMode,
-}: {
-  type: "add" | "edit";
-  teamId?: number;
-  inputError: BooleanMap;
-  setInputError: Dispatch<SetStateAction<BooleanMap>>;
-  inputRefs: RefMap;
-  validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
-  setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
-}) {
+}: BtnTeamProps) {
   const [addTeam] = useCreateTeamMutation();
   const [editTeam] = useEditTeamMutation();
 
@@ -83,8 +73,9 @@ export default function BtnTeam({
           open: true,
           message: `${
             type === "add" &&
-            "Erreur dans l'ajout de l'équipe, le nom est-il unique ? "
-          }${type === "edit" && "Erreur serveur dans l'édition l'équipe"}`,
+            "Erreur dans l'ajout de l'équipe, le nom est-il unique ?"
+          }
+            ${type === "edit" && "Erreur serveur dans l'édition l'équipe"}`,
           severity: "error",
         });
         setInputError((prevErrors) => ({ ...prevErrors, name: true }));

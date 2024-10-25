@@ -1,19 +1,9 @@
-import { useState, useRef, RefObject, Dispatch, SetStateAction } from "react";
+import { useState, useRef, RefObject } from "react";
 import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
 import BtnTeam from "./BtnTeam";
-import { Team } from "../types/graphql-types";
-import { Mode, SnackStatus } from "../types/types";
+import { Mode, TeamRowProps } from "../types/types";
 
-export default function TeamRow({
-  mode,
-  team,
-  setSnackStatus,
-}: {
-  team: Team;
-  mode: Mode;
-  setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
-}) {
+export default function TeamRow({ mode, team, setSnackStatus }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to keep track of input errors
