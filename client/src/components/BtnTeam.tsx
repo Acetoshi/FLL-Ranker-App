@@ -8,8 +8,7 @@ import {
 import { GET_ALL_TEAMS } from "../schemas/queries";
 import { Mode, SnackStatus, BooleanMap, RefMap } from "../types/types";
 
-
-// This button is used in Team table to handle creating and editing 
+// This button is used in Team table to handle creating and editing
 export default function BtnTeam({
   type,
   teamId,
@@ -68,10 +67,9 @@ export default function BtnTeam({
           if (inputRefs.location.current) inputRefs.location.current.value = "";
         }
         if (type === "edit") {
-
           await editTeam({
             refetchQueries: [{ query: GET_ALL_TEAMS }],
-            variables: { team: {...newTeam,id:teamId} },
+            variables: { team: { ...newTeam, id: teamId } },
           });
           setSnackStatus({
             open: true,
@@ -81,22 +79,14 @@ export default function BtnTeam({
           setDisplayMode("consult");
         }
       } catch {
-        if (type === "add") {
-          setSnackStatus({
-            open: true,
-            message: "Erreur dans l'ajout de l'équipe, le nom est-il unique ? ",
-            severity: "error",
-          });
-        }
-
-        if (type === "edit") {
-          setSnackStatus({
-            open: true,
-            message: "Erreur serveur dans l'édition l'équipe",
-            severity: "error",
-          });
-        }
-
+        setSnackStatus({
+          open: true,
+          message: `${
+            type === "add" &&
+            "Erreur dans l'ajout de l'équipe, le nom est-il unique ? "
+          }${type === "edit" && "Erreur serveur dans l'édition l'équipe"}`,
+          severity: "error",
+        });
         setInputError((prevErrors) => ({ ...prevErrors, name: true }));
       }
     }
