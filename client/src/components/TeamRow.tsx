@@ -1,12 +1,7 @@
 import { useState, useRef, RefObject, Dispatch, SetStateAction } from "react";
 import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
-import { GET_ALL_TEAMS } from "../schemas/queries";
-import {
-  Team,
-  TeamInput,
-  useCreateTeamMutation,
-  useEditTeamMutation,
-} from "../types/graphql-types";
+import BtnTeam from "./BtnTeam";
+import { Team } from "../types/graphql-types";
 import { Mode, SnackStatus } from "../types/types";
 
 export default function TeamRow({
@@ -20,9 +15,6 @@ export default function TeamRow({
   setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
 }) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
-
-  const [addTeam] = useCreateTeamMutation();
-  const [editTeam] = useEditTeamMutation();
 
   // used to keep track of input errors
   const [inputError, setInputError] = useState({
@@ -47,81 +39,6 @@ export default function TeamRow({
   ) => {
     const isValid = validateInput(inputRef);
     setInputError((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
-  };
-
-  const handleTeamInputValidation = () => {
-    const isValidName = validateInput(newTeamNameRef);
-    const isValidContact = validateInput(newTeamContactRef);
-    const isValidLocation = validateInput(newTeamLocationRef);
-
-    setInputError({
-      name: !isValidName,
-      contact: !isValidContact,
-      location: !isValidLocation,
-    });
-
-    return isValidName && isValidContact && isValidLocation;
-  };
-
-  const handleAddTeam = async () => {
-    if (handleTeamInputValidation()) {
-      try {
-        const newTeam = {
-          name: newTeamNameRef.current ? newTeamNameRef.current.value : "",
-          contact: newTeamContactRef.current
-            ? newTeamContactRef.current.value
-            : "",
-          location: newTeamLocationRef.current
-            ? newTeamLocationRef.current.value
-            : "",
-        };
-        await addTeam({
-          refetchQueries: [{ query: GET_ALL_TEAMS }],
-          variables: { team: newTeam },
-        });
-      } catch {
-        setSnackStatus({
-          open: true,
-          message: "Erreur dans l'ajout de l'équipe, le nom est-il unique ? ",
-          severity: "error",
-        });
-        setInputError((prevErrors) => ({ ...prevErrors, name: true }));
-      }
-    }
-  };
-
-  const handleEditTeam = async () => {
-    if (handleTeamInputValidation()) {
-      try {
-        const newTeam: TeamInput = {
-          id: team.id,
-          name: newTeamNameRef.current ? newTeamNameRef.current.value : "",
-          contact: newTeamContactRef.current
-            ? newTeamContactRef.current.value
-            : "",
-          location: newTeamLocationRef.current
-            ? newTeamLocationRef.current.value
-            : "",
-        };
-        await editTeam({
-          refetchQueries: [{ query: GET_ALL_TEAMS }],
-          variables: { team: newTeam },
-        });
-        setSnackStatus({
-          open: true,
-          message: "Modification enregistrée",
-          severity: "success",
-        });
-        setDisplayMode("consult");
-      } catch {
-        setSnackStatus({
-          open: true,
-          message: "Erreur dans l'édition l'équipe",
-          severity: "error",
-        });
-        setInputError((prevErrors) => ({ ...prevErrors, name: true }));
-      }
-    }
   };
 
   return (
@@ -192,28 +109,35 @@ export default function TeamRow({
         </TableCell>
         <TableCell align="right">
           {displayMode === "create" && (
-            <Button
-              disabled={
-                inputError.name || inputError.contact || inputError.location
-              }
-              variant="contained"
-              onClick={handleAddTeam}
-            >
-              AJOUTER
-            </Button>
+            <BtnTeam
+              type="add"
+              inputRefs={{
+                name: newTeamNameRef,
+                contact: newTeamContactRef,
+                location: newTeamLocationRef,
+              }}
+              inputError={inputError}
+              setInputError={setInputError}
+              validateInput={validateInput}
+              setSnackStatus={setSnackStatus}
+              setDisplayMode={setDisplayMode}
+            />
           )}
           {displayMode === "edit" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button
-                disabled={
-                  inputError.name || inputError.contact || inputError.location
-                }
-                color="success"
-                variant="contained"
-                onClick={handleEditTeam}
-              >
-                SAUVEGARDER
-              </Button>
+              <BtnTeam
+                type="edit"
+                inputRefs={{
+                  name: newTeamNameRef,
+                  contact: newTeamContactRef,
+                  location: newTeamLocationRef,
+                }}
+                inputError={inputError}
+                setInputError={setInputError}
+                validateInput={validateInput}
+                setSnackStatus={setSnackStatus}
+                setDisplayMode={setDisplayMode}
+              />
 
               <Button
                 variant="outlined"
