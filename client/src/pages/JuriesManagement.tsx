@@ -6,14 +6,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, IconButton, Button } from "@mui/material";
 import JuryAddRow from "../components/JuryAddRow";
+import Add from "@mui/icons-material/Add";
 
 export default function JuriesManagement() {
   const { loading, error, data } = useGetAllJuriesQuery();
 
   if (loading) return <p>🥁 Loading...</p>;
   if (error) return <p>☠️ Error: {error.message}</p>;
+
+  const handleAddJuror = () => {
+    console.info("clicked");
+  };
 
   return (
     <>
@@ -49,7 +54,16 @@ export default function JuriesManagement() {
                     <TableCell component="th" scope="row">
                       {jury.name}
                     </TableCell>
-                    <TableCell align="right"></TableCell>
+                    <TableCell align="right">
+                      <Button
+                        onClick={handleAddJuror}
+                        aria-label="Ajouter un juré"
+                        variant="outlined"
+                      >
+                        <Add />
+                        Ajouter un juré
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               <JuryAddRow />

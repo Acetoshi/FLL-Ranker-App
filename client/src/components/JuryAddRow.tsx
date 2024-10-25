@@ -79,7 +79,7 @@ export default function JuryAddRow() {
           <TextField
             inputRef={nameRef}
             required
-            label="name"
+            label="Nom"
             variant="outlined"
             fullWidth
             onChange={handleInputChange}
