@@ -7,7 +7,7 @@ import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
 import Manage from "./pages/Manage.tsx";
-import TeamsManagement from "./pages/TeamsManagment.tsx";
+import TeamsManagement from "./pages/TeamsManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";

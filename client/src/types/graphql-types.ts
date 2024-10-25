@@ -48,14 +48,14 @@ export type Query = {
 export type Team = {
   __typename?: 'Team';
   contact: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };
 
 export type TeamInput = {
   contact: Scalars['String']['input'];
-  id: Scalars['Float']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
   location: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
@@ -72,7 +72,7 @@ export type EditTeamMutationVariables = Exact<{
 }>;
 
 
-export type EditTeamMutation = { __typename?: 'Mutation', editTeam: { __typename?: 'Team', contact: string, id: string, location: string, name: string } };
+export type EditTeamMutation = { __typename?: 'Mutation', editTeam: { __typename?: 'Team', id: number, contact: string, location: string, name: string } };
 
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -82,7 +82,7 @@ export type GetAllJuriesQuery = { __typename?: 'Query', getAllJuries: Array<{ __
 export type GetAllTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllTeamsQuery = { __typename?: 'Query', allTeams: Array<{ __typename?: 'Team', location: string, name: string, contact: string }> };
+export type GetAllTeamsQuery = { __typename?: 'Query', allTeams: Array<{ __typename?: 'Team', id: number, location: string, name: string, contact: string }> };
 
 
 export const CreateTeamDocument = gql`
@@ -123,8 +123,8 @@ export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMut
 export const EditTeamDocument = gql`
     mutation editTeam($team: TeamInput!) {
   editTeam(team: $team) {
-    contact
     id
+    contact
     location
     name
   }
@@ -199,6 +199,7 @@ export type GetAllJuriesQueryResult = Apollo.QueryResult<GetAllJuriesQuery, GetA
 export const GetAllTeamsDocument = gql`
     query GetAllTeams {
   allTeams {
+    id
     location
     name
     contact

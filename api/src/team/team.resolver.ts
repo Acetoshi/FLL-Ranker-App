@@ -4,7 +4,7 @@ import { IsNumber, IsString, IsOptional, Length } from "class-validator";
 
 @InputType()
 class TeamInput implements Partial<Team> {
-  @Field()
+  @Field({ nullable: true })
   @IsNumber()
   @IsOptional()
   id?: number;
@@ -33,7 +33,7 @@ export default class TeamResolver {
   }
 
   @Mutation(() => Team)
-  async create(@Arg("team") newTeam: TeamInput) {
+  async createTeam(@Arg("team") newTeam: TeamInput) {
     const teamToInsert = new Team();
 
     teamToInsert.name = newTeam.name;
@@ -45,7 +45,7 @@ export default class TeamResolver {
   }
 
   @Mutation(() => Team)
-  async edit(@Arg("team") newTeam: TeamInput) {
+  async editTeam(@Arg("team") newTeam: TeamInput) {
     try {
       const teamToEdit = await Team.findOneBy({ id: newTeam.id });
 
