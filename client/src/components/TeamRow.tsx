@@ -127,6 +127,7 @@ export default function TeamRow({
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <BtnTeam
                 type="edit"
+                teamId={team.id}
                 inputRefs={{
                   name: newTeamNameRef,
                   contact: newTeamContactRef,

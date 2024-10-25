@@ -12,6 +12,7 @@ import { Mode, SnackStatus, BooleanMap, RefMap } from "../types/types";
 // This button is used in Team table to handle creating and editing 
 export default function BtnTeam({
   type,
+  teamId,
   inputError,
   setInputError,
   inputRefs,
@@ -20,6 +21,7 @@ export default function BtnTeam({
   setDisplayMode,
 }: {
   type: "add" | "edit";
+  teamId?: number;
   inputError: BooleanMap;
   setInputError: Dispatch<SetStateAction<BooleanMap>>;
   inputRefs: RefMap;
@@ -66,9 +68,10 @@ export default function BtnTeam({
           if (inputRefs.location.current) inputRefs.location.current.value = "";
         }
         if (type === "edit") {
+
           await editTeam({
             refetchQueries: [{ query: GET_ALL_TEAMS }],
-            variables: { team: newTeam },
+            variables: { team: {...newTeam,id:teamId} },
           });
           setSnackStatus({
             open: true,
