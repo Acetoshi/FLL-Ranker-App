@@ -16,7 +16,23 @@ class CreateJuryInput {
 export default class JuryResolver {
   @Query(() => [Jury])
   async getAllJuries() {
-    return await Jury.find();
+    return await Jury.find({
+      relations: {
+        users: true,
+      },
+    });
+  }
+
+  @Query(() => [Jury])
+  async getUsersOfJury(@Arg("juryId") juryId: number) {
+    return await Jury.find({
+      where: {
+        id: juryId,
+      },
+      relations: {
+        users: true,
+      },
+    });
   }
 
   @Mutation(() => Jury)

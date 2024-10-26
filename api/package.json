@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "seed": "ts-node ./src/db/seed.ts",
     "dev": "ts-node ./src/index.ts",
     "lint": "eslint --fix",
     "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'"

@@ -34,6 +34,22 @@ export default class UserResolver {
     return await User.find({
       relations: {
         role: true,
+        juries: true,
+      },
+    });
+  }
+
+  @Query(() => [User])
+  async getUsersByRole(@Arg("roleId") roleId: number) {
+    return await User.find({
+      where: {
+        role: {
+          id: roleId,
+        },
+      },
+      relations: {
+        role: true,
+        juries: true,
       },
     });
   }

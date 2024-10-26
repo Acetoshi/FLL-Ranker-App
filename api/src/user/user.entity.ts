@@ -5,10 +5,20 @@ import {
   PrimaryGeneratedColumn,
   BaseEntity,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Field, ObjectType, Int } from "type-graphql";
-import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Min,
+  Max,
+} from "class-validator";
 import { Role } from "../role/role.entity";
+import { Jury } from "../jury/jury.entity";
 
 @ObjectType()
 @Entity()
@@ -43,6 +53,13 @@ export class User extends BaseEntity {
   password: string;
 
   @Field(() => Role)
+  @Min(1)
+  @Max(2)
   @ManyToOne(() => Role, (role: Role) => role.id)
   role: Role;
+
+  @Field(() => [Jury])
+  @ManyToMany(() => Jury, (jury) => jury.users)
+  @JoinTable()
+  juries?: Jury[];
 }

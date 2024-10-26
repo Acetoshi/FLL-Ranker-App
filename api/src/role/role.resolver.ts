@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, Length } from "class-validator";
-import { Resolver, Mutation, InputType, Field, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
 import { validate } from "class-validator";
 import { Role } from "./role.entity";
 
@@ -14,6 +14,20 @@ class CreateRoleInput {
 
 @Resolver(Role)
 export default class RoleResolver {
+  @Query(() => [Role])
+  async getAllRoles() {
+    return await Role.find();
+  }
+
+  @Query(() => Role)
+  async getRoleById(@Arg("roleId") roleId: number) {
+    return await Role.findOneOrFail({
+      where: {
+        id: roleId,
+      },
+    });
+  }
+
   @Mutation(() => Role)
   async createNewRole(@Arg("data") data: CreateRoleInput) {
     const role = new Role();
