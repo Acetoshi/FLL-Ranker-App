@@ -15,6 +15,7 @@ const { API_PORT } = process.env;
   await dataSource.initialize();
   const schema = await buildSchema({
     resolvers: [TeamResolver, JuryResolver],
+    validate: true,
   });
 
   const server = new ApolloServer({
