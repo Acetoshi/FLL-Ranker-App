@@ -8,8 +8,6 @@ import {
   Paper,
   Typography,
   Box,
-  Button,
-  TextField,
 } from "@mui/material";
 import { useGetAllCompetitionsQuery } from "../types/graphql-types";
 
@@ -54,18 +52,8 @@ export default function TeamsManagement() {
                     {competition.name}
                   </TableCell>
                   <TableCell align="right">{competition.location}</TableCell>
-                  <TableCell align="right">
-                    <TextField
-                      name="someDate"
-                      label="Some Date"
-                      InputLabelProps={{ shrink: true, required: true }}
-                      type="date"
-                      defaultValue={competition.date}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button>Ajouter</Button>
-                  </TableCell>
+                  <TableCell align="right">{competition.date}</TableCell>
+                  <TableCell align="right"></TableCell>
                 </TableRow>
               ))}
           </TableBody>
