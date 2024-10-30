@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, RefObject } from "react";
+import { RefObject } from "react";
 import { Team } from "./graphql-types";
 
 // used to change display mode in tables
@@ -24,12 +24,20 @@ export type TeamRowProps = {
   mode: Mode;
 };
 
-export type BtnTeamProps = {
+// export type TeamRef = {
+//   name: RefObject<HTMLInputElement>;
+//   location: RefObject<HTMLInputElement>;
+//   contact: RefObject<HTMLInputElement>;
+// };
+
+export type BtnCRUDProps = {
   type: "add" | "edit" | "delete";
-  teamId?: number;
-  inputError: BooleanMap;
-  setInputError: Dispatch<SetStateAction<BooleanMap>>;
-  inputRefs: RefMap;
-  validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
-  setDisplayMode: Dispatch<SetStateAction<Mode>>;
+  disabled?: boolean;
+  handleClick: () => void;
+  // teamId?: number;
+  // inputError: BooleanMap;
+  // setInputError: Dispatch<SetStateAction<BooleanMap>>;
+  // inputRefs: RefMap;
+  // validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
+  // setDisplayMode: Dispatch<SetStateAction<Mode>>;
 };

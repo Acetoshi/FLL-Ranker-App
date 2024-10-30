@@ -1,24 +1,29 @@
 import { useState, useRef, RefObject } from "react";
 import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
-import BtnTeam from "./BtnTeam";
+import BtnCUD from "./BtnCRUD";
 import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from '@mui/icons-material/Close';
-import { Mode, TeamRowProps } from "../types/types";
+import CloseIcon from "@mui/icons-material/Close";
+import { BooleanMap, Mode, TeamRowProps } from "../types/types";
+import { useTeamsOperations } from "../services/teams";
 
 export default function TeamRow({ mode, team }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
+  const { handleDelete, handleAdd, handleEdit } = useTeamsOperations();
+
   // used to keep track of input errors
-  const [inputError, setInputError] = useState({
+  const [inputError, setInputError] = useState<BooleanMap>({
     name: false,
     contact: false,
     location: false,
   });
 
   // used instead of states to avoid multiple re-renders when typing
-  const newTeamNameRef = useRef<HTMLInputElement>(null);
-  const newTeamContactRef = useRef<HTMLInputElement>(null);
-  const newTeamLocationRef = useRef<HTMLInputElement>(null);
+  const teamRef = {
+    name: useRef<HTMLInputElement>(null),
+    contact: useRef<HTMLInputElement>(null),
+    location: useRef<HTMLInputElement>(null),
+  };
 
   const validateInput = (inputRef: RefObject<HTMLInputElement>) => {
     const value = inputRef.current && inputRef.current.value;
@@ -33,6 +38,8 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
     setInputError((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
   };
 
+
+
   return (
     <>
       <TableRow
@@ -42,13 +49,13 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         <TableCell component="th" scope="row">
           {(displayMode === "create" || displayMode === "edit") && (
             <TextField
-              inputRef={newTeamNameRef}
+              inputRef={teamRef.name}
               label="nom"
               variant={displayMode === "edit" ? "standard" : "outlined"}
               defaultValue={displayMode === "edit" ? team.name : ""}
               fullWidth
               required
-              onChange={() => handleInputChange("name", newTeamNameRef)}
+              onChange={() => handleInputChange("name", teamRef.name)}
               error={inputError.name}
               helperText={
                 inputError.name
@@ -62,13 +69,13 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         <TableCell>
           {(displayMode === "create" || displayMode === "edit") && (
             <TextField
-              inputRef={newTeamContactRef}
+              inputRef={teamRef.contact}
               label="contact"
               variant={displayMode === "edit" ? "standard" : "outlined"}
               defaultValue={displayMode === "edit" ? team.contact : ""}
               fullWidth
               required
-              onChange={() => handleInputChange("contact", newTeamContactRef)}
+              onChange={() => handleInputChange("contact", teamRef.contact)}
               error={inputError.contact}
               helperText={
                 inputError.contact
@@ -82,13 +89,13 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         <TableCell>
           {(displayMode === "create" || displayMode === "edit") && (
             <TextField
-              inputRef={newTeamLocationRef}
+              inputRef={teamRef.location}
               label="provenance"
               variant={displayMode === "edit" ? "standard" : "outlined"}
               defaultValue={displayMode === "edit" ? team.location : ""}
               fullWidth
               required
-              onChange={() => handleInputChange("location", newTeamLocationRef)}
+              onChange={() => handleInputChange("location", teamRef.location)}
               error={inputError.location}
               helperText={
                 inputError.location
@@ -101,33 +108,15 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         </TableCell>
         <TableCell align="right">
           {displayMode === "create" && (
-            <BtnTeam
-              type="add"
-              inputRefs={{
-                name: newTeamNameRef,
-                contact: newTeamContactRef,
-                location: newTeamLocationRef,
-              }}
-              inputError={inputError}
-              setInputError={setInputError}
-              validateInput={validateInput}
-              setDisplayMode={setDisplayMode}
-            />
+            <BtnCUD type="add" onClick={()=>handleAdd(teamRef,setInputError)} />
           )}
           {displayMode === "edit" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <BtnTeam
+              <BtnCUD
                 type="edit"
-                teamId={team.id}
-                inputRefs={{
-                  name: newTeamNameRef,
-                  contact: newTeamContactRef,
-                  location: newTeamLocationRef,
-                }}
-                inputError={inputError}
-                setInputError={setInputError}
-                validateInput={validateInput}
-                setDisplayMode={setDisplayMode}
+                handleClick={() =>
+                  handleEdit(teamRef, setDisplayMode, setInputError, validateInput)
+                }
               />
 
               <Button
@@ -149,19 +138,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
               >
                 EDITER
               </Button>
-              <BtnTeam
-                type="delete"
-                teamId={team.id}
-                inputRefs={{
-                  name: newTeamNameRef,
-                  contact: newTeamContactRef,
-                  location: newTeamLocationRef,
-                }}
-                inputError={inputError}
-                setInputError={setInputError}
-                validateInput={validateInput}
-                setDisplayMode={setDisplayMode}
-              />
+              <BtnCUD type="delete" handleClick={handleDelete} />
             </Stack>
           )}
         </TableCell>
