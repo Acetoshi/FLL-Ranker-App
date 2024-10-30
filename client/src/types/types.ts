@@ -5,10 +5,10 @@ import { Team } from "./graphql-types";
 export type Mode = "edit" | "consult" | "create";
 
 // used to control the snackbar globally
-export type SnackStatus = {
+export type Notification = {
   open: boolean;
   message: string;
-  severity: "error" | "success" | "warning";
+  severity: 'success' | 'info' | 'warning' | 'error';
 };
 
 export type BooleanMap = {
@@ -20,10 +20,8 @@ export type RefMap = {
 };
 
 export type TeamRowProps = {
-  team: Team;
+  team?: Team;
   mode: Mode;
-  setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
 };
 
 export type BtnTeamProps = {
@@ -34,5 +32,4 @@ export type BtnTeamProps = {
   inputRefs: RefMap;
   validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
   setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
 };
