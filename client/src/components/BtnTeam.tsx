@@ -1,4 +1,7 @@
 import { Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import SaveIcon from '@mui/icons-material/Save';
 import { GET_ALL_TEAMS } from "../schemas/queries";
 import {
   TeamIdInput,
@@ -67,7 +70,7 @@ export default function BtnTeam({
 
       setNotification({
         open: true,
-        message: success ? "équipe supprimée" : message as string,
+        message: success ? "équipe supprimée" : (message as string),
         severity: success ? "success" : "error",
       });
     } else {
@@ -131,6 +134,9 @@ export default function BtnTeam({
       }
       variant={type === "delete" ? "outlined" : "contained"}
       onClick={handleClick}
+      startIcon={
+        (type === "delete" && <DeleteIcon />) || (type === "add" && <AddIcon />) || (type === "edit" && <SaveIcon />)
+      }
     >
       {type === "add" && "AJOUTER"}
       {type === "edit" && "SAUVEGARDER"}
