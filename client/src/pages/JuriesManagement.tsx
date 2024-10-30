@@ -1,5 +1,4 @@
-import { useGetAllJuriesQuery } from "../types/graphql-types";
-import { Jury } from "../types/graphql-types";
+import { useGetAllJuriesQuery, Jury } from "../types/graphql-types";
 import ManageJuryAddRow from "../components/ManageJuryAddRow";
 import ManageJuryRow from "../components/ManageJuryRow";
 import Table from "@mui/material/Table";

@@ -1,12 +1,11 @@
 import { useState } from "react";
 import {
   useGetUsersByRoleQuery,
-  // useGetJuryByIdQuery,
   useAddUserToJuryMutation,
   Jury,
   User,
 } from "../types/graphql-types";
-//import { GET_JURY_BY_ID } from "../schemas/queries";
+import { GET_JURIES } from "../schemas/queries";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";
@@ -46,10 +45,14 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
           juryId: jury.id,
         },
       },
-      //refetchQueries: [{ query: GET_JURY_BY_ID }],
+      refetchQueries: [{ query: GET_JURIES }],
     });
+    setJuror("");
+    setBtnIsDisabled(true);
   };
 
+  // rien à faire dans cet US pour l'instant,
+  // mais le composant Chip a besoin du onDelete={handleDelete} pour être affiché
   const handleDelete = () => {
     console.info("Delete.");
   };
@@ -101,11 +104,15 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
               >
                 {!loadingJuror &&
                   dataUserJuror?.getUsersByRole &&
-                  dataUserJuror.getUsersByRole.map((ju) => (
-                    <MenuItem key={ju.id} value={ju.id}>
-                      {ju.firstname} {ju.lastname}
-                    </MenuItem>
-                  ))}
+                  dataUserJuror.getUsersByRole.map((ju) => {
+                    if (!jury.users.find((el) => el.id === ju.id)) {
+                      return (
+                        <MenuItem key={ju.id} value={ju.id}>
+                          {ju.firstname} {ju.lastname}
+                        </MenuItem>
+                      );
+                    }
+                  })}
               </Select>
             </FormControl>
             <Button disabled={btnIsDisabled} type="submit">
