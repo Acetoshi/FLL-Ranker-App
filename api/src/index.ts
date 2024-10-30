@@ -5,6 +5,7 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import * as dotenv from "dotenv";
 import TeamResolver from "./team/team.resolver";
+import JuryResolver from "./jury/jury.resolver";
 import CompetitionResolver from "./competition/competition.resolver";
 
 dotenv.config();
@@ -13,7 +14,7 @@ const { API_PORT } = process.env;
 (async () => {
   await dataSource.initialize();
   const schema = await buildSchema({
-    resolvers: [TeamResolver, CompetitionResolver],
+    resolvers: [TeamResolver, JuryResolver, CompetitionResolver],
   });
 
   const server = new ApolloServer({
