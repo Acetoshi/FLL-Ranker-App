@@ -31,6 +31,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createNewJury: Jury;
   createTeam: Team;
+  deleteTeam: ResponseStatus;
   editTeam: Team;
 };
 
@@ -45,6 +46,11 @@ export type MutationCreateTeamArgs = {
 };
 
 
+export type MutationDeleteTeamArgs = {
+  team: TeamIdInput;
+};
+
+
 export type MutationEditTeamArgs = {
   team: TeamInput;
 };
@@ -55,12 +61,22 @@ export type Query = {
   getAllJuries: Array<Jury>;
 };
 
+export type ResponseStatus = {
+  __typename?: 'ResponseStatus';
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type Team = {
   __typename?: 'Team';
   contact: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type TeamIdInput = {
+  id?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type TeamInput = {
@@ -90,6 +106,13 @@ export type EditTeamMutationVariables = Exact<{
 
 
 export type EditTeamMutation = { __typename?: 'Mutation', editTeam: { __typename?: 'Team', id: number, contact: string, location: string, name: string } };
+
+export type DeleteTeamMutationVariables = Exact<{
+  team: TeamIdInput;
+}>;
+
+
+export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'ResponseStatus', success: boolean, message?: string | null } };
 
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -206,6 +229,40 @@ export function useEditTeamMutation(baseOptions?: Apollo.MutationHookOptions<Edi
 export type EditTeamMutationHookResult = ReturnType<typeof useEditTeamMutation>;
 export type EditTeamMutationResult = Apollo.MutationResult<EditTeamMutation>;
 export type EditTeamMutationOptions = Apollo.BaseMutationOptions<EditTeamMutation, EditTeamMutationVariables>;
+export const DeleteTeamDocument = gql`
+    mutation deleteTeam($team: TeamIdInput!) {
+  deleteTeam(team: $team) {
+    success
+    message
+  }
+}
+    `;
+export type DeleteTeamMutationFn = Apollo.MutationFunction<DeleteTeamMutation, DeleteTeamMutationVariables>;
+
+/**
+ * __useDeleteTeamMutation__
+ *
+ * To run a mutation, you first call `useDeleteTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTeamMutation, { data, loading, error }] = useDeleteTeamMutation({
+ *   variables: {
+ *      team: // value for 'team'
+ *   },
+ * });
+ */
+export function useDeleteTeamMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTeamMutation, DeleteTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTeamMutation, DeleteTeamMutationVariables>(DeleteTeamDocument, options);
+      }
+export type DeleteTeamMutationHookResult = ReturnType<typeof useDeleteTeamMutation>;
+export type DeleteTeamMutationResult = Apollo.MutationResult<DeleteTeamMutation>;
+export type DeleteTeamMutationOptions = Apollo.BaseMutationOptions<DeleteTeamMutation, DeleteTeamMutationVariables>;
 export const GetAllJuriesDocument = gql`
     query GetAllJuries {
   getAllJuries {

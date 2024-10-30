@@ -138,9 +138,24 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
             </Stack>
           )}
           {displayMode === "consult" && (
-            <Button variant="outlined" onClick={() => setDisplayMode("edit")}>
-              EDITER
-            </Button>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="outlined" onClick={() => setDisplayMode("edit")}>
+                EDITER
+              </Button>
+              <BtnTeam
+                type="delete"
+                teamId={team.id}
+                inputRefs={{
+                  name: newTeamNameRef,
+                  contact: newTeamContactRef,
+                  location: newTeamLocationRef,
+                }}
+                inputError={inputError}
+                setInputError={setInputError}
+                validateInput={validateInput}
+                setDisplayMode={setDisplayMode}
+              />
+            </Stack>
           )}
         </TableCell>
       </TableRow>
