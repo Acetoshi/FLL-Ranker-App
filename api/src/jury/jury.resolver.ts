@@ -1,6 +1,5 @@
-import { IsString, IsNotEmpty, Length } from "class-validator";
+import { IsString, IsNotEmpty, Length, validate } from "class-validator";
 import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
-import { validate } from "class-validator";
 import { Jury } from "./jury.entity";
 import { User } from "./../user/user.entity";
 import UserResolver from "../user/user.resolver";
@@ -27,10 +26,6 @@ class AddUserToJuryInput {
 
 @Resolver(Jury)
 export default class JuryResolver {
-  // constructor(
-  //   @Inject
-  // )
-
   @Query(() => [Jury])
   async getAllJuries() {
     return await Jury.find({
@@ -66,30 +61,40 @@ export default class JuryResolver {
 
   @Mutation(() => Jury)
   async createNewJury(@Arg("data") data: CreateJuryInput) {
-    const jury = new Jury();
-    jury.name = data.name;
+    try {
+      const jury = new Jury();
+      jury.name = data.name;
 
-    const error = await validate(jury);
-    if (error.length > 0) throw new Error(`Validation Error: ${error}`);
+      const error = await validate(jury);
+      if (error.length > 0) throw new Error(`Validation Error: ${error}`);
 
-    await jury.save();
-    return jury;
+      await jury.save();
+      return jury;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to create a new jury");
+    }
   }
 
   @Mutation(() => Jury)
   async addUserToJury(@Arg("data") addUserToJury: AddUserToJuryInput) {
-    const jury: Jury = await this.getJuryById(addUserToJury.juryId);
+    try {
+      const jury: Jury = await this.getJuryById(addUserToJury.juryId);
 
-    // user has already been assigned to the jury
-    if (jury.users.find((user) => user.id === addUserToJury.userId))
+      // user has already been assigned to the jury
+      if (jury.users.find((user) => user.id === addUserToJury.userId))
+        return jury;
+
+      const user = new UserResolver();
+      const theUser: User = await user.getlUserById(addUserToJury.userId);
+
+      theUser.juries.push(jury);
+      await theUser.save();
+
       return jury;
-
-    const user = new UserResolver();
-    const theUser: User = await user.getlUserById(addUserToJury.userId);
-
-    theUser.juries.push(jury);
-    await theUser.save();
-
-    return jury;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to bind a user to a jury");
+    }
   }
 }
