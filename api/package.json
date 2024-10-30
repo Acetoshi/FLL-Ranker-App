@@ -1,9 +1,9 @@
 {
   "scripts": {
+    "seed": "ts-node ./src/db/seed.ts",
     "dev": "ts-node ./src/index.ts",
     "lint": "eslint --fix",
-    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'",
-    "seed": "ts-node ./src/db/seed-competition.ts"
+    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
