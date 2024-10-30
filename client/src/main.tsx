@@ -7,7 +7,7 @@ import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
 import Manage from "./pages/Manage.tsx";
-import TeamsManagement from "./pages/TeamsManagment.tsx";
+import TeamsManagement from "./pages/TeamsManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
 import "@fontsource/roboto/300.css";
@@ -59,5 +59,5 @@ createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={connexion}>
       <RouterProvider router={router} />
     </ApolloProvider>
-  </StrictMode>
+  </StrictMode>,
 );
