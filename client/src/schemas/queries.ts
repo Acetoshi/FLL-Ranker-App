@@ -33,6 +33,7 @@ export const GET_JURY_BY_ID = gql`
 export const GET_ALL_TEAMS = gql`
   query GetAllTeams {
     allTeams {
+      id
       location
       name
       contact

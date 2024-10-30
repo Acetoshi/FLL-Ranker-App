@@ -1,17 +1,10 @@
 import { useState, useRef, RefObject } from "react";
-import { GET_ALL_TEAMS } from "../schemas/queries";
-import { useCreateTeamMutation } from "../types/graphql-types";
-import {
-  TableRow,
-  TableCell,
-  TextField,
-  Button,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
+import BtnTeam from "./BtnTeam";
+import { Mode, TeamRowProps } from "../types/types";
 
-export default function TeamRow() {
-  const [addTeam] = useCreateTeamMutation();
+export default function TeamRow({ mode, team, setSnackStatus }: TeamRowProps) {
+  const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to keep track of input errors
   const [inputError, setInputError] = useState({
@@ -20,18 +13,10 @@ export default function TeamRow() {
     location: false,
   });
 
-  // used for UI feedback
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
-
   // used instead of states to avoid multiple re-renders when typing
   const newTeamNameRef = useRef<HTMLInputElement>(null);
   const newTeamContactRef = useRef<HTMLInputElement>(null);
   const newTeamLocationRef = useRef<HTMLInputElement>(null);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const validateInput = (inputRef: RefObject<HTMLInputElement>) => {
     const value = inputRef.current && inputRef.current.value;
@@ -46,44 +31,6 @@ export default function TeamRow() {
     setInputError((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
   };
 
-  const handleTeamInputValidation = () => {
-    const isValidName = validateInput(newTeamNameRef);
-    const isValidContact = validateInput(newTeamContactRef);
-    const isValidLocation = validateInput(newTeamLocationRef);
-
-    setInputError({
-      name: !isValidName,
-      contact: !isValidContact,
-      location: !isValidLocation,
-    });
-
-    return isValidName && isValidContact && isValidLocation;
-  };
-
-  const handleAddTeam = async () => {
-    if (handleTeamInputValidation()) {
-      try {
-        const newTeam = {
-          name: newTeamNameRef.current ? newTeamNameRef.current.value : "",
-          contact: newTeamContactRef.current
-            ? newTeamContactRef.current.value
-            : "",
-          location: newTeamLocationRef.current
-            ? newTeamLocationRef.current.value
-            : "",
-        };
-        await addTeam({
-          refetchQueries: [{ query: GET_ALL_TEAMS }],
-          variables: { team: newTeam },
-        });
-      } catch {
-        setOpen(true);
-        setMessage("Erreur dans l'ajout de l'équipe, le nom est-il unique ? ");
-        setInputError((prevErrors) => ({ ...prevErrors, name: true }));
-      }
-    }
-  };
-
   return (
     <>
       <TableRow
@@ -91,75 +38,114 @@ export default function TeamRow() {
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       >
         <TableCell component="th" scope="row">
-          <TextField
-            inputRef={newTeamNameRef}
-            label="name"
-            variant="outlined"
-            fullWidth
-            required
-            onChange={() => handleInputChange("name", newTeamNameRef)}
-            error={inputError.name}
-            helperText={
-              inputError.name
-                ? "Entrez un nom unique de plus de 5 caractères"
-                : ""
-            }
-          />
+          {(displayMode === "create" || displayMode === "edit") && (
+            <TextField
+              inputRef={newTeamNameRef}
+              label="nom"
+              variant={displayMode === "edit" ? "standard" : "outlined"}
+              defaultValue={displayMode === "edit" ? team.name : ""}
+              fullWidth
+              required
+              onChange={() => handleInputChange("name", newTeamNameRef)}
+              error={inputError.name}
+              helperText={
+                inputError.name
+                  ? "Entrez un nom unique de plus de 5 caractères"
+                  : ""
+              }
+            />
+          )}
+          {displayMode === "consult" && team.name}
         </TableCell>
         <TableCell>
-          <TextField
-            inputRef={newTeamContactRef}
-            label="contact"
-            variant="outlined"
-            fullWidth
-            required
-            onChange={() => handleInputChange("contact", newTeamContactRef)}
-            error={inputError.contact}
-            helperText={
-              inputError.contact
-                ? "Entrez un contact de plus de 5 caractères"
-                : ""
-            }
-          />
+          {(displayMode === "create" || displayMode === "edit") && (
+            <TextField
+              inputRef={newTeamContactRef}
+              label="contact"
+              variant={displayMode === "edit" ? "standard" : "outlined"}
+              defaultValue={displayMode === "edit" ? team.contact : ""}
+              fullWidth
+              required
+              onChange={() => handleInputChange("contact", newTeamContactRef)}
+              error={inputError.contact}
+              helperText={
+                inputError.contact
+                  ? "Entrez un contact de plus de 5 caractères"
+                  : ""
+              }
+            />
+          )}
+          {displayMode === "consult" && team.contact}
         </TableCell>
         <TableCell>
-          <TextField
-            inputRef={newTeamLocationRef}
-            label="provenance"
-            variant="outlined"
-            fullWidth
-            required
-            onChange={() => handleInputChange("location", newTeamLocationRef)}
-            error={inputError.location}
-            helperText={
-              inputError.location
-                ? "Entrez une provenance de plus de 5 caractères"
-                : ""
-            }
-          />
+          {(displayMode === "create" || displayMode === "edit") && (
+            <TextField
+              inputRef={newTeamLocationRef}
+              label="provenance"
+              variant={displayMode === "edit" ? "standard" : "outlined"}
+              defaultValue={displayMode === "edit" ? team.location : ""}
+              fullWidth
+              required
+              onChange={() => handleInputChange("location", newTeamLocationRef)}
+              error={inputError.location}
+              helperText={
+                inputError.location
+                  ? "Entrez une provenance de plus de 5 caractères"
+                  : ""
+              }
+            />
+          )}
+          {displayMode === "consult" && team.location}
         </TableCell>
         <TableCell align="right">
-          <Button
-            disabled={
-              inputError.name || inputError.contact || inputError.location
-            }
-            variant="contained"
-            onClick={handleAddTeam}
-          >
-            AJOUTER
-          </Button>
+          {displayMode === "create" && (
+            <BtnTeam
+              type="add"
+              inputRefs={{
+                name: newTeamNameRef,
+                contact: newTeamContactRef,
+                location: newTeamLocationRef,
+              }}
+              inputError={inputError}
+              setInputError={setInputError}
+              validateInput={validateInput}
+              setSnackStatus={setSnackStatus}
+              setDisplayMode={setDisplayMode}
+            />
+          )}
+          {displayMode === "edit" && (
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <BtnTeam
+                type="edit"
+                teamId={team.id}
+                inputRefs={{
+                  name: newTeamNameRef,
+                  contact: newTeamContactRef,
+                  location: newTeamLocationRef,
+                }}
+                inputError={inputError}
+                setInputError={setInputError}
+                validateInput={validateInput}
+                setSnackStatus={setSnackStatus}
+                setDisplayMode={setDisplayMode}
+              />
+
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setDisplayMode("consult")}
+              >
+                ANNULER
+              </Button>
+            </Stack>
+          )}
+          {displayMode === "consult" && (
+            <Button variant="outlined" onClick={() => setDisplayMode("edit")}>
+              EDITER
+            </Button>
+          )}
         </TableCell>
       </TableRow>
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          {message}
-        </Alert>
-      </Snackbar>
     </>
   );
 }
