@@ -3,7 +3,7 @@ import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
 import BtnTeam from "./BtnTeam";
 import { Mode, TeamRowProps } from "../types/types";
 
-export default function TeamRow({ mode, team, setSnackStatus }: TeamRowProps) {
+export default function TeamRow({ mode, team }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to keep track of input errors
@@ -109,7 +109,6 @@ export default function TeamRow({ mode, team, setSnackStatus }: TeamRowProps) {
               inputError={inputError}
               setInputError={setInputError}
               validateInput={validateInput}
-              setSnackStatus={setSnackStatus}
               setDisplayMode={setDisplayMode}
             />
           )}
@@ -126,7 +125,6 @@ export default function TeamRow({ mode, team, setSnackStatus }: TeamRowProps) {
                 inputError={inputError}
                 setInputError={setInputError}
                 validateInput={validateInput}
-                setSnackStatus={setSnackStatus}
                 setDisplayMode={setDisplayMode}
               />
 

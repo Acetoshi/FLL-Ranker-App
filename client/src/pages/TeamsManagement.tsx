@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useGetAllTeamsQuery } from "../types/graphql-types";
 import {
   TableContainer,
@@ -10,25 +9,12 @@ import {
   Paper,
   Typography,
   Box,
-  Alert,
-  Snackbar,
 } from "@mui/material";
 import TeamRow from "../components/TeamRow";
-import { SnackStatus } from "../types/types";
+
 
 export default function TeamsManagement() {
   const { loading, error, data } = useGetAllTeamsQuery();
-
-  // used for UI feedback
-  const [snackStatus, setSnackStatus] = useState<SnackStatus>({
-    open: false,
-    message: "",
-    severity: "error",
-  });
-
-  const handleClose = () => {
-    setSnackStatus({ ...snackStatus, open: false });
-  };
 
   if (loading) return <p>Loading...</p>;
 
@@ -67,32 +53,16 @@ export default function TeamsManagement() {
                     key={team.id}
                     mode={"consult"}
                     team={team}
-                    setSnackStatus={setSnackStatus}
                   />
                 ))}
               <TeamRow
-                team={null}
                 mode={"create"}
-                setSnackStatus={setSnackStatus}
               />
             </TableBody>
           </Table>
         </TableContainer>
 
-        <Snackbar
-          open={snackStatus.open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert
-            onClose={handleClose}
-            severity={snackStatus.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackStatus.message}
-          </Alert>
-        </Snackbar>
+
       </>
     );
 }
