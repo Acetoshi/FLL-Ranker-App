@@ -6,6 +6,7 @@ import {
   useEditTeamMutation,
 } from "../types/graphql-types";
 import { BtnTeamProps } from "../types/types";
+import { useNotification } from "../hooks/useNotification";
 
 // This button is used in Team table to handle creating and editing
 export default function BtnTeam({
@@ -15,11 +16,11 @@ export default function BtnTeam({
   setInputError,
   inputRefs,
   validateInput,
-  setSnackStatus,
   setDisplayMode,
 }: BtnTeamProps) {
   const [addTeam] = useCreateTeamMutation();
   const [editTeam] = useEditTeamMutation();
+  const { setNotification } = useNotification();
 
   const handleTeamInputValidation = () => {
     const isValidName = validateInput(inputRefs.name);
@@ -61,7 +62,7 @@ export default function BtnTeam({
             refetchQueries: [{ query: GET_ALL_TEAMS }],
             variables: { team: { ...newTeam, id: teamId } },
           });
-          setSnackStatus({
+          setNotification({
             open: true,
             message: "Modification enregistrée",
             severity: "success",
@@ -69,7 +70,7 @@ export default function BtnTeam({
           setDisplayMode("consult");
         }
       } catch {
-        setSnackStatus({
+        setNotification({
           open: true,
           message: `${
             type === "add" &&
