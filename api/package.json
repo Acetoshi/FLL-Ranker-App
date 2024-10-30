@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "ts-node ./src/index.ts",
     "lint": "eslint --fix",
-    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'"
+    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'",
+    "seed": "ts-node ./src/db/seed-competition.ts"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",

@@ -10,7 +10,7 @@ export class Competition extends BaseEntity {
   id: number;
 
   @Field()
-  @Column()
+  @Column({ unique: true, type: "varchar", width: 30 })
   name: string;
 
   @Field()
@@ -19,5 +19,5 @@ export class Competition extends BaseEntity {
 
   @Field()
   @Column()
-  date: Date;
+  date: string;
 }
