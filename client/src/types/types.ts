@@ -5,7 +5,7 @@ import { Team } from "./graphql-types";
 export type Mode = "edit" | "consult" | "create";
 
 // used to control the snackbar globally
-export type SnackStatus = {
+export type Notification = {
   open: boolean;
   message: string;
   severity: "error" | "success" | "warning";
