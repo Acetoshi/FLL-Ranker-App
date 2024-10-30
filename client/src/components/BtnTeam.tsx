@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import SaveIcon from '@mui/icons-material/Save';
+import SaveIcon from "@mui/icons-material/Save";
 import { GET_ALL_TEAMS } from "../schemas/queries";
 import {
   TeamIdInput,
@@ -43,15 +43,16 @@ export default function BtnTeam({
     return isValidName && isValidContact && isValidLocation;
   };
 
-  const getButtonColor = () => {
-    switch (type) {
-      case "edit":
-        return "success";
-      case "delete":
-        return "error";
-      default:
-        return "primary";
-    }
+  const buttonColorMap: { [key: string]: "success" | "error" | "primary" } = {
+    edit: "success",
+    delete: "error",
+    add: "primary",
+  };
+
+  const buttonTextMap: { [key: string]: string } = {
+    edit: "SAUVEGARDER",
+    delete: "SUPPRIMER",
+    add: "AJOUTER",
   };
 
   const handleClick = async () => {
@@ -127,7 +128,7 @@ export default function BtnTeam({
 
   return (
     <Button
-      color={getButtonColor()}
+      color={buttonColorMap[type]}
       disabled={
         type !== "delete" &&
         (inputError.name || inputError.contact || inputError.location)
@@ -135,12 +136,12 @@ export default function BtnTeam({
       variant={type === "delete" ? "outlined" : "contained"}
       onClick={handleClick}
       startIcon={
-        (type === "delete" && <DeleteIcon />) || (type === "add" && <AddIcon />) || (type === "edit" && <SaveIcon />)
+        (type === "delete" && <DeleteIcon />) ||
+        (type === "add" && <AddIcon />) ||
+        (type === "edit" && <SaveIcon />)
       }
     >
-      {type === "add" && "AJOUTER"}
-      {type === "edit" && "SAUVEGARDER"}
-      {type === "delete" && "SUPPRIMER"}
+      {buttonTextMap[type]}
     </Button>
   );
 }

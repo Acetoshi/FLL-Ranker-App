@@ -29,6 +29,12 @@ export type CreateJuryInput = {
   name: Scalars['String']['input'];
 };
 
+export type DeleteResponseStatus = {
+  __typename?: 'DeleteResponseStatus';
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type Jury = {
   __typename?: 'Jury';
   id: Scalars['ID']['output'];
@@ -39,7 +45,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createNewJury: Jury;
   createTeam: Team;
-  deleteTeam: ResponseStatus;
+  deleteTeam: DeleteResponseStatus;
   editTeam: Team;
 };
 
@@ -68,12 +74,6 @@ export type Query = {
   allTeams: Array<Team>;
   getAllCompetitions: Array<Competition>;
   getAllJuries: Array<Jury>;
-};
-
-export type ResponseStatus = {
-  __typename?: 'ResponseStatus';
-  message?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
 };
 
 export type Team = {
@@ -121,7 +121,7 @@ export type DeleteTeamMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'ResponseStatus', success: boolean, message?: string | null } };
+export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'DeleteResponseStatus', success: boolean, message?: string | null } };
 
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
