@@ -53,13 +53,10 @@ export default function TeamsManagement() {
                     key={team.id}
                     mode={"consult"}
                     team={team}
-                    setSnackStatus={setSnackStatus}
                   />
                 ))}
               <TeamRow
-                team={null}
                 mode={"create"}
-                setSnackStatus={setSnackStatus}
               />
             </TableBody>
           </Table>

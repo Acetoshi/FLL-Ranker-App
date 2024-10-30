@@ -20,10 +20,8 @@ export type RefMap = {
 };
 
 export type TeamRowProps = {
-  team: Team;
+  team?: Team;
   mode: Mode;
-  setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
 };
 
 export type BtnTeamProps = {
@@ -34,5 +32,4 @@ export type BtnTeamProps = {
   inputRefs: RefMap;
   validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
   setDisplayMode: Dispatch<SetStateAction<Mode>>;
-  setSnackStatus: Dispatch<SetStateAction<SnackStatus>>;
 };

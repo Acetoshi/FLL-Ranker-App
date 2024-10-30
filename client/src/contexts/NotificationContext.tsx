@@ -15,7 +15,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType>({value :null});
 
-export const NotificationProvider = ({ children }: { children: ReactNode }) => {
+export default function NotificationProvider ({ children }: { children: ReactNode }){
 
   const [notification, setNotification] = useState<Notification>({
     open: false,
@@ -28,7 +28,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <NotificationContext.Provider value={setNotification}>
+    <NotificationContext.Provider value={{setNotification}}>
       {children}
       <Snackbar
         open={notification.open}
