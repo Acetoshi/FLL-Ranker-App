@@ -61,5 +61,5 @@ export class User extends BaseEntity {
   @Field(() => [Jury])
   @ManyToMany(() => Jury, (jury) => jury.users)
   @JoinTable()
-  juries?: Jury[];
+  juries: Jury[];
 }

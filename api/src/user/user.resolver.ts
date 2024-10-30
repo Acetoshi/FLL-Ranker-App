@@ -39,6 +39,19 @@ export default class UserResolver {
     });
   }
 
+  @Query(() => User)
+  async getlUserById(@Arg("userId") userId: number) {
+    return await User.findOneOrFail({
+      where: {
+        id: userId,
+      },
+      relations: {
+        role: true,
+        juries: true,
+      },
+    });
+  }
+
   @Query(() => [User])
   async getUsersByRole(@Arg("roleId") roleId: number) {
     return await User.find({
