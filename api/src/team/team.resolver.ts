@@ -1,6 +1,7 @@
 import { Team } from "./team.entity";
 import { Resolver, Query, InputType, Field, Mutation, Arg } from "type-graphql";
 import { IsNumber, IsString, IsOptional, Length } from "class-validator";
+import { ResponseStatus } from "../types/responseStatus";
 
 @InputType()
 class TeamInput implements Partial<Team> {
@@ -23,6 +24,13 @@ class TeamInput implements Partial<Team> {
   @IsString()
   @Length(5, 100)
   contact: string;
+}
+
+@InputType()
+class TeamIdInput implements Partial<Team> {
+  @Field({ nullable: true })
+  @IsNumber()
+  id: number;
 }
 
 @Resolver(Team)
@@ -62,6 +70,26 @@ export default class TeamResolver {
     } catch (error) {
       console.error(error);
       throw new Error("Failed to edit team");
+    }
+  }
+
+  @Mutation(() => ResponseStatus)
+  async deleteTeam(@Arg("team") targetTeam: TeamIdInput) {
+    try {
+      const teamToDelete = await Team.findOneBy({ id: targetTeam.id });
+
+      if (!teamToDelete) {
+        return new ResponseStatus(
+          "error",
+          `L'équipe n°${targetTeam.id} n'existe pas`
+        );
+      } else {
+        await teamToDelete.remove();
+        return new ResponseStatus("success");
+      }
+    } catch (error) {
+      console.error(error);
+      return new ResponseStatus("error", "server error");
     }
   }
 }
