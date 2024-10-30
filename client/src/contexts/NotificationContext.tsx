@@ -10,10 +10,10 @@ import { Notification } from "../types/types";
 
 
 interface NotificationContextType {
-  value : Dispatch<SetStateAction<Notification>> | null
+  setNotification :Dispatch<SetStateAction<Notification>> 
 }
 
-const NotificationContext = createContext<NotificationContextType>({value :null});
+const NotificationContext = createContext<NotificationContextType>();
 
 export default function NotificationProvider ({ children }: { children: ReactNode }){
 
