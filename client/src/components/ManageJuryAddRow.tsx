@@ -11,7 +11,7 @@ import {
   Alert,
 } from "@mui/material";
 
-export default function JuryAddRow() {
+export default function ManageJuryAddRow() {
   const [createNewJury] = useCreateNewJuryMutation();
 
   // field error message
@@ -53,12 +53,12 @@ export default function JuryAddRow() {
 
       try {
         await createNewJury({
-          refetchQueries: [{ query: GET_JURIES }],
           variables: {
             data: {
               name: nameRef.current ? nameRef.current.value : "",
             },
           },
+          refetchQueries: [{ query: GET_JURIES }],
         });
       } catch {
         setMessage("Le nom doit être unique");

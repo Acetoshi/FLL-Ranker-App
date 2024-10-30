@@ -16,3 +16,18 @@ export const CREATE_TEAM = gql`
     }
   }
 `;
+
+export const ADD_USER_TO_JURY = gql`
+  mutation AddUserToJury($data: AddUserToJuryInput!) {
+    addUserToJury(data: $data) {
+      id
+      name
+      users {
+        id
+        firstname
+        lastname
+        email
+      }
+    }
+  }
+`;

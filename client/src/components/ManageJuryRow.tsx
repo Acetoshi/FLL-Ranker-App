@@ -1,43 +1,57 @@
 import { useState } from "react";
-import { useGetUsersByRoleQuery } from "../types/graphql-types";
+import {
+  useGetUsersByRoleQuery,
+  // useGetJuryByIdQuery,
+  useAddUserToJuryMutation,
+  Jury,
+  User,
+} from "../types/graphql-types";
+//import { GET_JURY_BY_ID } from "../schemas/queries";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
+import Chip from "@mui/material/Chip";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
-import Chip from "@mui/material/Chip";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import { Jury } from "../types/graphql-types";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { Box, Button } from "@mui/material";
 
 export default function ManageJuryRow({ jury }: { jury: Jury }) {
   const {
     loading: loadingJuror,
-    // error: errorUserJuror,
+    error: errorJuror,
     data: dataUserJuror,
   } = useGetUsersByRoleQuery({
     variables: {
-      roleId: 2,
+      roleId: 2, // we only want juror role here
     },
   });
+  const [usedAddUserToJury] = useAddUserToJuryMutation();
 
-  const [jurorsIds, setJurorsIds] = useState<string[]>([]);
+  const [juror, setJuror] = useState<string>("");
+  const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
 
-  const handleChange = (event: SelectChangeEvent<typeof jurorsIds>) => {
-    const {
-      target: { value },
-    } = event;
-    setJurorsIds(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value,
-    );
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setJuror(event.target.value as string);
+    setBtnIsDisabled(false);
+  };
+
+  const handleSubmitJuror = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    usedAddUserToJury({
+      variables: {
+        data: {
+          userId: parseInt(juror),
+          juryId: jury.id,
+        },
+      },
+      //refetchQueries: [{ query: GET_JURY_BY_ID }],
+    });
   };
 
   const handleDelete = () => {
-    console.info("You clicked the delete icon.");
+    console.info("Delete.");
   };
 
   return (
@@ -51,7 +65,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
           <strong>{jury.name}</strong>
           <Stack direction="row" spacing={1}>
             {jury.users &&
-              jury.users.map((user) => (
+              jury.users.map((user: User) => (
                 <Chip
                   key={user.id}
                   label={`${user.firstname} ${user.lastname}`}
@@ -63,35 +77,42 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
         </Stack>
       </TableCell>
       <TableCell align="right">
-        <div>
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel id="demo-multiple-checkbox-label">
-              {loadingJuror ? "Loading..." : "Sélectionner les jurés"}
-            </InputLabel>
-            <Select
-              labelId="select-multiple-jurors-label"
-              id="select-multiple-jurors"
-              multiple
-              value={jurorsIds}
-              onChange={handleChange}
-              input={<OutlinedInput label="Juré" />}
-              renderValue={(selected) => selected.join(", ")}
-              // MenuProps={MenuProps}
+        <Box
+          component="form"
+          onSubmit={handleSubmitJuror}
+          sx={{ maxWidth: 400, mx: "auto", p: 2 }}
+        >
+          <Stack direction="row" spacing={1}>
+            <FormControl
+              fullWidth
+              sx={{ m: 1, minWidth: 120 }}
+              size="small"
+              variant="standard"
             >
-              {dataUserJuror?.getUsersByRole &&
-                dataUserJuror?.getUsersByRole.map((juror) => (
-                  <MenuItem key={juror.id} value={juror.id}>
-                    <Checkbox
-                      checked={jurorsIds.includes(juror.id.toString())}
-                    />
-                    <ListItemText
-                      primary={`${juror.firstname} ${juror.lastname}`}
-                    />
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-        </div>
+              <InputLabel id="add-juror-input">Ajouter un juré</InputLabel>
+              {errorJuror && <p>Erreur chargement des jurés.</p>}
+              <Select
+                labelId="add-juror-select-label"
+                id="add-juror-select"
+                value={juror}
+                label="Ajouter un juré"
+                name="juror"
+                onChange={handleSelectChange}
+              >
+                {!loadingJuror &&
+                  dataUserJuror?.getUsersByRole &&
+                  dataUserJuror.getUsersByRole.map((ju) => (
+                    <MenuItem key={ju.id} value={ju.id}>
+                      {ju.firstname} {ju.lastname}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <Button disabled={btnIsDisabled} type="submit">
+              Ajouter
+            </Button>
+          </Stack>
+        </Box>
       </TableCell>
     </TableRow>
   );

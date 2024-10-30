@@ -17,6 +17,11 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AddUserToJuryInput = {
+  juryId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
 export type CreateJuryInput = {
   name: Scalars['String']['input'];
 };
@@ -41,10 +46,16 @@ export type Jury = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addUserToJury: Jury;
   create: Team;
   createNewJury: Jury;
   createNewRole: Role;
   createNewUser: User;
+};
+
+
+export type MutationAddUserToJuryArgs = {
+  data: AddUserToJuryInput;
 };
 
 
@@ -73,9 +84,16 @@ export type Query = {
   getAllJuries: Array<Jury>;
   getAllRoles: Array<Role>;
   getAllUsers: Array<User>;
+  getJuryById: Jury;
   getRoleById: Role;
   getUsersByRole: Array<User>;
   getUsersOfJury: Array<Jury>;
+  getlUserById: User;
+};
+
+
+export type QueryGetJuryByIdArgs = {
+  juryId: Scalars['Float']['input'];
 };
 
 
@@ -91,6 +109,11 @@ export type QueryGetUsersByRoleArgs = {
 
 export type QueryGetUsersOfJuryArgs = {
   juryId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetlUserByIdArgs = {
+  userId: Scalars['Float']['input'];
 };
 
 export type Role = {
@@ -138,10 +161,24 @@ export type CreateTeamMutationVariables = Exact<{
 
 export type CreateTeamMutation = { __typename?: 'Mutation', create: { __typename?: 'Team', contact: string, location: string, name: string } };
 
+export type AddUserToJuryMutationVariables = Exact<{
+  data: AddUserToJuryInput;
+}>;
+
+
+export type AddUserToJuryMutation = { __typename?: 'Mutation', addUserToJury: { __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, firstname: string, lastname: string, email: string }> } };
+
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllJuriesQuery = { __typename?: 'Query', getAllJuries: Array<{ __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, email: string, firstname: string, lastname: string }> }> };
+
+export type GetJuryByIdQueryVariables = Exact<{
+  juryId: Scalars['Float']['input'];
+}>;
+
+
+export type GetJuryByIdQuery = { __typename?: 'Query', getJuryById: { __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, firstname: string, lastname: string, email: string }> } };
 
 export type GetAllTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -231,6 +268,46 @@ export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
 export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
+export const AddUserToJuryDocument = gql`
+    mutation AddUserToJury($data: AddUserToJuryInput!) {
+  addUserToJury(data: $data) {
+    id
+    name
+    users {
+      id
+      firstname
+      lastname
+      email
+    }
+  }
+}
+    `;
+export type AddUserToJuryMutationFn = Apollo.MutationFunction<AddUserToJuryMutation, AddUserToJuryMutationVariables>;
+
+/**
+ * __useAddUserToJuryMutation__
+ *
+ * To run a mutation, you first call `useAddUserToJuryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToJuryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToJuryMutation, { data, loading, error }] = useAddUserToJuryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddUserToJuryMutation(baseOptions?: Apollo.MutationHookOptions<AddUserToJuryMutation, AddUserToJuryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserToJuryMutation, AddUserToJuryMutationVariables>(AddUserToJuryDocument, options);
+      }
+export type AddUserToJuryMutationHookResult = ReturnType<typeof useAddUserToJuryMutation>;
+export type AddUserToJuryMutationResult = Apollo.MutationResult<AddUserToJuryMutation>;
+export type AddUserToJuryMutationOptions = Apollo.BaseMutationOptions<AddUserToJuryMutation, AddUserToJuryMutationVariables>;
 export const GetAllJuriesDocument = gql`
     query GetAllJuries {
   getAllJuries {
@@ -277,6 +354,53 @@ export type GetAllJuriesQueryHookResult = ReturnType<typeof useGetAllJuriesQuery
 export type GetAllJuriesLazyQueryHookResult = ReturnType<typeof useGetAllJuriesLazyQuery>;
 export type GetAllJuriesSuspenseQueryHookResult = ReturnType<typeof useGetAllJuriesSuspenseQuery>;
 export type GetAllJuriesQueryResult = Apollo.QueryResult<GetAllJuriesQuery, GetAllJuriesQueryVariables>;
+export const GetJuryByIdDocument = gql`
+    query GetJuryById($juryId: Float!) {
+  getJuryById(juryId: $juryId) {
+    id
+    name
+    users {
+      id
+      firstname
+      lastname
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetJuryByIdQuery__
+ *
+ * To run a query within a React component, call `useGetJuryByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetJuryByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetJuryByIdQuery({
+ *   variables: {
+ *      juryId: // value for 'juryId'
+ *   },
+ * });
+ */
+export function useGetJuryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetJuryByIdQuery, GetJuryByIdQueryVariables> & ({ variables: GetJuryByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetJuryByIdQuery, GetJuryByIdQueryVariables>(GetJuryByIdDocument, options);
+      }
+export function useGetJuryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetJuryByIdQuery, GetJuryByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetJuryByIdQuery, GetJuryByIdQueryVariables>(GetJuryByIdDocument, options);
+        }
+export function useGetJuryByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetJuryByIdQuery, GetJuryByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetJuryByIdQuery, GetJuryByIdQueryVariables>(GetJuryByIdDocument, options);
+        }
+export type GetJuryByIdQueryHookResult = ReturnType<typeof useGetJuryByIdQuery>;
+export type GetJuryByIdLazyQueryHookResult = ReturnType<typeof useGetJuryByIdLazyQuery>;
+export type GetJuryByIdSuspenseQueryHookResult = ReturnType<typeof useGetJuryByIdSuspenseQuery>;
+export type GetJuryByIdQueryResult = Apollo.QueryResult<GetJuryByIdQuery, GetJuryByIdQueryVariables>;
 export const GetAllTeamsDocument = gql`
     query GetAllTeams {
   allTeams {

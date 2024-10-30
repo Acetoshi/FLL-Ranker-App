@@ -15,6 +15,21 @@ export const GET_JURIES = gql`
   }
 `;
 
+export const GET_JURY_BY_ID = gql`
+  query GetJuryById($juryId: Float!) {
+    getJuryById(juryId: $juryId) {
+      id
+      name
+      users {
+        id
+        firstname
+        lastname
+        email
+      }
+    }
+  }
+`;
+
 export const GET_ALL_TEAMS = gql`
   query GetAllTeams {
     allTeams {
