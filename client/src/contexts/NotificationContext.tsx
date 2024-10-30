@@ -1,44 +1,51 @@
-import { createContext, useContext, useState } from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import {
+  createContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  ReactNode,
+} from "react";
+import { Snackbar, Alert } from "@mui/material";
 import { Notification } from "../types/types";
 
-const NotificationContext = createContext();
 
-export const NotificationProvider = ({ children }) => {
+interface NotificationContextType {
+  value : Dispatch<SetStateAction<Notification>> | null
+}
 
-    // used for UI feedback
-    const [notification,setNotification] = useState<Notification>({
-      open: false,
-      message: "",
-      severity: "error",
-    });
+const NotificationContext = createContext<NotificationContextType>({value :null});
 
-    const handleClose = () => {
-      setNotification({ ...notification, open: false });
-    };
-  
+export const NotificationProvider = ({ children }: { children: ReactNode }) => {
+
+  const [notification, setNotification] = useState<Notification>({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+
+  const handleClose = () => {
+    setNotification({ ...notification, open: false });
+  };
 
   return (
     <NotificationContext.Provider value={setNotification}>
       {children}
       <Snackbar
-          open={notification.open}
-          autoHideDuration={6000}
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
           onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          severity={notification.severity}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleClose}
-            severity={notification.severity}
-            sx={{ width: "100%" }}
-          >
-            {notification.message}
-          </Alert>
-        </Snackbar>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </NotificationContext.Provider>
   );
 };
 
-export const useNotification = () => {
-  return useContext(NotificationContext);
-};
+export { NotificationContext };

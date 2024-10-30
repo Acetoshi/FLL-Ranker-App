@@ -8,7 +8,7 @@ export type Mode = "edit" | "consult" | "create";
 export type Notification = {
   open: boolean;
   message: string;
-  severity: "error" | "success" | "warning";
+  severity: 'success' | 'info' | 'warning' | 'error';
 };
 
 export type BooleanMap = {
