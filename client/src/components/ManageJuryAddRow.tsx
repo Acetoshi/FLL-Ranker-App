@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useCreateNewJuryMutation } from "../types/graphql-types";
-import { GET_JURIES } from "../schemas/queries";
+import {
+  useCreateNewJuryMutation,
+  useGetAllJuriesQuery,
+} from "../types/graphql-types";
 import {
   TableRow,
   TableCell,
@@ -11,7 +13,13 @@ import {
   Alert,
 } from "@mui/material";
 
-export default function JuryAddRow() {
+type refetchType = Promise<typeof useGetAllJuriesQuery>;
+
+export default function ManageJuryAddRow({
+  refetch,
+}: {
+  refetch: refetchType;
+}) {
   const [createNewJury] = useCreateNewJuryMutation();
 
   // field error message
@@ -53,13 +61,13 @@ export default function JuryAddRow() {
 
       try {
         await createNewJury({
-          refetchQueries: [{ query: GET_JURIES }],
           variables: {
             data: {
               name: nameRef.current ? nameRef.current.value : "",
             },
           },
         });
+        (await refetch)();
       } catch {
         setMessage("Le nom doit être unique");
         setOpenAlert(true);
@@ -79,7 +87,7 @@ export default function JuryAddRow() {
           <TextField
             inputRef={nameRef}
             required
-            label="name"
+            label="Nom"
             variant="outlined"
             fullWidth
             onChange={handleInputChange}

@@ -1,0 +1,10 @@
+[
+  { "userId": 1, "juryId": 1 },
+  { "userId": 2, "juryId": 1 },
+  { "userId": 2, "juryId": 8 },
+  { "userId": 3, "juryId": 1 },
+  { "userId": 10, "juryId": 3 },
+  { "userId": 12, "juryId": 3 },
+  { "userId": 14, "juryId": 4 },
+  { "userId": 20, "juryId": 7 }
+]
