@@ -1,13 +1,16 @@
 import { useState, useRef, RefObject } from "react";
-import { TableRow, TableCell, TextField, Stack } from "@mui/material";
+import { TableRow, TableCell, Stack } from "@mui/material";
 import BtnCRUD from "./BtnCRUD";
-import { BooleanMap, Mode, TeamRowProps } from "../types/types";
+import { BooleanMap, Mode, RefMap, TeamRowProps } from "../types/types";
 import { useTeamsOperations } from "../services/teams";
-
+import { useNotification } from "../hooks/useNotification";
+import EditableTextCell from "./EditableTextCell";
 export default function TeamRow({ mode, team }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
-  const { handleDelete, handleAdd, handleEdit } = useTeamsOperations();
+  // used to give feedback to the user
+  const { notifySuccess, notifyError } = useNotification();
+  const { handleAdd, handleEdit, handleDelete } = useTeamsOperations();
 
   // used to keep track of input errors
   const [inputError, setInputError] = useState<BooleanMap>({
@@ -17,7 +20,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
   });
 
   // used instead of states to avoid multiple re-renders when typing
-  const teamRef = {
+  const teamRef: RefMap = {
     name: useRef<HTMLInputElement>(null),
     contact: useRef<HTMLInputElement>(null),
     location: useRef<HTMLInputElement>(null),
@@ -36,111 +39,126 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
     setInputError((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
   };
 
+  const highlightName = () => {
+    setInputError((prevErrors) => ({ ...prevErrors, name: true }));
+  };
+
+  // This could be refactored with the correct iterator
+  const clearInputFields = (teamRef: RefMap) => {
+    if (teamRef.name.current) teamRef.name.current.value = "";
+    if (teamRef.contact.current) teamRef.contact.current.value = "";
+    if (teamRef.location.current) teamRef.location.current.value = "";
+  };
+
+  const submitEdition = async () => {
+    if (team) {
+      const { success, message } = await handleEdit(
+        teamRef,
+        team.id,
+        validateInput
+      );
+      if (success) {
+        notifySuccess("Modification enregistrée");
+        setDisplayMode("consult");
+      } else {
+        notifyError(message as string);
+        highlightName();
+      }
+    }
+  };
+
+  const submitDeletion = async () => {
+    if (team) {
+      const { success, message } = await handleDelete(team.id);
+      if (success) {
+        notifySuccess("équipe supprimée");
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const submitCreation = async () => {
+    const { success, message } = await handleAdd(teamRef, validateInput);
+    if (success) {
+      notifySuccess("équipe créée avec succès");
+      clearInputFields(teamRef);
+    } else {
+      notifyError(message);
+      highlightName();
+    }
+  };
+
+  const actionsMap = {
+    edit: (
+      <Stack direction="row" spacing={2} justifyContent="flex-end">
+        <BtnCRUD
+          type="save"
+          handleClick={submitEdition}
+          disabled={
+            inputError.name || inputError.contact || inputError.location
+          }
+        />
+        <BtnCRUD type="cancel" handleClick={() => setDisplayMode("consult")} />
+      </Stack>
+    ),
+    consult: (
+      <Stack direction="row" spacing={2} justifyContent="flex-end">
+        <BtnCRUD type="edit" handleClick={() => setDisplayMode("edit")} />
+        <BtnCRUD type="delete" handleClick={submitDeletion} />
+      </Stack>
+    ),
+    create: <BtnCRUD type="add" handleClick={submitCreation} />,
+  };
+
   return (
     <>
       <TableRow
-        key={"team to add"}
+        key={team ? team.id : "newTeamRow"}
         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
       >
-        <TableCell component="th" scope="row">
-          {(displayMode === "create" || displayMode === "edit") && (
-            <TextField
-              inputRef={teamRef.name}
-              label="nom"
-              variant={displayMode === "edit" ? "standard" : "outlined"}
-              defaultValue={displayMode === "edit" ? team.name : ""}
-              fullWidth
-              required
-              onChange={() => handleInputChange("name", teamRef.name)}
-              error={inputError.name}
-              helperText={
-                inputError.name
-                  ? "Entrez un nom unique de plus de 5 caractères"
-                  : ""
-              }
-            />
-          )}
-          {displayMode === "consult" && team.name}
-        </TableCell>
-        <TableCell>
-          {(displayMode === "create" || displayMode === "edit") && (
-            <TextField
-              inputRef={teamRef.contact}
-              label="contact"
-              variant={displayMode === "edit" ? "standard" : "outlined"}
-              defaultValue={displayMode === "edit" ? team.contact : ""}
-              fullWidth
-              required
-              onChange={() => handleInputChange("contact", teamRef.contact)}
-              error={inputError.contact}
-              helperText={
-                inputError.contact
-                  ? "Entrez un contact de plus de 5 caractères"
-                  : ""
-              }
-            />
-          )}
-          {displayMode === "consult" && team.contact}
-        </TableCell>
-        <TableCell>
-          {(displayMode === "create" || displayMode === "edit") && (
-            <TextField
-              inputRef={teamRef.location}
-              label="provenance"
-              variant={displayMode === "edit" ? "standard" : "outlined"}
-              defaultValue={displayMode === "edit" ? team.location : ""}
-              fullWidth
-              required
-              onChange={() => handleInputChange("location", teamRef.location)}
-              error={inputError.location}
-              helperText={
-                inputError.location
-                  ? "Entrez une provenance de plus de 5 caractères"
-                  : ""
-              }
-            />
-          )}
-          {displayMode === "consult" && team.location}
-        </TableCell>
-        <TableCell align="right">
-          {displayMode === "create" && (
-            <BtnCRUD
-              type="add"
-              handleClick={() =>
-                handleAdd(teamRef, setInputError, validateInput)
-              }
-              disabled={
-                inputError.name || inputError.contact || inputError.location
-              }
-            />
-          )}
-          {displayMode === "edit" && (
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <BtnCRUD
-                type="save"
-                handleClick={() =>
-                  handleEdit(
-                    teamRef,
-                    team.id,
-                    setDisplayMode,
-                    setInputError,
-                    validateInput
-                  )
-                }
-                disabled={
-                  inputError.name || inputError.contact || inputError.location
-                }
-              />
-              <BtnCRUD type="cancel" handleClick={() => setDisplayMode("consult")} />
-            </Stack>
-          )}
-          {displayMode === "consult" && (
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-               <BtnCRUD type="edit" handleClick={() => setDisplayMode("edit")} />
-              <BtnCRUD type="delete" handleClick={() => handleDelete(team.id)} />
-            </Stack>
-          )}
-        </TableCell>
+        <EditableTextCell
+          component="th"
+          scope="row"
+          displayMode={displayMode}
+          ref={teamRef.name}
+          label="nom"
+          defaultValue={team && team.name}
+          onChange={() => handleInputChange("name", teamRef.name)}
+          error={inputError.name}
+          helperText={
+            inputError.name
+              ? "Entrez un nom unique de plus de 5 caractères"
+              : ""
+          }
+        />
+        <EditableTextCell
+          displayMode={displayMode}
+          ref={teamRef.contact}
+          label="contact"
+          defaultValue={team && team.contact}
+          onChange={() => handleInputChange("contact", teamRef.contact)}
+          error={inputError.contact}
+          helperText={
+            inputError.contact
+              ? "Entrez un contact de plus de 5 caractères"
+              : ""
+          }
+        />
+        <EditableTextCell
+          displayMode={displayMode}
+          ref={teamRef.location}
+          label="provenance"
+          defaultValue={team && team.location}
+          onChange={() => handleInputChange("location", teamRef.location)}
+          error={inputError.location}
+          helperText={
+            inputError.location
+              ? "Entrez une provenance de plus de 5 caractères"
+              : ""
+          }
+        />
+        <TableCell align="right">{actionsMap[displayMode]}</TableCell>
       </TableRow>
     </>
   );
