@@ -41,3 +41,12 @@ export const EDIT_TEAM = gql`
     }
   }
 `;
+
+export const DELETE_TEAM = gql`
+  mutation deleteTeam($team: TeamIdInput!) {
+    deleteTeam(team: $team) {
+      success
+      message
+    }
+  }
+`;

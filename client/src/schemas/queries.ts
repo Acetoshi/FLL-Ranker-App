@@ -44,3 +44,14 @@ export const GET_USERS_BY_ROLE = gql`
     }
   }
 `;
+
+export const GET_COMPETITIONS = gql`
+  query GetAllCompetitions {
+    getAllCompetitions {
+      id
+      name
+      location
+      date
+    }
+  }
+`;

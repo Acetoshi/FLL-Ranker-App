@@ -2,9 +2,12 @@ import { dataSource } from "../db/data-source";
 import { Role } from "../role/role.entity";
 import { User } from "../user/user.entity";
 import { Jury } from "../jury/jury.entity";
+import { Competition } from "../competition/competition.entity";
 import roles from "../seed_data/roles.json";
 import users from "../seed_data/users.json";
 import juries from "../seed_data/juries.json";
+import competitions from "../seed_data/competitions.json";
+
 import user_juries_jury from "../seed_data/user_juries_jury.json";
 
 (async () => {
@@ -23,9 +26,23 @@ import user_juries_jury from "../seed_data/user_juries_jury.json";
     await queryRunner.query("DELETE FROM user");
     await queryRunner.query("DELETE FROM jury");
     await queryRunner.query("DELETE FROM role");
+    await queryRunner.query("DELETE FROM competition");
 
-    //init sequences
+    // init sequences
     await queryRunner.query("DELETE FROM sqlite_sequence WHERE name='role'");
+
+    // competitions
+    const seedCompetitions = await Promise.all(
+      competitions.map(async (el) => {
+        const competition = new Competition();
+        competition.name = el.name;
+        competition.location = el.location;
+        competition.date = el.date;
+
+        return await competition.save();
+      })
+    );
+    console.info(seedCompetitions);
 
     // roles
     const seedRoles = await Promise.all(

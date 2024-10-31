@@ -1,6 +1,8 @@
 import { useState, useRef, RefObject } from "react";
 import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
 import BtnTeam from "./BtnTeam";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from '@mui/icons-material/Close';
 import { Mode, TeamRowProps } from "../types/types";
 
 export default function TeamRow({ mode, team }: TeamRowProps) {
@@ -131,6 +133,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
               <Button
                 variant="outlined"
                 color="error"
+                startIcon={<CloseIcon />}
                 onClick={() => setDisplayMode("consult")}
               >
                 ANNULER
@@ -138,9 +141,28 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
             </Stack>
           )}
           {displayMode === "consult" && (
-            <Button variant="outlined" onClick={() => setDisplayMode("edit")}>
-              EDITER
-            </Button>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button
+                variant="outlined"
+                startIcon={<EditIcon />}
+                onClick={() => setDisplayMode("edit")}
+              >
+                EDITER
+              </Button>
+              <BtnTeam
+                type="delete"
+                teamId={team.id}
+                inputRefs={{
+                  name: newTeamNameRef,
+                  contact: newTeamContactRef,
+                  location: newTeamLocationRef,
+                }}
+                inputError={inputError}
+                setInputError={setInputError}
+                validateInput={validateInput}
+                setDisplayMode={setDisplayMode}
+              />
+            </Stack>
           )}
         </TableCell>
       </TableRow>

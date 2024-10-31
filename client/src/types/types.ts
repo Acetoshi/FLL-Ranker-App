@@ -8,7 +8,7 @@ export type Mode = "edit" | "consult" | "create";
 export type Notification = {
   open: boolean;
   message: string;
-  severity: 'success' | 'info' | 'warning' | 'error';
+  severity: "success" | "info" | "warning" | "error";
 };
 
 export type BooleanMap = {
@@ -25,7 +25,7 @@ export type TeamRowProps = {
 };
 
 export type BtnTeamProps = {
-  type: "add" | "edit";
+  type: "add" | "edit" | "delete";
   teamId?: number;
   inputError: BooleanMap;
   setInputError: Dispatch<SetStateAction<BooleanMap>>;
