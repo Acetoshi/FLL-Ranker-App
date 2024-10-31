@@ -37,7 +37,7 @@ export default function BtnCRUD({
     cancel: <CloseIcon />,
   };
 
-  const variantMap: { [key: string]: "contained"|"outlined" } = {
+  const variantMap: { [key: string]: "contained" | "outlined" } = {
     edit: "outlined",
     delete: "outlined",
     add: "contained",

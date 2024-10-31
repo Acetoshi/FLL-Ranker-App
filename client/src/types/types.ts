@@ -1,9 +1,5 @@
 import { RefObject } from "react";
-import {
-  Exact,
-  GetAllTeamsQuery,
-  Team
-} from "./graphql-types";
+import { Exact, GetAllTeamsQuery, Team } from "./graphql-types";
 import { ApolloQueryResult } from "@apollo/client";
 
 // used to change display mode in tables
