@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   useGetUsersByRoleQuery,
   useAddUserToJuryMutation,
+  useRemoveUserFromJuryMutation,
   Jury,
   User,
 } from "../types/graphql-types";
@@ -27,6 +28,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
     },
   });
   const [addUserToJury] = useAddUserToJuryMutation();
+  const [removeUserFromJury] = useRemoveUserFromJuryMutation();
 
   const [juror, setJuror] = useState<string>("");
   const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
@@ -52,10 +54,18 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
     setBtnIsDisabled(true);
   };
 
-  // rien à faire dans cet US pour l'instant,
-  // mais le composant Chip a besoin du onDelete={handleDelete} pour être affiché
-  const handleDelete = () => {
-    console.info("Delete.");
+  const handleDelete = async (userId: number) => {
+    const theJuror = await removeUserFromJury({
+      variables: {
+        data: {
+          userId: userId,
+          juryId: jury.id,
+        },
+      },
+    });
+    setJurors((prev) =>
+      prev.filter((user) => user.id !== theJuror.data?.removeUserFromJury.id),
+    );
   };
 
   return (
@@ -74,7 +84,8 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
                   key={user.id}
                   label={`${user.firstname} ${user.lastname}`}
                   variant="outlined"
-                  onDelete={handleDelete}
+                  onDelete={() => handleDelete(user.id)}
+                  color="info"
                 />
               ))}
           </Stack>
