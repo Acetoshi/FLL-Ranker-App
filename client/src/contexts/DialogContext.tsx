@@ -6,57 +6,81 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import {
-  createContext,
-  useState,
-  ReactNode,
-} from "react";
+import { createContext, useState, ReactNode } from "react";
 
-const DialogContext = createContext();
+interface DialogContextType {
+  askUser: (question: string, informations: string) => Promise<boolean>;
+}
+
+const DialogContext = createContext<DialogContextType>();
 
 export default function DialogProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const [dialogContent, setDialogContent] = useState({
+    title: "Question ?",
+    text: "Explications",
+  });
+
+  const [resolveUserDecision, setResolveUserDecision] = useState<
+    (() => void) | null
+  >(null);
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const askUser = async() => {
-    const userAnswear=null
+  const handleCancel = () => {
+    setOpen(false);
+    if (resolveUserDecision) {
+      resolveUserDecision(false);
+    }
+  };
+
+  const handleConfirm = () => {
+    setOpen(false);
+    if (resolveUserDecision) {
+      resolveUserDecision(true);
+    }
+  };
+
+  const askUser = (
+    question: string,
+    informations: string
+  ): Promise<boolean> => {
     setOpen(true);
-    //Await user interaction
-    return userAnswear
+    setDialogContent({ title: question, text: informations });
+    return new Promise((resolve) => {
+      setResolveUserDecision(() => resolve);
+    });
   };
 
   return (
-    <DialogContext.Provider value={askUser}>
+    <DialogContext.Provider value={{ askUser }}>
       {children}
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{dialogContent.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            {dialogContent.text}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
+          <Button variant="outlined" color="error" onClick={handleCancel}>
+            ANNULER
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleConfirm}
+            autoFocus
+          >
+            VALIDER
           </Button>
         </DialogActions>
       </Dialog>
