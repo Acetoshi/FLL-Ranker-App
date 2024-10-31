@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, RefObject } from "react";
 import { GET_ALL_TEAMS } from "../schemas/queries";
 import {
+  TeamInput,
   TeamIdInput,
   useCreateTeamMutation,
   useDeleteTeamMutation,
@@ -8,7 +9,7 @@ import {
   DeleteTeamMutation,
 } from "../types/graphql-types";
 import { useNotification } from "../hooks/useNotification";
-import { RefMap, BooleanMap } from "../types/types";
+import { RefMap, BooleanMap, Mode } from "../types/types";
 
 export const useTeamsOperations = () => {
   // mutations used for CRUD operations
@@ -37,6 +38,16 @@ export const useTeamsOperations = () => {
     return isValidName && isValidContact && isValidLocation;
   };
 
+  const createTeamInput = (teamRef: RefMap, id?: number) => {
+    const team: TeamInput = {
+      id: id || null,
+      name: teamRef.name.current ? teamRef.name.current.value : "",
+      contact: teamRef.contact.current ? teamRef.contact.current.value : "",
+      location: teamRef.location.current ? teamRef.location.current.value : "",
+    };
+    return team;
+  };
+
   const handleDelete = async (targetId: number) => {
     const targetTeam: TeamIdInput = {
       id: targetId,
@@ -59,45 +70,41 @@ export const useTeamsOperations = () => {
 
   const handleAdd = async (
     teamRef: RefMap,
-    setInputError: Dispatch<SetStateAction<BooleanMap>>
+    setInputError: Dispatch<SetStateAction<BooleanMap>>,
+    validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
   ) => {
-    try {
-      await addTeam({
-        refetchQueries: [{ query: GET_ALL_TEAMS }],
-        variables: { team: newTeam },
-      });
-      if (teamRef.name.current) teamRef.name.current.value = "";
-      if (teamRef.contact.current) teamRef.contact.current.value = "";
-      if (teamRef.location.current) teamRef.location.current.value = "";
-    } catch {
-      setNotification({
-        open: true,
-        message: "Erreur dans l'ajout de l'équipe, le nom est-il unique ?",
-        severity: "error",
-      });
-      setInputError((prevErrors) => ({ ...prevErrors, name: true }));
+    if (handleTeamInputValidation(teamRef, validateInput, setInputError)) {
+      try {
+        await addTeam({
+          refetchQueries: [{ query: GET_ALL_TEAMS }],
+          variables: { team: createTeamInput(teamRef) },
+        });
+        if (teamRef.name.current) teamRef.name.current.value = "";
+        if (teamRef.contact.current) teamRef.contact.current.value = "";
+        if (teamRef.location.current) teamRef.location.current.value = "";
+      } catch {
+        setNotification({
+          open: true,
+          message: "Erreur dans l'ajout de l'équipe, le nom est-il unique ?",
+          severity: "error",
+        });
+        setInputError((prevErrors) => ({ ...prevErrors, name: true }));
+      }
     }
   };
 
   const handleEdit = async (
     teamRef: RefMap,
-    setDisplayMode,
-    setInputError,
-    validateInput
+    id: number,
+    setDisplayMode: Dispatch<SetStateAction<Mode>>,
+    setInputError: Dispatch<SetStateAction<BooleanMap>>,
+    validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
   ) => {
-    if (
-      handleTeamInputValidation(
-        teamRef.name.current.value,
-        teamRef.contact.current.value,
-        teamRef.location.current.value,
-        validateInput,
-        setInputError
-      )
-    ) {
+    if (handleTeamInputValidation(teamRef, validateInput, setInputError)) {
       try {
         await editTeam({
           refetchQueries: [{ query: GET_ALL_TEAMS }],
-          variables: { team: { ...newTeam } },
+          variables: { team: createTeamInput(teamRef, id) },
         });
         setNotification({
           open: true,

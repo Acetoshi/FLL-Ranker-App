@@ -38,8 +38,6 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
     setInputError((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
   };
 
-
-
   return (
     <>
       <TableRow
@@ -108,14 +106,31 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         </TableCell>
         <TableCell align="right">
           {displayMode === "create" && (
-            <BtnCUD type="add" onClick={()=>handleAdd(teamRef,setInputError)} />
+            <BtnCUD
+              type="add"
+              handleClick={() =>
+                handleAdd(teamRef, setInputError, validateInput)
+              }
+              disabled={
+                inputError.name || inputError.contact || inputError.location
+              }
+            />
           )}
           {displayMode === "edit" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <BtnCUD
                 type="edit"
                 handleClick={() =>
-                  handleEdit(teamRef, setDisplayMode, setInputError, validateInput)
+                  handleEdit(
+                    teamRef,
+                    team.id,
+                    setDisplayMode,
+                    setInputError,
+                    validateInput
+                  )
+                }
+                disabled={
+                  inputError.name || inputError.contact || inputError.location
                 }
               />
 
@@ -138,7 +153,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
               >
                 EDITER
               </Button>
-              <BtnCUD type="delete" handleClick={handleDelete} />
+              <BtnCUD type="delete" handleClick={() => handleDelete(team.id)} />
             </Stack>
           )}
         </TableCell>
