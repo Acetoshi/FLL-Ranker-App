@@ -8,10 +8,13 @@ import {
   Paper,
   Typography,
   Box,
+  // TextField,
+  // Button,
 } from "@mui/material";
 import { useGetAllCompetitionsQuery } from "../types/graphql-types";
+import CompetitionAddRow from "../components/CompetitionAddRow";
 
-export default function TeamsManagement() {
+export default function CompetitionsManagement() {
   const { loading, error, data } = useGetAllCompetitionsQuery();
 
   if (loading) return <p>Loading...</p>;
@@ -36,9 +39,9 @@ export default function TeamsManagement() {
           <TableHead>
             <TableRow>
               <TableCell>Nom</TableCell>
-              <TableCell align="right">Lieu</TableCell>
-              <TableCell align="right">Date</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>Lieu</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -51,11 +54,16 @@ export default function TeamsManagement() {
                   <TableCell component="th" scope="row">
                     {competition.name}
                   </TableCell>
-                  <TableCell align="right">{competition.location}</TableCell>
-                  <TableCell align="right">{competition.date}</TableCell>
-                  <TableCell align="right"></TableCell>
+                  <TableCell>{competition.location}</TableCell>
+                  <TableCell>
+                    {new Date(Date.parse(competition.date)).toLocaleDateString(
+                      "fr-FR"
+                    )}
+                  </TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               ))}
+            <CompetitionAddRow />
           </TableBody>
         </Table>
       </TableContainer>
