@@ -17,6 +17,11 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AddUserToJuryInput = {
+  juryId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
 export type Competition = {
   __typename?: 'Competition';
   date: Scalars['String']['output'];
@@ -37,16 +42,23 @@ export type DeleteResponseStatus = {
 
 export type Jury = {
   __typename?: 'Jury';
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
+  users: Array<User>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addUserToJury: User;
   createNewJury: Jury;
   createTeam: Team;
   deleteTeam: DeleteResponseStatus;
   editTeam: Team;
+};
+
+
+export type MutationAddUserToJuryArgs = {
+  data: AddUserToJuryInput;
 };
 
 
@@ -74,6 +86,18 @@ export type Query = {
   allTeams: Array<Team>;
   getAllCompetitions: Array<Competition>;
   getAllJuries: Array<Jury>;
+  getUsersByRole: Array<User>;
+};
+
+
+export type QueryGetUsersByRoleArgs = {
+  roleId: Scalars['Float']['input'];
+};
+
+export type Role = {
+  __typename?: 'Role';
+  id: Scalars['Int']['output'];
+  label: Scalars['String']['output'];
 };
 
 export type Team = {
@@ -95,6 +119,17 @@ export type TeamInput = {
   name: Scalars['String']['input'];
 };
 
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  juries: Array<Jury>;
+  lastname: Scalars['String']['output'];
+  password: Scalars['String']['output'];
+  role: Role;
+};
+
 export type CreateNewJuryMutationVariables = Exact<{
   data: CreateJuryInput;
 }>;
@@ -108,6 +143,13 @@ export type CreateTeamMutationVariables = Exact<{
 
 
 export type CreateTeamMutation = { __typename?: 'Mutation', createTeam: { __typename?: 'Team', contact: string, location: string, name: string } };
+
+export type AddUserToJuryMutationVariables = Exact<{
+  data: AddUserToJuryInput;
+}>;
+
+
+export type AddUserToJuryMutation = { __typename?: 'Mutation', addUserToJury: { __typename?: 'User', id: number, firstname: string, lastname: string } };
 
 export type EditTeamMutationVariables = Exact<{
   team: TeamInput;
@@ -126,12 +168,19 @@ export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __type
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllJuriesQuery = { __typename?: 'Query', getAllJuries: Array<{ __typename?: 'Jury', id: string, name: string }> };
+export type GetAllJuriesQuery = { __typename?: 'Query', getAllJuries: Array<{ __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, email: string, firstname: string, lastname: string }> }> };
 
 export type GetAllTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllTeamsQuery = { __typename?: 'Query', allTeams: Array<{ __typename?: 'Team', id: number, location: string, name: string, contact: string }> };
+
+export type GetUsersByRoleQueryVariables = Exact<{
+  roleId: Scalars['Float']['input'];
+}>;
+
+
+export type GetUsersByRoleQuery = { __typename?: 'Query', getUsersByRole: Array<{ __typename?: 'User', id: number, firstname: string, lastname: string, email: string, role: { __typename?: 'Role', id: number, label: string }, juries: Array<{ __typename?: 'Jury', id: number, name: string }> }> };
 
 export type GetAllCompetitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -207,6 +256,41 @@ export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
 export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
+export const AddUserToJuryDocument = gql`
+    mutation AddUserToJury($data: AddUserToJuryInput!) {
+  addUserToJury(data: $data) {
+    id
+    firstname
+    lastname
+  }
+}
+    `;
+export type AddUserToJuryMutationFn = Apollo.MutationFunction<AddUserToJuryMutation, AddUserToJuryMutationVariables>;
+
+/**
+ * __useAddUserToJuryMutation__
+ *
+ * To run a mutation, you first call `useAddUserToJuryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToJuryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToJuryMutation, { data, loading, error }] = useAddUserToJuryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddUserToJuryMutation(baseOptions?: Apollo.MutationHookOptions<AddUserToJuryMutation, AddUserToJuryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserToJuryMutation, AddUserToJuryMutationVariables>(AddUserToJuryDocument, options);
+      }
+export type AddUserToJuryMutationHookResult = ReturnType<typeof useAddUserToJuryMutation>;
+export type AddUserToJuryMutationResult = Apollo.MutationResult<AddUserToJuryMutation>;
+export type AddUserToJuryMutationOptions = Apollo.BaseMutationOptions<AddUserToJuryMutation, AddUserToJuryMutationVariables>;
 export const EditTeamDocument = gql`
     mutation editTeam($team: TeamInput!) {
   editTeam(team: $team) {
@@ -282,6 +366,12 @@ export const GetAllJuriesDocument = gql`
   getAllJuries {
     id
     name
+    users {
+      id
+      email
+      firstname
+      lastname
+    }
   }
 }
     `;
@@ -359,6 +449,57 @@ export type GetAllTeamsQueryHookResult = ReturnType<typeof useGetAllTeamsQuery>;
 export type GetAllTeamsLazyQueryHookResult = ReturnType<typeof useGetAllTeamsLazyQuery>;
 export type GetAllTeamsSuspenseQueryHookResult = ReturnType<typeof useGetAllTeamsSuspenseQuery>;
 export type GetAllTeamsQueryResult = Apollo.QueryResult<GetAllTeamsQuery, GetAllTeamsQueryVariables>;
+export const GetUsersByRoleDocument = gql`
+    query GetUsersByRole($roleId: Float!) {
+  getUsersByRole(roleId: $roleId) {
+    id
+    firstname
+    lastname
+    email
+    role {
+      id
+      label
+    }
+    juries {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUsersByRoleQuery__
+ *
+ * To run a query within a React component, call `useGetUsersByRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersByRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersByRoleQuery({
+ *   variables: {
+ *      roleId: // value for 'roleId'
+ *   },
+ * });
+ */
+export function useGetUsersByRoleQuery(baseOptions: Apollo.QueryHookOptions<GetUsersByRoleQuery, GetUsersByRoleQueryVariables> & ({ variables: GetUsersByRoleQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>(GetUsersByRoleDocument, options);
+      }
+export function useGetUsersByRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>(GetUsersByRoleDocument, options);
+        }
+export function useGetUsersByRoleSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>(GetUsersByRoleDocument, options);
+        }
+export type GetUsersByRoleQueryHookResult = ReturnType<typeof useGetUsersByRoleQuery>;
+export type GetUsersByRoleLazyQueryHookResult = ReturnType<typeof useGetUsersByRoleLazyQuery>;
+export type GetUsersByRoleSuspenseQueryHookResult = ReturnType<typeof useGetUsersByRoleSuspenseQuery>;
+export type GetUsersByRoleQueryResult = Apollo.QueryResult<GetUsersByRoleQuery, GetUsersByRoleQueryVariables>;
 export const GetAllCompetitionsDocument = gql`
     query GetAllCompetitions {
   getAllCompetitions {

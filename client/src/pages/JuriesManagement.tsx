@@ -1,4 +1,6 @@
-import { useGetAllJuriesQuery } from "../types/graphql-types";
+import { useGetAllJuriesQuery, Jury } from "../types/graphql-types";
+import ManageJuryAddRow from "../components/ManageJuryAddRow";
+import ManageJuryRow from "../components/ManageJuryRow";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,10 +9,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography, Box } from "@mui/material";
-import JuryAddRow from "../components/JuryAddRow";
 
 export default function JuriesManagement() {
-  const { loading, error, data } = useGetAllJuriesQuery();
+  const { loading, error, data, refetch } = useGetAllJuriesQuery();
 
   if (loading) return <p>🥁 Loading...</p>;
   if (error) return <p>☠️ Error: {error.message}</p>;
@@ -34,25 +35,16 @@ export default function JuriesManagement() {
             <TableHead>
               <TableRow>
                 <TableCell align="left">#</TableCell>
-                <TableCell>Nom</TableCell>
+                <TableCell>Nom du jury</TableCell>
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data &&
                 data.getAllJuries.map((jury) => (
-                  <TableRow
-                    key={jury.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell align="left">{jury.id}</TableCell>
-                    <TableCell component="th" scope="row">
-                      {jury.name}
-                    </TableCell>
-                    <TableCell align="right"></TableCell>
-                  </TableRow>
+                  <ManageJuryRow key={jury.id} jury={jury as Jury} />
                 ))}
-              <JuryAddRow />
+              <ManageJuryAddRow refetch={refetch} />
             </TableBody>
           </Table>
         </TableContainer>
