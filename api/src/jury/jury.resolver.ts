@@ -77,7 +77,7 @@ export default class JuryResolver {
     }
   }
 
-  @Mutation(() => Jury)
+  @Mutation(() => User)
   async addUserToJury(@Arg("data") addUserToJury: AddUserToJuryInput) {
     try {
       const jury: Jury = await Jury.findOneOrFail({
@@ -89,10 +89,6 @@ export default class JuryResolver {
         },
       });
 
-      // user has already been assigned to the jury
-      if (jury.users.find((user) => user.id === addUserToJury.userId))
-        return jury;
-
       const theUser: User = await User.findOneOrFail({
         where: {
           id: addUserToJury.userId,
@@ -102,10 +98,14 @@ export default class JuryResolver {
         },
       });
 
+      // user has already been assigned to the jury
+      if (jury.users.find((user) => user.id === addUserToJury.userId))
+        return theUser;
+
       theUser.juries.push(jury);
       await theUser.save();
 
-      return jury;
+      return theUser;
     } catch (error) {
       console.error(error);
       throw new Error("Failed to bind a user to a jury");

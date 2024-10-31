@@ -13,6 +13,8 @@ import {
   Alert,
 } from "@mui/material";
 
+type refetchType = Promise<typeof useGetAllJuriesQuery>;
+
 export default function ManageJuryAddRow({
   refetch,
 }: {
@@ -64,8 +66,8 @@ export default function ManageJuryAddRow({
               name: nameRef.current ? nameRef.current.value : "",
             },
           },
-          refetchQueries: refetch,
         });
+        (await refetch)();
       } catch {
         setMessage("Le nom doit être unique");
         setOpenAlert(true);

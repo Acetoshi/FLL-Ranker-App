@@ -5,7 +5,6 @@ import {
   Jury,
   User,
 } from "../types/graphql-types";
-import { GET_JURIES } from "../schemas/queries";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";
@@ -17,13 +16,14 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Box, Button } from "@mui/material";
 
 export default function ManageJuryRow({ jury }: { jury: Jury }) {
+  const [jurors, setJurors] = useState<User[]>(jury.users);
   const {
     loading: loadingJuror,
     error: errorJuror,
     data: dataUserJuror,
   } = useGetUsersByRoleQuery({
     variables: {
-      roleId: 2, // we only want juror role here
+      roleId: 2, // we want only juror role here
     },
   });
   const [addUserToJury] = useAddUserToJuryMutation();
@@ -38,15 +38,16 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
 
   const handleSubmitJuror = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await addUserToJury({
+    const theJuror = await addUserToJury({
       variables: {
         data: {
           userId: parseInt(juror),
           juryId: jury.id,
         },
       },
-      refetchQueries: [{ query: GET_JURIES }],
     });
+
+    setJurors((prev) => [...prev, theJuror.data?.addUserToJury as User]);
     setJuror("");
     setBtnIsDisabled(true);
   };
@@ -67,8 +68,8 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
         <Stack spacing={1}>
           <strong>{jury.name}</strong>
           <Stack direction="row" spacing={1}>
-            {jury.users &&
-              jury.users.map((user: User) => (
+            {jurors &&
+              jurors.map((user: User) => (
                 <Chip
                   key={user.id}
                   label={`${user.firstname} ${user.lastname}`}
