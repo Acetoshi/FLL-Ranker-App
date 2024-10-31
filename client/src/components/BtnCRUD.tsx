@@ -8,7 +8,7 @@ import { BtnCRUDProps } from "../types/types";
 
 // This button is used to handle CRUD actions
 // it has 5 display modes, try them out with the type prop
-export default function BtnCUD({
+export default function BtnCRUD({
   type,
   disabled = false,
   handleClick,

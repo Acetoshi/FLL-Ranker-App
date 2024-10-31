@@ -1,6 +1,6 @@
 import { useState, useRef, RefObject } from "react";
 import { TableRow, TableCell, TextField, Stack } from "@mui/material";
-import BtnCUD from "./BtnCRUD";
+import BtnCRUD from "./BtnCRUD";
 import { BooleanMap, Mode, TeamRowProps } from "../types/types";
 import { useTeamsOperations } from "../services/teams";
 
@@ -104,7 +104,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         </TableCell>
         <TableCell align="right">
           {displayMode === "create" && (
-            <BtnCUD
+            <BtnCRUD
               type="add"
               handleClick={() =>
                 handleAdd(teamRef, setInputError, validateInput)
@@ -116,7 +116,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
           )}
           {displayMode === "edit" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <BtnCUD
+              <BtnCRUD
                 type="save"
                 handleClick={() =>
                   handleEdit(
@@ -131,13 +131,13 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
                   inputError.name || inputError.contact || inputError.location
                 }
               />
-              <BtnCUD type="cancel" handleClick={() => setDisplayMode("consult")} />
+              <BtnCRUD type="cancel" handleClick={() => setDisplayMode("consult")} />
             </Stack>
           )}
           {displayMode === "consult" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-               <BtnCUD type="edit" handleClick={() => setDisplayMode("edit")} />
-              <BtnCUD type="delete" handleClick={() => handleDelete(team.id)} />
+               <BtnCRUD type="edit" handleClick={() => setDisplayMode("edit")} />
+              <BtnCRUD type="delete" handleClick={() => handleDelete(team.id)} />
             </Stack>
           )}
         </TableCell>
