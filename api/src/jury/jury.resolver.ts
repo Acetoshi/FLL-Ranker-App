@@ -23,6 +23,17 @@ class AddUserToJuryInput {
   userId: number;
 }
 
+@InputType()
+class RemoveUserFromJuryInput {
+  @Field()
+  @IsNotEmpty()
+  juryId: number;
+
+  @Field()
+  @IsNotEmpty()
+  userId: number;
+}
+
 @Resolver(Jury)
 export default class JuryResolver {
   @Query(() => [Jury])
@@ -110,5 +121,16 @@ export default class JuryResolver {
       console.error(error);
       throw new Error("Failed to bind a user to a jury");
     }
+  }
+
+  @Mutation(() => User)
+  async removeUserFromJury(
+    @Arg("data") removeUserFromJury: RemoveUserFromJuryInput
+  ) {
+    const user = await User.findOneOrFail({
+      where: {
+        id: removeUserFromJury.userId,
+      },
+    });
   }
 }
