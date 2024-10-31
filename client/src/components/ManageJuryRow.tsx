@@ -30,11 +30,24 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
   const [addUserToJury] = useAddUserToJuryMutation();
   const [removeUserFromJury] = useRemoveUserFromJuryMutation();
 
+  // const [usersSelect, setUsersSelect] = useState([]);
+  // const [usersSelect, setUsersSelect] = useState<
+  //   typeof useGetUsersByRoleQuery | undefined
+  // >();
+
+  // useEffect(() => {
+  //   setUsersSelect(dataUserJuror.getUsersByRole as User[]);
+  //   console.log(dataUserJuror.getUsersByRole);
+  // }, []);
+
   const [juror, setJuror] = useState<string>("");
   const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     setJuror(event.target.value as string);
+    // setUsersSelect((prev) =>
+    //   prev.filter((user) => user.id !== event.target.value),
+    // );
     setBtnIsDisabled(false);
   };
 
@@ -77,7 +90,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
       <TableCell component="th" scope="row">
         <Stack spacing={1}>
           <strong>{jury.name}</strong>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {jurors &&
               jurors.map((user: User) => (
                 <Chip
@@ -98,25 +111,24 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
           sx={{ maxWidth: 400, mx: "auto", p: 2 }}
         >
           <Stack direction="row" spacing={1}>
-            <FormControl
-              fullWidth
-              sx={{ m: 1, minWidth: 120 }}
-              size="small"
-              variant="standard"
-            >
-              <InputLabel id="add-juror-input">Ajouter un juré</InputLabel>
-              {errorJuror && <p>Erreur chargement des jurés.</p>}
-              <Select
-                labelId="add-juror-select-label"
-                id="add-juror-select"
-                value={juror}
-                label="Ajouter un juré"
-                name="juror"
-                onChange={handleSelectChange}
+            {!loadingJuror && dataUserJuror?.getUsersByRole && (
+              <FormControl
+                fullWidth
+                sx={{ m: 1, minWidth: 120 }}
+                size="small"
+                variant="standard"
               >
-                {!loadingJuror &&
-                  dataUserJuror?.getUsersByRole &&
-                  dataUserJuror.getUsersByRole.map((ju) => {
+                <InputLabel id="add-juror-input">Ajouter un juré</InputLabel>
+                {errorJuror && <p>Erreur chargement des jurés.</p>}
+                <Select
+                  labelId="add-juror-select-label"
+                  id="add-juror-select"
+                  value={juror}
+                  label="Ajouter un juré"
+                  name="juror"
+                  onChange={handleSelectChange}
+                >
+                  {dataUserJuror.getUsersByRole.map((ju) => {
                     if (!jury.users.find((user) => user.id === ju.id)) {
                       return (
                         <MenuItem key={ju.id} value={ju.id}>
@@ -125,8 +137,9 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
                       );
                     }
                   })}
-              </Select>
-            </FormControl>
+                </Select>
+              </FormControl>
+            )}
             <Button disabled={btnIsDisabled} type="submit">
               Ajouter
             </Button>
