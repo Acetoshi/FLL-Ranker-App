@@ -17,6 +17,16 @@ export const CREATE_TEAM = gql`
   }
 `;
 
+export const CREATE_COMPETITION = gql`
+  mutation CreateCompetition($competition: CompetitionInput!) {
+    createCompetition(competition: $competition) {
+      name
+      location
+      date
+    }
+  }
+`;
+
 export const ADD_USER_TO_JURY = gql`
   mutation AddUserToJury($data: UserJuryInput!) {
     addUserToJury(data: $data) {
