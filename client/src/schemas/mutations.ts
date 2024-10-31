@@ -18,7 +18,7 @@ export const CREATE_TEAM = gql`
 `;
 
 export const ADD_USER_TO_JURY = gql`
-  mutation AddUserToJury($data: AddUserToJuryInput!) {
+  mutation AddUserToJury($data: UserJuryInput!) {
     addUserToJury(data: $data) {
       id
       firstname
@@ -26,6 +26,17 @@ export const ADD_USER_TO_JURY = gql`
     }
   }
 `;
+
+export const REMOVE_USER_FROM_JURY = gql`
+  mutation RemoveUserFromJury($data: UserJuryInput!) {
+    removeUserFromJury(data: $data) {
+      id
+      firstname
+      lastname
+    }
+  }
+`;
+
 export const EDIT_TEAM = gql`
   mutation editTeam($team: TeamInput!) {
     editTeam(team: $team) {

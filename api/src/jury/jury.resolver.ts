@@ -13,7 +13,7 @@ class CreateJuryInput {
 }
 
 @InputType()
-class AddUserToJuryInput {
+class UserJuryInput {
   @Field()
   @IsNotEmpty()
   juryId: number;
@@ -78,7 +78,7 @@ export default class JuryResolver {
   }
 
   @Mutation(() => User)
-  async addUserToJury(@Arg("data") addUserToJury: AddUserToJuryInput) {
+  async addUserToJury(@Arg("data") addUserToJury: UserJuryInput) {
     try {
       const jury: Jury = await Jury.findOneOrFail({
         where: {
@@ -109,6 +109,34 @@ export default class JuryResolver {
     } catch (error) {
       console.error(error);
       throw new Error("Failed to bind a user to a jury");
+    }
+  }
+
+  @Mutation(() => User)
+  async removeUserFromJury(@Arg("data") data: UserJuryInput) {
+    try {
+      const user = await User.findOneOrFail({
+        where: {
+          id: data.userId,
+        },
+        relations: {
+          juries: true,
+        },
+      });
+
+      const userAttachedToJury = user.juries.find(
+        (jury) => jury.id === data.juryId
+      );
+
+      if (userAttachedToJury) {
+        user.juries = user.juries.filter((jury) => jury.id !== data.juryId);
+        await user.save();
+      }
+
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to remove a user from a jury");
     }
   }
 }
