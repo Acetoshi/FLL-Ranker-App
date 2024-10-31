@@ -1,8 +1,6 @@
 import { useState, useRef, RefObject } from "react";
-import { TableRow, TableCell, TextField, Button, Stack } from "@mui/material";
+import { TableRow, TableCell, TextField, Stack } from "@mui/material";
 import BtnCUD from "./BtnCRUD";
-import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from "@mui/icons-material/Close";
 import { BooleanMap, Mode, TeamRowProps } from "../types/types";
 import { useTeamsOperations } from "../services/teams";
 
@@ -119,7 +117,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
           {displayMode === "edit" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <BtnCUD
-                type="edit"
+                type="save"
                 handleClick={() =>
                   handleEdit(
                     teamRef,
@@ -133,26 +131,12 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
                   inputError.name || inputError.contact || inputError.location
                 }
               />
-
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<CloseIcon />}
-                onClick={() => setDisplayMode("consult")}
-              >
-                ANNULER
-              </Button>
+              <BtnCUD type="cancel" handleClick={() => setDisplayMode("consult")} />
             </Stack>
           )}
           {displayMode === "consult" && (
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button
-                variant="outlined"
-                startIcon={<EditIcon />}
-                onClick={() => setDisplayMode("edit")}
-              >
-                EDITER
-              </Button>
+               <BtnCUD type="edit" handleClick={() => setDisplayMode("edit")} />
               <BtnCUD type="delete" handleClick={() => handleDelete(team.id)} />
             </Stack>
           )}

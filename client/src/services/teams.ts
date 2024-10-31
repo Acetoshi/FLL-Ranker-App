@@ -18,7 +18,7 @@ export const useTeamsOperations = () => {
   const [deleteTeam] = useDeleteTeamMutation();
 
   // used to give feedback to the user
-  const { setNotification } = useNotification();
+  const { notifySuccess, notifyError } = useNotification();
 
   const handleTeamInputValidation = (
     teamRef: RefMap,
@@ -48,6 +48,12 @@ export const useTeamsOperations = () => {
     return team;
   };
 
+  const clearInputFields = (teamRef: RefMap) => {
+    if (teamRef.name.current) teamRef.name.current.value = "";
+    if (teamRef.contact.current) teamRef.contact.current.value = "";
+    if (teamRef.location.current) teamRef.location.current.value = "";
+  };
+
   const handleDelete = async (targetId: number) => {
     const targetTeam: TeamIdInput = {
       id: targetId,
@@ -61,11 +67,11 @@ export const useTeamsOperations = () => {
       variables: { team: targetTeam },
     })) as { data: DeleteTeamMutation };
 
-    setNotification({
-      open: true,
-      message: success ? "équipe supprimée" : (message as string),
-      severity: success ? "success" : "error",
-    });
+    if (success) {
+      notifySuccess("équipe supprimée");
+    } else {
+      notifyError(message as string);
+    }
   };
 
   const handleAdd = async (
@@ -79,15 +85,9 @@ export const useTeamsOperations = () => {
           refetchQueries: [{ query: GET_ALL_TEAMS }],
           variables: { team: createTeamInput(teamRef) },
         });
-        if (teamRef.name.current) teamRef.name.current.value = "";
-        if (teamRef.contact.current) teamRef.contact.current.value = "";
-        if (teamRef.location.current) teamRef.location.current.value = "";
+        clearInputFields(teamRef);
       } catch {
-        setNotification({
-          open: true,
-          message: "Erreur dans l'ajout de l'équipe, le nom est-il unique ?",
-          severity: "error",
-        });
+        notifyError("Erreur dans l'ajout de l'équipe");
         setInputError((prevErrors) => ({ ...prevErrors, name: true }));
       }
     }
@@ -106,18 +106,10 @@ export const useTeamsOperations = () => {
           refetchQueries: [{ query: GET_ALL_TEAMS }],
           variables: { team: createTeamInput(teamRef, id) },
         });
-        setNotification({
-          open: true,
-          message: "Modification enregistrée",
-          severity: "success",
-        });
+        notifySuccess("Modification enregistrée");
         setDisplayMode("consult");
       } catch {
-        setNotification({
-          open: true,
-          message: "Erreur serveur dans l'édition l'équipe",
-          severity: "error",
-        });
+        notifyError("Erreur serveur dans l'édition l'équipe");
         setInputError((prevErrors) => ({ ...prevErrors, name: true }));
       }
     }

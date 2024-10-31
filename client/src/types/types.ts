@@ -24,20 +24,8 @@ export type TeamRowProps = {
   mode: Mode;
 };
 
-// export type TeamRef = {
-//   name: RefObject<HTMLInputElement>;
-//   location: RefObject<HTMLInputElement>;
-//   contact: RefObject<HTMLInputElement>;
-// };
-
 export type BtnCRUDProps = {
-  type: "add" | "edit" | "delete";
+  type: "add" | "edit" | "delete" | "save" | "cancel";
   disabled?: boolean;
   handleClick: () => void;
-  // teamId?: number;
-  // inputError: BooleanMap;
-  // setInputError: Dispatch<SetStateAction<BooleanMap>>;
-  // inputRefs: RefMap;
-  // validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean;
-  // setDisplayMode: Dispatch<SetStateAction<Mode>>;
 };
