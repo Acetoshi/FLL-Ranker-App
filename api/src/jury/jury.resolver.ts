@@ -2,7 +2,6 @@ import { IsString, IsNotEmpty, Length, validate } from "class-validator";
 import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
 import { Jury } from "./jury.entity";
 import { User } from "./../user/user.entity";
-import UserResolver from "../user/user.resolver";
 
 @InputType()
 class CreateJuryInput {
@@ -35,7 +34,8 @@ export default class JuryResolver {
     });
   }
 
-  @Query(() => Jury)
+  // @Query(() => Jury)
+  // set as private for now, no need to be exposed publically
   async getJuryById(@Arg("juryId") juryId: number) {
     return await Jury.findOneOrFail({
       where: {
@@ -47,7 +47,8 @@ export default class JuryResolver {
     });
   }
 
-  @Query(() => [Jury])
+  //@Query(() => [Jury])
+  // set as private for now, no need to be exposed publically
   async getUsersOfJury(@Arg("juryId") juryId: number) {
     return await Jury.find({
       where: {
@@ -79,14 +80,27 @@ export default class JuryResolver {
   @Mutation(() => Jury)
   async addUserToJury(@Arg("data") addUserToJury: AddUserToJuryInput) {
     try {
-      const jury: Jury = await this.getJuryById(addUserToJury.juryId);
+      const jury: Jury = await Jury.findOneOrFail({
+        where: {
+          id: addUserToJury.juryId,
+        },
+        relations: {
+          users: true,
+        },
+      });
 
       // user has already been assigned to the jury
       if (jury.users.find((user) => user.id === addUserToJury.userId))
         return jury;
 
-      const user = new UserResolver();
-      const theUser: User = await user.getlUserById(addUserToJury.userId);
+      const theUser: User = await User.findOneOrFail({
+        where: {
+          id: addUserToJury.userId,
+        },
+        relations: {
+          juries: true,
+        },
+      });
 
       theUser.juries.push(jury);
       await theUser.save();

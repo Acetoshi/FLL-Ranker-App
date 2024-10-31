@@ -7,7 +7,6 @@ import * as dotenv from "dotenv";
 
 import TeamResolver from "./team/team.resolver";
 import JuryResolver from "./jury/jury.resolver";
-import RoleResolver from "./role/role.resolver";
 import UserResolver from "./user/user.resolver";
 
 dotenv.config();
@@ -16,7 +15,7 @@ const { API_PORT } = process.env;
 (async () => {
   await dataSource.initialize();
   const schema = await buildSchema({
-    resolvers: [TeamResolver, JuryResolver, RoleResolver, UserResolver],
+    resolvers: [TeamResolver, JuryResolver, UserResolver],
   });
 
   const server = new ApolloServer({

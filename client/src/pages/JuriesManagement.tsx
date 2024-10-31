@@ -11,7 +11,7 @@ import Paper from "@mui/material/Paper";
 import { Typography, Box } from "@mui/material";
 
 export default function JuriesManagement() {
-  const { loading, error, data } = useGetAllJuriesQuery();
+  const { loading, error, data, refetch } = useGetAllJuriesQuery();
 
   if (loading) return <p>🥁 Loading...</p>;
   if (error) return <p>☠️ Error: {error.message}</p>;
@@ -44,7 +44,7 @@ export default function JuriesManagement() {
                 data.getAllJuries.map((jury) => (
                   <ManageJuryRow key={jury.id} jury={jury as Jury} />
                 ))}
-              <ManageJuryAddRow />
+              <ManageJuryAddRow refetch={refetch} />
             </TableBody>
           </Table>
         </TableContainer>

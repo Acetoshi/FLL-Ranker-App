@@ -26,7 +26,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
       roleId: 2, // we only want juror role here
     },
   });
-  const [usedAddUserToJury] = useAddUserToJuryMutation();
+  const [addUserToJury] = useAddUserToJuryMutation();
 
   const [juror, setJuror] = useState<string>("");
   const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
@@ -36,9 +36,9 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
     setBtnIsDisabled(false);
   };
 
-  const handleSubmitJuror = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitJuror = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    usedAddUserToJury({
+    await addUserToJury({
       variables: {
         data: {
           userId: parseInt(juror),
@@ -105,7 +105,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
                 {!loadingJuror &&
                   dataUserJuror?.getUsersByRole &&
                   dataUserJuror.getUsersByRole.map((ju) => {
-                    if (!jury.users.find((el) => el.id === ju.id)) {
+                    if (!jury.users.find((user) => user.id === ju.id)) {
                       return (
                         <MenuItem key={ju.id} value={ju.id}>
                           {ju.firstname} {ju.lastname}
