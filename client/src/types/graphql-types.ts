@@ -17,11 +17,6 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type AddUserToJuryInput = {
-  juryId: Scalars['Float']['input'];
-  userId: Scalars['Float']['input'];
-};
-
 export type Competition = {
   __typename?: 'Competition';
   date: Scalars['String']['output'];
@@ -54,11 +49,12 @@ export type Mutation = {
   createTeam: Team;
   deleteTeam: DeleteResponseStatus;
   editTeam: Team;
+  removeUserFromJury: User;
 };
 
 
 export type MutationAddUserToJuryArgs = {
-  data: AddUserToJuryInput;
+  data: UserJuryInput;
 };
 
 
@@ -79,6 +75,11 @@ export type MutationDeleteTeamArgs = {
 
 export type MutationEditTeamArgs = {
   team: TeamInput;
+};
+
+
+export type MutationRemoveUserFromJuryArgs = {
+  data: UserJuryInput;
 };
 
 export type Query = {
@@ -130,6 +131,11 @@ export type User = {
   role: Role;
 };
 
+export type UserJuryInput = {
+  juryId: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
 export type CreateNewJuryMutationVariables = Exact<{
   data: CreateJuryInput;
 }>;
@@ -145,11 +151,18 @@ export type CreateTeamMutationVariables = Exact<{
 export type CreateTeamMutation = { __typename?: 'Mutation', createTeam: { __typename?: 'Team', contact: string, location: string, name: string } };
 
 export type AddUserToJuryMutationVariables = Exact<{
-  data: AddUserToJuryInput;
+  data: UserJuryInput;
 }>;
 
 
 export type AddUserToJuryMutation = { __typename?: 'Mutation', addUserToJury: { __typename?: 'User', id: number, firstname: string, lastname: string } };
+
+export type RemoveUserFromJuryMutationVariables = Exact<{
+  data: UserJuryInput;
+}>;
+
+
+export type RemoveUserFromJuryMutation = { __typename?: 'Mutation', removeUserFromJury: { __typename?: 'User', id: number, firstname: string, lastname: string } };
 
 export type EditTeamMutationVariables = Exact<{
   team: TeamInput;
@@ -257,7 +270,7 @@ export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutati
 export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
 export const AddUserToJuryDocument = gql`
-    mutation AddUserToJury($data: AddUserToJuryInput!) {
+    mutation AddUserToJury($data: UserJuryInput!) {
   addUserToJury(data: $data) {
     id
     firstname
@@ -291,6 +304,41 @@ export function useAddUserToJuryMutation(baseOptions?: Apollo.MutationHookOption
 export type AddUserToJuryMutationHookResult = ReturnType<typeof useAddUserToJuryMutation>;
 export type AddUserToJuryMutationResult = Apollo.MutationResult<AddUserToJuryMutation>;
 export type AddUserToJuryMutationOptions = Apollo.BaseMutationOptions<AddUserToJuryMutation, AddUserToJuryMutationVariables>;
+export const RemoveUserFromJuryDocument = gql`
+    mutation RemoveUserFromJury($data: UserJuryInput!) {
+  removeUserFromJury(data: $data) {
+    id
+    firstname
+    lastname
+  }
+}
+    `;
+export type RemoveUserFromJuryMutationFn = Apollo.MutationFunction<RemoveUserFromJuryMutation, RemoveUserFromJuryMutationVariables>;
+
+/**
+ * __useRemoveUserFromJuryMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromJuryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromJuryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromJuryMutation, { data, loading, error }] = useRemoveUserFromJuryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRemoveUserFromJuryMutation(baseOptions?: Apollo.MutationHookOptions<RemoveUserFromJuryMutation, RemoveUserFromJuryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveUserFromJuryMutation, RemoveUserFromJuryMutationVariables>(RemoveUserFromJuryDocument, options);
+      }
+export type RemoveUserFromJuryMutationHookResult = ReturnType<typeof useRemoveUserFromJuryMutation>;
+export type RemoveUserFromJuryMutationResult = Apollo.MutationResult<RemoveUserFromJuryMutation>;
+export type RemoveUserFromJuryMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromJuryMutation, RemoveUserFromJuryMutationVariables>;
 export const EditTeamDocument = gql`
     mutation editTeam($team: TeamInput!) {
   editTeam(team: $team) {
