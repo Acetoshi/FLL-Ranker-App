@@ -1,5 +1,10 @@
 import { RefObject } from "react";
-import { Team } from "./graphql-types";
+import {
+  Exact,
+  GetAllTeamsQuery,
+  Team
+} from "./graphql-types";
+import { ApolloQueryResult } from "@apollo/client";
 
 // used to change display mode in tables
 export type Mode = "edit" | "consult" | "create";
@@ -22,10 +27,18 @@ export type RefMap = {
 export type TeamRowProps = {
   team?: Team;
   mode: Mode;
+  refetch: (
+    variables?: Partial<Exact<{ [key: string]: never }>> | undefined
+  ) => Promise<ApolloQueryResult<GetAllTeamsQuery>>;
 };
 
 export type BtnCRUDProps = {
   type: "add" | "edit" | "delete" | "save" | "cancel";
   disabled?: boolean;
   handleClick: () => void;
+};
+
+export type DataHandlerResult = {
+  success: boolean;
+  message: string | null | undefined;
 };

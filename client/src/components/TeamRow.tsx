@@ -5,7 +5,7 @@ import { BooleanMap, Mode, RefMap, TeamRowProps } from "../types/types";
 import { useTeamsOperations } from "../services/teams";
 import { useNotification } from "../hooks/useNotification";
 import EditableTextCell from "./EditableTextCell";
-export default function TeamRow({ mode, team }: TeamRowProps) {
+export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to give feedback to the user
@@ -60,6 +60,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
       if (success) {
         notifySuccess("Modification enregistrée");
         setDisplayMode("consult");
+        (await refetch)()
       } else {
         notifyError(message as string);
         highlightName();
@@ -72,6 +73,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
       const { success, message } = await handleDelete(team.id);
       if (success) {
         notifySuccess("équipe supprimée");
+        (await refetch)()
       } else {
         notifyError(message as string);
       }
@@ -83,6 +85,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
     if (success) {
       notifySuccess("équipe créée avec succès");
       clearInputFields(teamRef);
+      (await refetch)()
     } else {
       notifyError(message);
       highlightName();
@@ -95,16 +98,18 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         <BtnCRUD
           type="save"
           handleClick={submitEdition}
-          disabled={
-            inputError.name || inputError.contact || inputError.location
-          }
+          disabled={Object.values(inputError).some((el) => el)}
         />
         <BtnCRUD type="cancel" handleClick={() => setDisplayMode("consult")} />
       </Stack>
     ),
     consult: (
       <Stack direction="row" spacing={2} justifyContent="flex-end">
-        <BtnCRUD type="edit" handleClick={() => setDisplayMode("edit")} />
+        <BtnCRUD
+          type="edit"
+          handleClick={() => setDisplayMode("edit")}
+          disabled={Object.values(inputError).some((el) => el)}
+        />
         <BtnCRUD type="delete" handleClick={submitDeletion} />
       </Stack>
     ),
@@ -121,7 +126,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
           component="th"
           scope="row"
           displayMode={displayMode}
-          ref={teamRef.name}
+          inputRef={teamRef.name}
           label="nom"
           defaultValue={team && team.name}
           onChange={() => handleInputChange("name", teamRef.name)}
@@ -134,7 +139,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         />
         <EditableTextCell
           displayMode={displayMode}
-          ref={teamRef.contact}
+          inputRef={teamRef.contact}
           label="contact"
           defaultValue={team && team.contact}
           onChange={() => handleInputChange("contact", teamRef.contact)}
@@ -147,7 +152,7 @@ export default function TeamRow({ mode, team }: TeamRowProps) {
         />
         <EditableTextCell
           displayMode={displayMode}
-          ref={teamRef.location}
+          inputRef={teamRef.location}
           label="provenance"
           defaultValue={team && team.location}
           onChange={() => handleInputChange("location", teamRef.location)}

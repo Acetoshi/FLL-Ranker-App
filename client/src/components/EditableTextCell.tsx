@@ -10,7 +10,7 @@ interface EditableTextCellProps {
   component?: ElementType<TableCellBaseProps> | undefined;
   scope?: string;
   displayMode: "create" | "edit" | "consult";
-  ref: Ref<HTMLInputElement>;
+  inputRef: Ref<HTMLInputElement>;
   label: string;
   defaultValue?: string;
   onChange: () => void;
@@ -19,11 +19,17 @@ interface EditableTextCellProps {
   textFieldProps?: TextFieldProps; // optional for any additional props
 }
 
+/**
+ * 
+ * @displayMode : "consult" | "edit" | "create"
+ * @returns 
+ */
+
 export default function EditableTextCell({
   component = undefined,
-  scope = undefined,
+  scope = undefined, 
   displayMode,
-  ref,
+  inputRef,
   label,
   defaultValue = "",
   onChange,
@@ -35,7 +41,7 @@ export default function EditableTextCell({
     <TableCell component={component} scope={scope}>
       {displayMode === "create" || displayMode === "edit" ? (
         <TextField
-          inputRef={ref}
+          inputRef={inputRef}
           label={label}
           variant={displayMode === "edit" ? "standard" : "outlined"}
           defaultValue={defaultValue}

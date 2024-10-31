@@ -1,5 +1,4 @@
 import { RefObject } from "react";
-import { GET_ALL_TEAMS } from "../schemas/queries";
 import {
   TeamInput,
   TeamIdInput,
@@ -8,7 +7,7 @@ import {
   useEditTeamMutation,
   DeleteTeamMutation,
 } from "../types/graphql-types";
-import { RefMap } from "../types/types";
+import { DataHandlerResult, RefMap } from "../types/types";
 
 export const useTeamsOperations = () => {
   // mutations used for CRUD operations
@@ -17,27 +16,31 @@ export const useTeamsOperations = () => {
   const [deleteTeam] = useDeleteTeamMutation();
 
   const handleTeamInputValidation = (
-    teamRef: RefMap,
+    inputRefs: RefMap,
     validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
   ) => {
-    const isValidName = validateInput(teamRef.name);
-    const isValidContact = validateInput(teamRef.contact);
-    const isValidLocation = validateInput(teamRef.location);
+    const isValidName = validateInput(inputRefs.name);
+    const isValidContact = validateInput(inputRefs.contact);
+    const isValidLocation = validateInput(inputRefs.location);
 
     return isValidName && isValidContact && isValidLocation;
   };
 
-  const createTeamInput = (teamRef: RefMap, id?: number) => {
+  const createTeamInput = (inputRefs: RefMap, id?: number) => {
     const team: TeamInput = {
       id: id || null,
-      name: teamRef.name.current ? teamRef.name.current.value : "",
-      contact: teamRef.contact.current ? teamRef.contact.current.value : "",
-      location: teamRef.location.current ? teamRef.location.current.value : "",
+      name: inputRefs.name.current ? inputRefs.name.current.value : "",
+      contact: inputRefs.contact.current ? inputRefs.contact.current.value : "",
+      location: inputRefs.location.current
+        ? inputRefs.location.current.value
+        : "",
     };
     return team;
   };
 
-  const handleDelete = async (targetId: number) => {
+  const handleDelete = async (
+    targetId: number
+  ): Promise<DataHandlerResult> => {
     const targetTeam: TeamIdInput = {
       id: targetId,
     };
@@ -46,7 +49,6 @@ export const useTeamsOperations = () => {
         deleteTeam: { success, message },
       },
     } = (await deleteTeam({
-      refetchQueries: [{ query: GET_ALL_TEAMS }],
       variables: { team: targetTeam },
     })) as { data: DeleteTeamMutation };
 
@@ -56,11 +58,10 @@ export const useTeamsOperations = () => {
   const handleAdd = async (
     teamRef: RefMap,
     validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
-  ) => {
+  ): Promise<DataHandlerResult> => {
     if (handleTeamInputValidation(teamRef, validateInput)) {
       try {
         await addTeam({
-          refetchQueries: [{ query: GET_ALL_TEAMS }],
           variables: { team: createTeamInput(teamRef) },
         });
 
@@ -80,11 +81,10 @@ export const useTeamsOperations = () => {
     teamRef: RefMap,
     id: number,
     validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
-  ) => {
+  ): Promise<DataHandlerResult> => {
     if (handleTeamInputValidation(teamRef, validateInput)) {
       try {
         await editTeam({
-          refetchQueries: [{ query: GET_ALL_TEAMS }],
           variables: { team: createTeamInput(teamRef, id) },
         });
         return { success: true, message: "" };
