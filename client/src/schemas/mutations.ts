@@ -27,6 +27,26 @@ export const CREATE_COMPETITION = gql`
   }
 `;
 
+export const ADD_USER_TO_JURY = gql`
+  mutation AddUserToJury($data: UserJuryInput!) {
+    addUserToJury(data: $data) {
+      id
+      firstname
+      lastname
+    }
+  }
+`;
+
+export const REMOVE_USER_FROM_JURY = gql`
+  mutation RemoveUserFromJury($data: UserJuryInput!) {
+    removeUserFromJury(data: $data) {
+      id
+      firstname
+      lastname
+    }
+  }
+`;
+
 export const EDIT_TEAM = gql`
   mutation editTeam($team: TeamInput!) {
     editTeam(team: $team) {
@@ -34,6 +54,15 @@ export const EDIT_TEAM = gql`
       contact
       location
       name
+    }
+  }
+`;
+
+export const DELETE_TEAM = gql`
+  mutation deleteTeam($team: TeamIdInput!) {
+    deleteTeam(team: $team) {
+      success
+      message
     }
   }
 `;

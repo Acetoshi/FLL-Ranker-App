@@ -14,7 +14,7 @@ import TeamRow from "../components/TeamRow";
 
 
 export default function TeamsManagement() {
-  const { loading, error, data } = useGetAllTeamsQuery();
+  const { loading, error, data, refetch } = useGetAllTeamsQuery();
 
   if (loading) return <p>Loading...</p>;
 
@@ -53,10 +53,12 @@ export default function TeamsManagement() {
                     key={team.id}
                     mode={"consult"}
                     team={team}
+                    refetch={refetch}
                   />
                 ))}
               <TeamRow
                 mode={"create"}
+                refetch={refetch}
               />
             </TableBody>
           </Table>

@@ -8,8 +8,6 @@ import {
   Paper,
   Typography,
   Box,
-  // TextField,
-  // Button,
 } from "@mui/material";
 import { useGetAllCompetitionsQuery } from "../types/graphql-types";
 import CompetitionAddRow from "../components/CompetitionAddRow";

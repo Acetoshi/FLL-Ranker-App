@@ -8,15 +8,19 @@ import {
 import { Snackbar, Alert } from "@mui/material";
 import { Notification } from "../types/types";
 
-
 interface NotificationContextType {
-  setNotification :Dispatch<SetStateAction<Notification>> 
+  setNotification: Dispatch<SetStateAction<Notification>>;
+  notifyError: (message: string) => void;
+  notifySuccess: (message: string) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType>();
 
-export default function NotificationProvider ({ children }: { children: ReactNode }){
-
+export default function NotificationProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [notification, setNotification] = useState<Notification>({
     open: false,
     message: "",
@@ -27,8 +31,27 @@ export default function NotificationProvider ({ children }: { children: ReactNod
     setNotification({ ...notification, open: false });
   };
 
+  // these two functions are needed in order to have a shorthand way of notifying for refactoring purposes, and legibility.
+  const notifyError = (message: string) => {
+    setNotification({
+      open: true,
+      message: message,
+      severity: "error",
+    });
+  };
+
+  const notifySuccess = (message: string) => {
+    setNotification({
+      open: true,
+      message: message,
+      severity: "success",
+    });
+  };
+
   return (
-    <NotificationContext.Provider value={{setNotification}}>
+    <NotificationContext.Provider
+      value={{ setNotification, notifyError, notifySuccess }}
+    >
       {children}
       <Snackbar
         open={notification.open}
@@ -46,6 +69,6 @@ export default function NotificationProvider ({ children }: { children: ReactNod
       </Snackbar>
     </NotificationContext.Provider>
   );
-};
+}
 
 export { NotificationContext };

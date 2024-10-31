@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { TableRow, TableCell, TextField } from "@mui/material";
 import { useCreateCompetitionMutation } from "../types/graphql-types";
 import { GET_COMPETITIONS } from "../schemas/queries";
+import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "../components/BtnCRUD";
 
 export default function CompetitionAddRow() {
@@ -105,12 +106,10 @@ export default function CompetitionAddRow() {
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
         <TableCell align="left">
-          <TextField
+          <EditableTextCell
+            displayMode={"create"}
             inputRef={nameRef}
-            required
             label="Nom"
-            variant="outlined"
-            fullWidth
             onChange={() => handleInputChange("nom")}
             error={nameError}
             helperText={
@@ -121,12 +120,10 @@ export default function CompetitionAddRow() {
           />
         </TableCell>
         <TableCell align="left">
-          <TextField
+          <EditableTextCell
+            displayMode={"create"}
             inputRef={locationRef}
-            required
             label="Lieu"
-            variant="outlined"
-            fullWidth
             onChange={() => handleInputChange("lieu")}
             error={locationError}
             helperText={
