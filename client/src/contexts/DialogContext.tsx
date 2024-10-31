@@ -23,7 +23,7 @@ export default function DialogProvider({ children }: { children: ReactNode }) {
   });
 
   const [resolveUserDecision, setResolveUserDecision] = useState<
-    (() => void) | null
+    ((decision:boolean) => void) | null
   >(null);
 
   const handleClose = () => {
