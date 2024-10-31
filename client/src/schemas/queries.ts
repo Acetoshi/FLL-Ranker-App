@@ -19,3 +19,14 @@ export const GET_ALL_TEAMS = gql`
     }
   }
 `;
+
+export const GET_COMPETITIONS = gql`
+  query GetAllCompetitions {
+    getAllCompetitions {
+      id
+      name
+      location
+      date
+    }
+  }
+`;

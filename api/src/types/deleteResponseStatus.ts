@@ -2,8 +2,11 @@ import { Field, ObjectType } from "type-graphql";
 
 type Status = "success" | "error";
 
+// This object enables us to give a feedback to the front,
+// using message you can specifiy the error
+
 @ObjectType()
-export class ResponseStatus {
+export class DeleteResponseStatus {
   constructor(status: Status, message?: string) {
     this.success = status === "success" ? true : false;
     this.message = message;

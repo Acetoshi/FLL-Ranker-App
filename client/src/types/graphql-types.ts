@@ -17,8 +17,22 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Competition = {
+  __typename?: 'Competition';
+  date: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  location: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type CreateJuryInput = {
   name: Scalars['String']['input'];
+};
+
+export type DeleteResponseStatus = {
+  __typename?: 'DeleteResponseStatus';
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Jury = {
@@ -31,7 +45,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createNewJury: Jury;
   createTeam: Team;
-  deleteTeam: ResponseStatus;
+  deleteTeam: DeleteResponseStatus;
   editTeam: Team;
 };
 
@@ -58,13 +72,8 @@ export type MutationEditTeamArgs = {
 export type Query = {
   __typename?: 'Query';
   allTeams: Array<Team>;
+  getAllCompetitions: Array<Competition>;
   getAllJuries: Array<Jury>;
-};
-
-export type ResponseStatus = {
-  __typename?: 'ResponseStatus';
-  message?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
 };
 
 export type Team = {
@@ -112,7 +121,7 @@ export type DeleteTeamMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'ResponseStatus', success: boolean, message?: string | null } };
+export type DeleteTeamMutation = { __typename?: 'Mutation', deleteTeam: { __typename?: 'DeleteResponseStatus', success: boolean, message?: string | null } };
 
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -123,6 +132,11 @@ export type GetAllTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllTeamsQuery = { __typename?: 'Query', allTeams: Array<{ __typename?: 'Team', id: number, location: string, name: string, contact: string }> };
+
+export type GetAllCompetitionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllCompetitionsQuery = { __typename?: 'Query', getAllCompetitions: Array<{ __typename?: 'Competition', id: string, name: string, location: string, date: string }> };
 
 
 export const CreateNewJuryDocument = gql`
@@ -345,3 +359,45 @@ export type GetAllTeamsQueryHookResult = ReturnType<typeof useGetAllTeamsQuery>;
 export type GetAllTeamsLazyQueryHookResult = ReturnType<typeof useGetAllTeamsLazyQuery>;
 export type GetAllTeamsSuspenseQueryHookResult = ReturnType<typeof useGetAllTeamsSuspenseQuery>;
 export type GetAllTeamsQueryResult = Apollo.QueryResult<GetAllTeamsQuery, GetAllTeamsQueryVariables>;
+export const GetAllCompetitionsDocument = gql`
+    query GetAllCompetitions {
+  getAllCompetitions {
+    id
+    name
+    location
+    date
+  }
+}
+    `;
+
+/**
+ * __useGetAllCompetitionsQuery__
+ *
+ * To run a query within a React component, call `useGetAllCompetitionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCompetitionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCompetitionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllCompetitionsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>(GetAllCompetitionsDocument, options);
+      }
+export function useGetAllCompetitionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>(GetAllCompetitionsDocument, options);
+        }
+export function useGetAllCompetitionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>(GetAllCompetitionsDocument, options);
+        }
+export type GetAllCompetitionsQueryHookResult = ReturnType<typeof useGetAllCompetitionsQuery>;
+export type GetAllCompetitionsLazyQueryHookResult = ReturnType<typeof useGetAllCompetitionsLazyQuery>;
+export type GetAllCompetitionsSuspenseQueryHookResult = ReturnType<typeof useGetAllCompetitionsSuspenseQuery>;
+export type GetAllCompetitionsQueryResult = Apollo.QueryResult<GetAllCompetitionsQuery, GetAllCompetitionsQueryVariables>;
