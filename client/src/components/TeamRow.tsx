@@ -5,11 +5,13 @@ import { BooleanMap, Mode, RefMap, TeamRowProps } from "../types/types";
 import { useTeamsOperations } from "../services/teams";
 import { useNotification } from "../hooks/useNotification";
 import EditableTextCell from "./EditableTextCell";
+import { useDialog } from "../hooks/useDialog";
 export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
+  const { askUser } = useDialog();
   const { handleAdd, handleEdit, handleDelete } = useTeamsOperations();
 
   // used to keep track of input errors
@@ -60,7 +62,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
       if (success) {
         notifySuccess("Modification enregistrée");
         setDisplayMode("consult");
-        (await refetch)()
+        (await refetch)();
       } else {
         notifyError(message as string);
         highlightName();
@@ -69,11 +71,17 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
   };
 
   const submitDeletion = async () => {
-    if (team) {
+
+    const userConfirms = await askUser(
+      `Supprimer l'équipe ${team && team.name} ?`,
+      "Cette action est définitive, elle supprime également l'ensemble des scores de cette équipe s'ils existent"
+    );
+
+    if (team && userConfirms) {
       const { success, message } = await handleDelete(team.id);
       if (success) {
         notifySuccess("équipe supprimée");
-        (await refetch)()
+        (await refetch)();
       } else {
         notifyError(message as string);
       }
@@ -85,7 +93,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
     if (success) {
       notifySuccess("équipe créée avec succès");
       clearInputFields(teamRef);
-      (await refetch)()
+      (await refetch)();
     } else {
       notifyError(message);
       highlightName();
