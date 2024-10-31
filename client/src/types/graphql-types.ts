@@ -25,12 +25,6 @@ export type Competition = {
   name: Scalars['String']['output'];
 };
 
-export type CompetitionInput = {
-  date: Scalars['String']['input'];
-  location: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-};
-
 export type CreateJuryInput = {
   name: Scalars['String']['input'];
 };
@@ -51,7 +45,6 @@ export type Jury = {
 export type Mutation = {
   __typename?: 'Mutation';
   addUserToJury: User;
-  createCompetition: Competition;
   createNewJury: Jury;
   createTeam: Team;
   deleteTeam: DeleteResponseStatus;
@@ -62,11 +55,6 @@ export type Mutation = {
 
 export type MutationAddUserToJuryArgs = {
   data: UserJuryInput;
-};
-
-
-export type MutationCreateCompetitionArgs = {
-  competition: CompetitionInput;
 };
 
 
@@ -161,13 +149,6 @@ export type CreateTeamMutationVariables = Exact<{
 
 
 export type CreateTeamMutation = { __typename?: 'Mutation', createTeam: { __typename?: 'Team', contact: string, location: string, name: string } };
-
-export type CreateCompetitionMutationVariables = Exact<{
-  competition: CompetitionInput;
-}>;
-
-
-export type CreateCompetitionMutation = { __typename?: 'Mutation', createCompetition: { __typename?: 'Competition', name: string, location: string, date: string } };
 
 export type AddUserToJuryMutationVariables = Exact<{
   data: UserJuryInput;
@@ -288,41 +269,6 @@ export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
 export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
-export const CreateCompetitionDocument = gql`
-    mutation CreateCompetition($competition: CompetitionInput!) {
-  createCompetition(competition: $competition) {
-    name
-    location
-    date
-  }
-}
-    `;
-export type CreateCompetitionMutationFn = Apollo.MutationFunction<CreateCompetitionMutation, CreateCompetitionMutationVariables>;
-
-/**
- * __useCreateCompetitionMutation__
- *
- * To run a mutation, you first call `useCreateCompetitionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCompetitionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createCompetitionMutation, { data, loading, error }] = useCreateCompetitionMutation({
- *   variables: {
- *      competition: // value for 'competition'
- *   },
- * });
- */
-export function useCreateCompetitionMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompetitionMutation, CreateCompetitionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateCompetitionMutation, CreateCompetitionMutationVariables>(CreateCompetitionDocument, options);
-      }
-export type CreateCompetitionMutationHookResult = ReturnType<typeof useCreateCompetitionMutation>;
-export type CreateCompetitionMutationResult = Apollo.MutationResult<CreateCompetitionMutation>;
-export type CreateCompetitionMutationOptions = Apollo.BaseMutationOptions<CreateCompetitionMutation, CreateCompetitionMutationVariables>;
 export const AddUserToJuryDocument = gql`
     mutation AddUserToJury($data: UserJuryInput!) {
   addUserToJury(data: $data) {
