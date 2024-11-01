@@ -1,9 +1,20 @@
 import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
-import { IsString, IsDateString, Length } from "class-validator";
+import {
+  IsString,
+  IsDateString,
+  Length,
+  IsOptional,
+  IsNumber,
+} from "class-validator";
 import { Competition } from "./competition.entity";
 
 @InputType()
 class CompetitionInput {
+  @Field({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @Field()
   @IsString()
   @Length(3, 100)
@@ -39,5 +50,27 @@ export default class CompetitionResolver {
 
     const result = await competitionToInsert.save();
     return result;
+  }
+
+  @Mutation(() => Competition)
+  async editCompetition(@Arg("competition") newCompetition: CompetitionInput) {
+    try {
+      const competitionToEdit = await Competition.findOneBy({
+        id: newCompetition.id,
+      });
+      if (!competitionToEdit) {
+        throw new Error(`Competition with ID ${newCompetition.id} not found`);
+      } else {
+        competitionToEdit.name = newCompetition.name;
+        competitionToEdit.location = newCompetition.location;
+        competitionToEdit.date = newCompetition.date;
+
+        const result = await competitionToEdit.save();
+        return result;
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to edit competition");
+    }
   }
 }

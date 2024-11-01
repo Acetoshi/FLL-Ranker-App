@@ -20,9 +20,16 @@ export type Scalars = {
 export type Competition = {
   __typename?: 'Competition';
   date: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type CompetitionInput = {
+  date: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
+  location: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type CreateJuryInput = {
@@ -45,9 +52,11 @@ export type Jury = {
 export type Mutation = {
   __typename?: 'Mutation';
   addUserToJury: User;
+  createCompetition: Competition;
   createNewJury: Jury;
   createTeam: Team;
   deleteTeam: DeleteResponseStatus;
+  editCompetition: Competition;
   editTeam: Team;
   removeUserFromJury: User;
 };
@@ -55,6 +64,11 @@ export type Mutation = {
 
 export type MutationAddUserToJuryArgs = {
   data: UserJuryInput;
+};
+
+
+export type MutationCreateCompetitionArgs = {
+  competition: CompetitionInput;
 };
 
 
@@ -70,6 +84,11 @@ export type MutationCreateTeamArgs = {
 
 export type MutationDeleteTeamArgs = {
   team: TeamIdInput;
+};
+
+
+export type MutationEditCompetitionArgs = {
+  competition: CompetitionInput;
 };
 
 
@@ -150,6 +169,13 @@ export type CreateTeamMutationVariables = Exact<{
 
 export type CreateTeamMutation = { __typename?: 'Mutation', createTeam: { __typename?: 'Team', contact: string, location: string, name: string } };
 
+export type CreateCompetitionMutationVariables = Exact<{
+  competition: CompetitionInput;
+}>;
+
+
+export type CreateCompetitionMutation = { __typename?: 'Mutation', createCompetition: { __typename?: 'Competition', name: string, location: string, date: string } };
+
 export type AddUserToJuryMutationVariables = Exact<{
   data: UserJuryInput;
 }>;
@@ -170,6 +196,13 @@ export type EditTeamMutationVariables = Exact<{
 
 
 export type EditTeamMutation = { __typename?: 'Mutation', editTeam: { __typename?: 'Team', id: number, contact: string, location: string, name: string } };
+
+export type EditCompetitionMutationVariables = Exact<{
+  competition: CompetitionInput;
+}>;
+
+
+export type EditCompetitionMutation = { __typename?: 'Mutation', editCompetition: { __typename?: 'Competition', id: number, name: string, location: string, date: string } };
 
 export type DeleteTeamMutationVariables = Exact<{
   team: TeamIdInput;
@@ -198,7 +231,7 @@ export type GetUsersByRoleQuery = { __typename?: 'Query', getUsersByRole: Array<
 export type GetAllCompetitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCompetitionsQuery = { __typename?: 'Query', getAllCompetitions: Array<{ __typename?: 'Competition', id: string, name: string, location: string, date: string }> };
+export type GetAllCompetitionsQuery = { __typename?: 'Query', getAllCompetitions: Array<{ __typename?: 'Competition', id: number, name: string, location: string, date: string }> };
 
 
 export const CreateNewJuryDocument = gql`
@@ -269,6 +302,41 @@ export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
 export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
 export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
+export const CreateCompetitionDocument = gql`
+    mutation CreateCompetition($competition: CompetitionInput!) {
+  createCompetition(competition: $competition) {
+    name
+    location
+    date
+  }
+}
+    `;
+export type CreateCompetitionMutationFn = Apollo.MutationFunction<CreateCompetitionMutation, CreateCompetitionMutationVariables>;
+
+/**
+ * __useCreateCompetitionMutation__
+ *
+ * To run a mutation, you first call `useCreateCompetitionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompetitionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCompetitionMutation, { data, loading, error }] = useCreateCompetitionMutation({
+ *   variables: {
+ *      competition: // value for 'competition'
+ *   },
+ * });
+ */
+export function useCreateCompetitionMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompetitionMutation, CreateCompetitionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCompetitionMutation, CreateCompetitionMutationVariables>(CreateCompetitionDocument, options);
+      }
+export type CreateCompetitionMutationHookResult = ReturnType<typeof useCreateCompetitionMutation>;
+export type CreateCompetitionMutationResult = Apollo.MutationResult<CreateCompetitionMutation>;
+export type CreateCompetitionMutationOptions = Apollo.BaseMutationOptions<CreateCompetitionMutation, CreateCompetitionMutationVariables>;
 export const AddUserToJuryDocument = gql`
     mutation AddUserToJury($data: UserJuryInput!) {
   addUserToJury(data: $data) {
@@ -375,6 +443,42 @@ export function useEditTeamMutation(baseOptions?: Apollo.MutationHookOptions<Edi
 export type EditTeamMutationHookResult = ReturnType<typeof useEditTeamMutation>;
 export type EditTeamMutationResult = Apollo.MutationResult<EditTeamMutation>;
 export type EditTeamMutationOptions = Apollo.BaseMutationOptions<EditTeamMutation, EditTeamMutationVariables>;
+export const EditCompetitionDocument = gql`
+    mutation editCompetition($competition: CompetitionInput!) {
+  editCompetition(competition: $competition) {
+    id
+    name
+    location
+    date
+  }
+}
+    `;
+export type EditCompetitionMutationFn = Apollo.MutationFunction<EditCompetitionMutation, EditCompetitionMutationVariables>;
+
+/**
+ * __useEditCompetitionMutation__
+ *
+ * To run a mutation, you first call `useEditCompetitionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditCompetitionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editCompetitionMutation, { data, loading, error }] = useEditCompetitionMutation({
+ *   variables: {
+ *      competition: // value for 'competition'
+ *   },
+ * });
+ */
+export function useEditCompetitionMutation(baseOptions?: Apollo.MutationHookOptions<EditCompetitionMutation, EditCompetitionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditCompetitionMutation, EditCompetitionMutationVariables>(EditCompetitionDocument, options);
+      }
+export type EditCompetitionMutationHookResult = ReturnType<typeof useEditCompetitionMutation>;
+export type EditCompetitionMutationResult = Apollo.MutationResult<EditCompetitionMutation>;
+export type EditCompetitionMutationOptions = Apollo.BaseMutationOptions<EditCompetitionMutation, EditCompetitionMutationVariables>;
 export const DeleteTeamDocument = gql`
     mutation deleteTeam($team: TeamIdInput!) {
   deleteTeam(team: $team) {

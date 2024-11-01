@@ -1,13 +1,31 @@
 import { useRef, useState } from "react";
-import { TableRow, TableCell, TextField } from "@mui/material";
-import { useCreateCompetitionMutation } from "../types/graphql-types";
+import { TableRow, TableCell } from "@mui/material";
+import {
+  useCreateCompetitionMutation,
+  // useEditCompetitionMutation,
+} from "../types/graphql-types";
 import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
-import BtnCRUD from "../components/BtnCRUD";
+import BtnCRUD from "./BtnCRUD";
 
-export default function CompetitionAddRow() {
+type CompetitionRowProps = {
+  mode: "create" | "edit" | "consult";
+  competition?: {
+    id: number;
+    name: string;
+    location: string;
+    date: string;
+  };
+};
+
+export default function CompetitionRow({
+  mode,
+  competition,
+}: CompetitionRowProps) {
+  const [displayMode, setDisplayMode] = useState(mode);
   const [createCompetition] = useCreateCompetitionMutation();
-
+  // const [editCompetition] = useEditCompetitionMutation();
+  console.info(displayMode);
   const nameRef = useRef<HTMLInputElement>(null);
   const [nameError, setNameError] = useState<boolean>(false);
 
@@ -102,12 +120,22 @@ export default function CompetitionAddRow() {
     }
   };
 
+  // if (mode == "consult") {
+  //   return;
+  // } else if (mode == "edit") {
+  //   return;
+  // } else if (mode == "create") {
+
+  // } else {
+  //   return;
+  // }
+
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
         <TableCell align="left">
           <EditableTextCell
-            displayMode={"create"}
+            displayMode={displayMode}
             inputRef={nameRef}
             label="Nom"
             onChange={() => handleInputChange("nom")}
@@ -117,11 +145,12 @@ export default function CompetitionAddRow() {
                 ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
                 : ""
             }
+            defaultValue={competition ? competition.name : ""}
           />
         </TableCell>
         <TableCell align="left">
           <EditableTextCell
-            displayMode={"create"}
+            displayMode={displayMode}
             inputRef={locationRef}
             label="Lieu"
             onChange={() => handleInputChange("lieu")}
@@ -131,17 +160,16 @@ export default function CompetitionAddRow() {
                 ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
                 : ""
             }
+            defaultValue={competition ? competition.location : ""}
           />
         </TableCell>
         <TableCell align="left">
-          <TextField
-            inputRef={dateRef}
-            required
-            fullWidth
-            name="Date"
-            label="Date"
-            InputLabelProps={{ shrink: true, required: true }}
+          <EditableTextCell
             type="date"
+            InputLabelProps={{ shrink: true, required: true }}
+            displayMode={displayMode}
+            inputRef={dateRef}
+            label="Date"
             onChange={() => handleInputChange("date")}
             error={dateError}
             helperText={
@@ -149,14 +177,38 @@ export default function CompetitionAddRow() {
                 ? "La date doit être supérieure à celle d'aujourd'hui"
                 : ""
             }
+            defaultValue={
+              competition
+                ? new Date(Date.parse(competition.date)).toLocaleDateString(
+                    "fr-FR"
+                  )
+                : ""
+            }
           />
         </TableCell>
         <TableCell align="right">
-          <BtnCRUD
-            disabled={btnIsDisabled}
-            handleClick={handleAdd}
-            type="add"
-          />
+          {displayMode == "create" ? (
+            <BtnCRUD
+              disabled={btnIsDisabled}
+              handleClick={handleAdd}
+              type={"add"}
+            />
+          ) : displayMode == "edit" ? (
+            <>
+              <BtnCRUD disabled={false} handleClick={handleAdd} type={"save"} />
+              <BtnCRUD
+                disabled={false}
+                handleClick={handleAdd}
+                type={"cancel"}
+              />
+            </>
+          ) : (
+            <BtnCRUD
+              disabled={false}
+              handleClick={() => setDisplayMode("edit")}
+              type={"edit"}
+            />
+          )}
         </TableCell>
       </TableRow>
     </>
