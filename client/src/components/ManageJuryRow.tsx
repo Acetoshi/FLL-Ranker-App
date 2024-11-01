@@ -41,22 +41,17 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
   // }, []);
 
   const [juror, setJuror] = useState<string>("");
-  const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
 
-  const handleSelectChange = (event: SelectChangeEvent) => {
+  const handleSelectChange = async (event: SelectChangeEvent) => {
     setJuror(event.target.value as string);
     // setUsersSelect((prev) =>
     //   prev.filter((user) => user.id !== event.target.value),
     // );
-    setBtnIsDisabled(false);
-  };
 
-  const handleSubmitJuror = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
     const theJuror = await addUserToJury({
       variables: {
         data: {
-          userId: parseInt(juror),
+          userId: parseInt(event.target.value),
           juryId: jury.id,
         },
       },
@@ -64,7 +59,6 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
 
     setJurors((prev) => [...prev, theJuror.data?.addUserToJury as User]);
     setJuror("");
-    setBtnIsDisabled(true);
   };
 
   const handleDelete = async (userId: number) => {
@@ -105,11 +99,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
         </Stack>
       </TableCell>
       <TableCell align="right">
-        <Box
-          component="form"
-          onSubmit={handleSubmitJuror}
-          sx={{ maxWidth: 400, mx: "auto", p: 2 }}
-        >
+        <Box component="form" sx={{ maxWidth: 400, mx: "auto", p: 2 }}>
           <Stack direction="row" spacing={1}>
             {!loadingJuror && dataUserJuror?.getUsersByRole && (
               <FormControl
@@ -140,9 +130,6 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
                 </Select>
               </FormControl>
             )}
-            <Button disabled={btnIsDisabled} type="submit">
-              Ajouter
-            </Button>
           </Stack>
         </Box>
       </TableCell>
