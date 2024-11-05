@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef, useState, RefObject } from "react";
 import { TableRow, TableCell } from "@mui/material";
 import {
   useCreateCompetitionMutation,
-  // useEditCompetitionMutation,
+  useEditCompetitionMutation,
 } from "../types/graphql-types";
 import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
@@ -24,111 +24,97 @@ export default function CompetitionRow({
 }: CompetitionRowProps) {
   const [displayMode, setDisplayMode] = useState(mode);
   const [createCompetition] = useCreateCompetitionMutation();
-  // const [editCompetition] = useEditCompetitionMutation();
-  console.info(displayMode);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const [nameError, setNameError] = useState<boolean>(false);
+  const [editCompetition] = useEditCompetitionMutation();
 
-  const locationRef = useRef<HTMLInputElement>(null);
-  const [locationError, setLocationError] = useState<boolean>(false);
+  const inputRefs = {
+    name: useRef<HTMLInputElement>(null),
+    location: useRef<HTMLInputElement>(null),
+    date: useRef<HTMLInputElement>(null),
+  };
 
-  const dateRef = useRef<HTMLInputElement>(null);
-  const [dateError, setDateError] = useState<boolean>(false);
-
-  const [btnIsDisabled, setBtnIsDisabled] = useState<boolean>(true);
+  const [errors, setErrors] = useState({
+    name: false,
+    location: false,
+    date: false,
+  });
 
   const handleDateValidation = () => {
-    const value = dateRef.current && dateRef.current.value;
+    const value = inputRefs.date.current && inputRefs.date.current.value;
     return value && value >= new Date().toISOString().split("T")[0]
       ? true
       : false;
   };
 
-  const validateText = (value: string | null) => {
+  const validateText = (value: string | null | undefined) => {
     return value
       ? /.{5,100}/.test(value) && /^[A-Za-z0-9_-\s]+$/.test(value)
       : false;
   };
 
-  const handleNameValidation = () => {
-    const value = nameRef.current && nameRef.current.value;
-    return validateText(value);
+  const handleDisabled = (): boolean => {
+    return (
+      Object.values(errors).some((el) => el) ||
+      Object.values(inputRefs).some(
+        (el) => el.current != null && el.current.value == ""
+      )
+    );
   };
 
-  const handleLocationValidation = () => {
-    const value = locationRef.current && locationRef.current.value;
-    return validateText(value);
+  const handleInputChange = (
+    field: string,
+    inputRef: RefObject<HTMLInputElement>
+  ) => {
+    const isValid =
+      field == "date"
+        ? handleDateValidation()
+        : validateText(inputRef.current?.value);
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: !isValid }));
   };
 
-  const handleInputChange = (element: string) => {
-    switch (element) {
-      case "nom":
-        if (handleNameValidation()) {
-          setNameError(false);
-        } else {
-          setNameError(true);
-        }
-        break;
-      case "lieu":
-        if (handleLocationValidation()) {
-          setLocationError(false);
-        } else {
-          setLocationError(true);
-        }
-        break;
-      case "date":
-        if (handleDateValidation()) {
-          setDateError(false);
-        } else {
-          setDateError(true);
-        }
-        break;
-    }
-    if (
-      handleNameValidation() &&
-      handleLocationValidation() &&
-      handleDateValidation()
-    ) {
-      setBtnIsDisabled(false);
-    } else {
-      setBtnIsDisabled(true);
-    }
+  const clearInputFields = (inputRefs: {
+    [key: string]: RefObject<HTMLInputElement>;
+  }) => {
+    if (inputRefs.name.current) inputRefs.name.current.value = "";
+    if (inputRefs.date.current) inputRefs.date.current.value = "";
+    if (inputRefs.location.current) inputRefs.location.current.value = "";
   };
 
   const handleAdd = async () => {
-    if (handleNameValidation()) {
-      setNameError(false);
-      setBtnIsDisabled(false);
-
-      try {
-        await createCompetition({
-          refetchQueries: [{ query: GET_COMPETITIONS }],
-          variables: {
-            competition: {
-              name: nameRef.current ? nameRef.current.value : "",
-              location: locationRef.current ? locationRef.current.value : "",
-              date: dateRef.current ? dateRef.current.value : "",
-            },
+    try {
+      await createCompetition({
+        refetchQueries: [{ query: GET_COMPETITIONS }],
+        variables: {
+          competition: {
+            name: inputRefs.name.current ? inputRefs.name.current.value : "",
+            location: inputRefs.location.current
+              ? inputRefs.location.current.value
+              : "",
+            date: inputRefs.date.current ? inputRefs.date.current.value : "",
           },
-        });
-      } catch {
-        setNameError(true);
-      }
-    } else {
-      setNameError(true);
-      setBtnIsDisabled(true);
+        },
+      });
+      clearInputFields(inputRefs);
+    } catch {
+      setErrors((prevErrors) => ({ ...prevErrors, name: false }));
     }
   };
 
-  // if (mode == "consult") {
-  //   return;
-  // } else if (mode == "edit") {
-  //   return;
-  // } else if (mode == "create") {
-
-  // } else {
-  //   return;
-  // }
+  const handleEdit = async () => {
+    await editCompetition({
+      refetchQueries: [{ query: GET_COMPETITIONS }],
+      variables: {
+        competition: {
+          id: competition ? competition.id : undefined,
+          name: inputRefs.name.current ? inputRefs.name.current.value : "",
+          location: inputRefs.location.current
+            ? inputRefs.location.current.value
+            : "",
+          date: inputRefs.date.current ? inputRefs.date.current.value : "",
+        },
+      },
+    });
+    setDisplayMode("consult");
+  };
 
   return (
     <>
@@ -136,12 +122,12 @@ export default function CompetitionRow({
         <TableCell align="left">
           <EditableTextCell
             displayMode={displayMode}
-            inputRef={nameRef}
+            inputRef={inputRefs.name}
             label="Nom"
-            onChange={() => handleInputChange("nom")}
-            error={nameError}
+            onChange={() => handleInputChange("name", inputRefs.name)}
+            error={errors.name}
             helperText={
-              nameError
+              errors.name
                 ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
                 : ""
             }
@@ -151,12 +137,12 @@ export default function CompetitionRow({
         <TableCell align="left">
           <EditableTextCell
             displayMode={displayMode}
-            inputRef={locationRef}
+            inputRef={inputRefs.location}
             label="Lieu"
-            onChange={() => handleInputChange("lieu")}
-            error={locationError}
+            onChange={() => handleInputChange("location", inputRefs.location)}
+            error={errors.location}
             helperText={
-              locationError
+              errors.location
                 ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
                 : ""
             }
@@ -168,20 +154,20 @@ export default function CompetitionRow({
             type="date"
             InputLabelProps={{ shrink: true, required: true }}
             displayMode={displayMode}
-            inputRef={dateRef}
+            inputRef={inputRefs.date}
             label="Date"
-            onChange={() => handleInputChange("date")}
-            error={dateError}
+            onChange={() => handleInputChange("date", inputRefs.date)}
+            error={errors.date}
             helperText={
-              dateError
-                ? "La date doit être supérieure à celle d'aujourd'hui"
-                : ""
+              errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
             }
             defaultValue={
-              competition
+              competition && displayMode == "consult"
                 ? new Date(Date.parse(competition.date)).toLocaleDateString(
                     "fr-FR"
                   )
+                : competition && displayMode == "edit"
+                ? competition.date
                 : ""
             }
           />
@@ -189,16 +175,20 @@ export default function CompetitionRow({
         <TableCell align="right">
           {displayMode == "create" ? (
             <BtnCRUD
-              disabled={btnIsDisabled}
+              disabled={handleDisabled()}
               handleClick={handleAdd}
               type={"add"}
             />
           ) : displayMode == "edit" ? (
             <>
-              <BtnCRUD disabled={false} handleClick={handleAdd} type={"save"} />
               <BtnCRUD
                 disabled={false}
-                handleClick={handleAdd}
+                handleClick={handleEdit}
+                type={"save"}
+              />
+              <BtnCRUD
+                disabled={false}
+                handleClick={() => setDisplayMode("consult")}
                 type={"cancel"}
               />
             </>
