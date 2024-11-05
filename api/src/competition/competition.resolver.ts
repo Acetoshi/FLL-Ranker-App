@@ -27,6 +27,18 @@ export default class CompetitionResolver {
     return await Competition.find();
   }
 
+  @Query(() => [Competition])
+  async getCompetitionById(@Arg("competitionId") competitionId: number) {
+    return await Competition.find({
+      where: {
+        id: competitionId,
+      },
+      relations: {
+        juries: true,
+      },
+    });
+  }
+
   @Mutation(() => Competition)
   async createCompetition(
     @Arg("competition") newCompetition: CompetitionInput
