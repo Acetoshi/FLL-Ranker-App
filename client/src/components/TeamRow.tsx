@@ -71,7 +71,6 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
   };
 
   const submitDeletion = async () => {
-
     const userConfirms = await askUser(
       `Supprimer l'équipe ${team && team.name} ?`,
       "Cette action est définitive, elle supprime également l'ensemble des scores de cette équipe s'ils existent"
@@ -100,13 +99,22 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
     }
   };
 
+  const handleDisabled = (): boolean => {
+    return (
+      Object.values(inputError).some((el) => el) ||
+      Object.values(teamRef).some(
+        (el) => el.current != null && el.current.value == ""
+      )
+    );
+  };
+
   const actionsMap = {
     edit: (
       <Stack direction="row" spacing={2} justifyContent="flex-end">
         <BtnCRUD
           type="save"
           handleClick={submitEdition}
-          disabled={Object.values(inputError).some((el) => el)}
+          disabled={handleDisabled()}
         />
         <BtnCRUD type="cancel" handleClick={() => setDisplayMode("consult")} />
       </Stack>
@@ -116,12 +124,17 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
         <BtnCRUD
           type="edit"
           handleClick={() => setDisplayMode("edit")}
-          disabled={Object.values(inputError).some((el) => el)}
         />
         <BtnCRUD type="delete" handleClick={submitDeletion} />
       </Stack>
     ),
-    create: <BtnCRUD type="add" handleClick={submitCreation} />,
+    create: (
+      <BtnCRUD
+        type="add"
+        handleClick={submitCreation}
+        disabled={handleDisabled()}
+      />
+    ),
   };
 
   return (
@@ -139,11 +152,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
           defaultValue={team && team.name}
           onChange={() => handleInputChange("name", teamRef.name)}
           error={inputError.name}
-          helperText={
-            inputError.name
-              ? "Entrez un nom unique de plus de 5 caractères"
-              : ""
-          }
+          helperText={"Entrez un nom unique de plus de 5 caractères"}
         />
         <EditableTextCell
           displayMode={displayMode}
@@ -152,11 +161,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
           defaultValue={team && team.contact}
           onChange={() => handleInputChange("contact", teamRef.contact)}
           error={inputError.contact}
-          helperText={
-            inputError.contact
-              ? "Entrez un contact de plus de 5 caractères"
-              : ""
-          }
+          helperText={"Entrez un contact de plus de 5 caractères"}
         />
         <EditableTextCell
           displayMode={displayMode}
@@ -165,11 +170,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
           defaultValue={team && team.location}
           onChange={() => handleInputChange("location", teamRef.location)}
           error={inputError.location}
-          helperText={
-            inputError.location
-              ? "Entrez une provenance de plus de 5 caractères"
-              : ""
-          }
+          helperText={"Entrez une provenance de plus de 5 caractères"}
         />
         <TableCell align="right">{actionsMap[displayMode]}</TableCell>
       </TableRow>
