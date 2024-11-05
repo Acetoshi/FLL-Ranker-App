@@ -34,19 +34,6 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
     }
   }, [data, jurors]);
 
-  if (loading)
-    return (
-      <TableRow>
-        <TableCell>Loading...</TableCell>
-      </TableRow>
-    );
-  if (error)
-    return (
-      <TableRow>
-        <TableCell>Error: {error.message}</TableCell>
-      </TableRow>
-    );
-
   const handleSelectChange = async (event: SelectChangeEvent) => {
     setUsersSelect((prev) =>
       prev.filter((user) => user.id !== parseInt(event.target.value)),
@@ -84,6 +71,19 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
       theJuror.data?.removeUserFromJury as User,
     ]);
   };
+
+  if (loading)
+    return (
+      <TableRow>
+        <TableCell>Loading...</TableCell>
+      </TableRow>
+    );
+  if (error)
+    return (
+      <TableRow>
+        <TableCell>Error: {error.message}</TableCell>
+      </TableRow>
+    );
 
   return (
     <TableRow
