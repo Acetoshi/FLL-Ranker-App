@@ -1,5 +1,14 @@
 import { useParams } from "react-router";
-import { Typography, Box } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@mui/material";
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
 
 export default function CompetitionsManagement() {
@@ -18,15 +27,32 @@ export default function CompetitionsManagement() {
 
   if (data)
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="25vh"
-      >
-        <Typography variant="h2" component="h1">
-          {`Gestion planning ${competition && competition.name}`}
-        </Typography>
-      </Box>
+      <>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="25vh"
+        >
+          <Typography variant="h2" component="h1">
+            {`Gestion planning ${competition && competition.name}`}
+          </Typography>
+        </Box>
+
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="Liste des jurys">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Créneau</TableCell>
+                {competition &&
+                  competition.juries.map((jury) => (
+                    <TableCell key={`jury-${jury.id}`}>{jury.name}</TableCell>
+                  ))}
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+          </Table>
+        </TableContainer>
+      </>
     );
 }

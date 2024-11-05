@@ -64,11 +64,8 @@ export const GET_COMPETITION_BY_ID = gql`
       location
       name
       juries {
-        users {
-          firstname
-          lastname
-        }
         name
+        id
       }
     }
   }
