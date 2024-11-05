@@ -42,7 +42,11 @@ export default function JuriesManagement() {
             <TableBody>
               {data &&
                 data.getAllJuries.map((jury) => (
-                  <ManageJuryRow key={jury.id} jury={jury as Jury} />
+                  <ManageJuryRow
+                    refetch={refetch}
+                    key={jury.id}
+                    jury={jury as Jury}
+                  />
                 ))}
               <ManageJuryAddRow refetch={refetch} />
             </TableBody>
