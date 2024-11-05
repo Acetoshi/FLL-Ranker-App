@@ -182,7 +182,7 @@ export default function CompetitionRow({
           ) : displayMode == "edit" ? (
             <>
               <BtnCRUD
-                disabled={false}
+                disabled={handleDisabled()}
                 handleClick={handleEdit}
                 type={"save"}
               />
