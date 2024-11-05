@@ -55,3 +55,21 @@ export const GET_COMPETITIONS = gql`
     }
   }
 `;
+
+export const GET_COMPETITION_BY_ID = gql`
+  query GetCompetitionById($competitionId: Float!) {
+    getCompetitionById(competitionId: $competitionId) {
+      date
+      id
+      location
+      name
+      juries {
+        users {
+          firstname
+          lastname
+        }
+        name
+      }
+    }
+  }
+`;
