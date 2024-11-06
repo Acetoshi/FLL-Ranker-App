@@ -61,7 +61,7 @@ export default function EditableTextCell({
           required
           onChange={onChange}
           error={error}
-          helperText={helperText}
+          helperText={error ? helperText: ""}
           {...textFieldProps}
         />
       ) : (

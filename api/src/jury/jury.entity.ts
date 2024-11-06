@@ -5,10 +5,12 @@ import {
   PrimaryGeneratedColumn,
   BaseEntity,
   ManyToMany,
+  ManyToOne,
 } from "typeorm";
 import { Field, ObjectType, Int } from "type-graphql";
 import { IsNotEmpty, IsString, Length } from "class-validator";
 import { User } from "../user/user.entity";
+import { Competition } from "../competition/competition.entity";
 
 @ObjectType()
 @Entity()
@@ -27,4 +29,8 @@ export class Jury extends BaseEntity {
   @Field(() => [User])
   @ManyToMany(() => User, (user) => user.juries)
   users: User[];
+
+  @Field(() => Competition)
+  @ManyToOne(() => Competition, (competition) => competition.juries)
+  competition: Competition;
 }

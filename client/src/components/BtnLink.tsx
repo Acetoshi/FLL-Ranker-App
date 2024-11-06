@@ -4,8 +4,9 @@ import { Link as MUILink, Typography } from "@mui/material";
 const buttonStyle = {
   display: "inline-block",
   padding: "8px 16px",
-  color: "black",
+  color: "primary.contrastText",
   backgroundColor: "primary.main",
+  textTransform: "uppercase",
   borderRadius: "4px",
   textDecoration: "none",
   width: "100%",
