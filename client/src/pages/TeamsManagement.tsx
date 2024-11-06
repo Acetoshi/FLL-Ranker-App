@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import TeamRow from "../components/TeamRow";
 
-
 export default function TeamsManagement() {
   const { loading, error, data, refetch } = useGetAllTeamsQuery();
 
@@ -34,8 +33,8 @@ export default function TeamsManagement() {
           </Typography>
         </Box>
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+          <Table stickyHeader sx={{ minWidth: 650 }} aria-label="liste des équipes">
             <TableHead>
               <TableRow>
                 <TableCell>Nom</TableCell>
@@ -47,6 +46,7 @@ export default function TeamsManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
+              <TeamRow mode={"create"} refetch={refetch} />
               {data &&
                 data.allTeams.map((team) => (
                   <TeamRow
@@ -56,15 +56,9 @@ export default function TeamsManagement() {
                     refetch={refetch}
                   />
                 ))}
-              <TeamRow
-                mode={"create"}
-                refetch={refetch}
-              />
             </TableBody>
           </Table>
         </TableContainer>
-
-
       </>
     );
 }
