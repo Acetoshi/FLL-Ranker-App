@@ -12,8 +12,10 @@ import {
 } from "@mui/material";
 
 export default function ManageJuryAddRow({
+  competitionId,
   refetch,
 }: {
+  competitionId: number;
   refetch: JuriesOfCompetitionRefetchType;
 }) {
   const [createNewJury] = useCreateNewJuryMutation();
@@ -60,6 +62,7 @@ export default function ManageJuryAddRow({
           variables: {
             data: {
               name: nameRef.current ? nameRef.current.value : "",
+              competitionId: competitionId,
             },
           },
         });

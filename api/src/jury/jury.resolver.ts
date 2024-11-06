@@ -2,6 +2,7 @@ import { IsString, IsNotEmpty, Length, validate } from "class-validator";
 import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
 import { Jury } from "./jury.entity";
 import { User } from "./../user/user.entity";
+import { Competition } from "./../competition/competition.entity";
 import { DeleteResponseStatus } from "../types/deleteResponseStatus";
 
 @InputType()
@@ -11,6 +12,10 @@ class CreateJuryInput {
   @IsNotEmpty()
   @Length(3, 100)
   name: string;
+
+  @Field()
+  @IsNotEmpty()
+  competitionId: number;
 }
 
 @InputType()
@@ -76,6 +81,11 @@ export default class JuryResolver {
     try {
       const jury = new Jury();
       jury.name = data.name;
+
+      const competition = await Competition.findOneOrFail({
+        where: { id: data.competitionId },
+      });
+      jury.competition = competition;
 
       const error = await validate(jury);
       if (error.length > 0) throw new Error(`Validation Error: ${error}`);
