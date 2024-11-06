@@ -30,8 +30,12 @@ export default function JuriesManagement() {
       </Box>
 
       <>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="Liste des jurys">
+        <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="Liste des jurys"
+          >
             <TableHead>
               <TableRow>
                 <TableCell align="left">#</TableCell>
@@ -40,6 +44,7 @@ export default function JuriesManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
+              <ManageJuryAddRow refetch={refetch} />
               {data &&
                 data.getAllJuries.map((jury) => (
                   <ManageJuryRow
@@ -48,7 +53,6 @@ export default function JuriesManagement() {
                     jury={jury as Jury}
                   />
                 ))}
-              <ManageJuryAddRow refetch={refetch} />
             </TableBody>
           </Table>
         </TableContainer>

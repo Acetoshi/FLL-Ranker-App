@@ -39,6 +39,9 @@ export default class JuryResolver {
       relations: {
         users: true,
       },
+      order: {
+        id: "DESC",
+      },
     });
   }
 
