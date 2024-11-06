@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import {
+  Exact,
   useGetUsersByRoleQuery,
   useAddUserToJuryMutation,
   useRemoveUserFromJuryMutation,
   useDeleteJuryMutation,
+  GetAllJuriesQuery,
   Jury,
   User,
   DeleteJuryMutation,
@@ -21,6 +24,10 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { red } from "@mui/material/colors";
+
+type refetchType = (
+  variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
+) => Promise<ApolloQueryResult<GetAllJuriesQuery>>;
 
 export default function ManageJuryRow({
   jury,
