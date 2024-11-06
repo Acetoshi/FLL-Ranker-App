@@ -67,6 +67,17 @@ export const EDIT_TEAM = gql`
   }
 `;
 
+export const EDIT_COMPETITION = gql`
+  mutation editCompetition($competition: CompetitionInput!) {
+    editCompetition(competition: $competition) {
+      id
+      name
+      location
+      date
+    }
+  }
+`;
+
 export const DELETE_TEAM = gql`
   mutation deleteTeam($team: TeamIdInput!) {
     deleteTeam(team: $team) {
