@@ -25,6 +25,20 @@ export default function CompetitionsManagement() {
   // aliasing the data for legibility
   const competition = data ? data.getCompetitionById[0] : undefined;
 
+  const timeSlots = [
+    "09h00-09h45",
+    "09h45-10h30",
+    "10h30-11h15",
+    "11h15-12h00",
+    "12h00-12h45",
+    "12h45-13h30",
+    "13h30-14h15",
+    "14h15-15h00",
+    "15h00-15h45",
+    "15h45-16h30",
+    "16h30-17h00",
+  ];
+
   if (data)
     return (
       <>
@@ -51,6 +65,11 @@ export default function CompetitionsManagement() {
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
+            {timeSlots.map((timeSlot) => (
+              <TableRow>
+                <TableCell align="left">{timeSlot}</TableCell>
+              </TableRow>
+            ))}
           </Table>
         </TableContainer>
       </>
