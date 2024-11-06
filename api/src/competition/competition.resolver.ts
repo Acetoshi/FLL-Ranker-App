@@ -7,6 +7,7 @@ import {
   IsNumber,
 } from "class-validator";
 import { Competition } from "./competition.entity";
+import { DeleteResponseStatus } from "../types/deleteResponseStatus";
 
 @InputType()
 class CompetitionInput {
@@ -67,6 +68,24 @@ export default class CompetitionResolver {
 
         const result = await competitionToEdit.save();
         return result;
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to edit competition");
+    }
+  }
+
+  @Mutation(() => DeleteResponseStatus)
+  async removeCompetition(@Arg("competition") competition: CompetitionInput) {
+    try {
+      const competitionToRemove = await Competition.findOneBy({
+        id: competition.id,
+      });
+      if (!competitionToRemove) {
+        throw new Error(`Competition with ID ${competition.id} not found`);
+      } else {
+        await competitionToRemove.remove();
+        return new DeleteResponseStatus("success");
       }
     } catch (error) {
       console.error(error);

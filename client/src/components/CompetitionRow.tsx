@@ -1,12 +1,14 @@
 import { useRef, useState, RefObject } from "react";
-import { TableRow, TableCell } from "@mui/material";
+import { TableRow, TableCell, Stack } from "@mui/material";
 import {
   useCreateCompetitionMutation,
   useEditCompetitionMutation,
+  // useRemoveCompetitionMutation,
 } from "../types/graphql-types";
 import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "./BtnCRUD";
+// import { DataHandlerResult } from "../types/types";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
@@ -25,6 +27,7 @@ export default function CompetitionRow({
   const [displayMode, setDisplayMode] = useState(mode);
   const [createCompetition] = useCreateCompetitionMutation();
   const [editCompetition] = useEditCompetitionMutation();
+  // const [removeCompetition] = useRemoveCompetitionMutation();
 
   const inputRefs = {
     name: useRef<HTMLInputElement>(null),
@@ -116,6 +119,34 @@ export default function CompetitionRow({
     setDisplayMode("consult");
   };
 
+  // const handleRemove = async (targetId: number): Promise<DataHandlerResult> => {
+  //   await removeCompetition({
+  //     const targetTeam: TeamIdInput = {
+  //       id: targetId,
+  //     };
+  //     const {
+  //       data: {
+  //         deleteTeam: { success, message },
+  //       },
+  //     } = (await deleteTeam({
+  //       variables: { team: targetTeam },
+  //     })) as { data: DeleteTeamMutation };
+
+  //     return { success, message };
+  //     // refetchQueries: [{ query: GET_COMPETITIONS }],
+  //     // variables: {
+  //     //   competition: {
+  //     //     id: competition ? competition.id : undefined,
+  //     //     name: inputRefs.name.current ? inputRefs.name.current.value : "",
+  //     //     location: inputRefs.location.current
+  //     //       ? inputRefs.location.current.value
+  //     //       : "",
+  //     //     date: inputRefs.date.current ? inputRefs.date.current.value : "",
+  //     //   },
+  //     // },
+  //   });
+  // };
+
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -180,7 +211,7 @@ export default function CompetitionRow({
               type={"add"}
             />
           ) : displayMode == "edit" ? (
-            <>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
               <BtnCRUD
                 disabled={handleDisabled()}
                 handleClick={handleEdit}
@@ -191,13 +222,20 @@ export default function CompetitionRow({
                 handleClick={() => setDisplayMode("consult")}
                 type={"cancel"}
               />
-            </>
+            </Stack>
           ) : (
-            <BtnCRUD
-              disabled={false}
-              handleClick={() => setDisplayMode("edit")}
-              type={"edit"}
-            />
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <BtnCRUD
+                disabled={false}
+                handleClick={() => setDisplayMode("edit")}
+                type={"edit"}
+              />
+              {/*<BtnCRUD
+                disabled={false}
+                handleClick={handleRemove}
+                type={"delete"}
+              />*/}
+            </Stack>
           )}
         </TableCell>
       </TableRow>
