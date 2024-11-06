@@ -70,8 +70,8 @@ export const EDIT_COMPETITION = gql`
 `;
 
 export const DELETE_COMPETITION = gql`
-  mutation removeCompetition($competition: CompetitionInput!) {
-    removeCompetition(competition: $competition) {
+  mutation removeCompetition($competitionId: CompetitionId!) {
+    removeCompetition(competition: $competitionId) {
       success
       message
     }

@@ -1,10 +1,12 @@
-[{"id":1,"name":"Willms, Wehner and Cruickshank"},
-{"id":2,"name":"Ruecker-Auer"},
-{"id":3,"name":"Hintz Inc"},
-{"id":4,"name":"Pouros, Sanford and Legros"},
-{"id":5,"name":"Weimann LLC"},
-{"id":6,"name":"Vandervort, Hodkiewicz and Wyman"},
-{"id":7,"name":"Yundt-Yost"},
-{"id":8,"name":"Witting-Hickle"},
-{"id":9,"name":"Hammes-Hahn"},
-{"id":10,"name":"Kozey, Aufderhar and Fahey"}]
+[
+  { "id": 1, "name": "Willms, Wehner and Cruickshank", "competition": 1 },
+  { "id": 2, "name": "Ruecker-Auer", "competition": 1 },
+  { "id": 3, "name": "Hintz Inc", "competition": 1 },
+  { "id": 4, "name": "Pouros, Sanford and Legros", "competition": 1 },
+  { "id": 5, "name": "Weimann LLC", "competition": 2 },
+  { "id": 6, "name": "Vandervort, Hodkiewicz and Wyman", "competition": 2 },
+  { "id": 7, "name": "Yundt-Yost", "competition": 2 },
+  { "id": 8, "name": "Witting-Hickle", "competition": 2 },
+  { "id": 9, "name": "Hammes-Hahn", "competition": 3 },
+  { "id": 10, "name": "Kozey, Aufderhar and Fahey", "competition": 3 }
+]

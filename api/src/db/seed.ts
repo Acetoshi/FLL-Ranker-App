@@ -59,6 +59,10 @@ import user_juries_jury from "../seed_data/user_juries_jury.json";
       juries.map(async (el) => {
         const jury = new Jury();
         jury.name = el.name;
+        const competition = seedCompetitions.find(
+          (competition) => competition.id === el.competition
+        ) as Competition;
+        jury.competition = competition;
         return await jury.save();
       })
     );

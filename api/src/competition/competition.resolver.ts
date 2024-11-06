@@ -32,11 +32,18 @@ class CompetitionInput {
   date: string;
 }
 
+@InputType()
+class CompetitionId {
+  @Field()
+  @IsNumber()
+  id: number;
+}
+
 @Resolver(Competition)
 export default class CompetitionResolver {
   @Query(() => [Competition])
   async getAllCompetitions() {
-    return await Competition.find();
+    return await Competition.find({ relations: { juries: true } });
   }
 
   @Mutation(() => Competition)
@@ -76,13 +83,13 @@ export default class CompetitionResolver {
   }
 
   @Mutation(() => DeleteResponseStatus)
-  async removeCompetition(@Arg("competition") competition: CompetitionInput) {
+  async removeCompetition(@Arg("competition") competitionId: CompetitionId) {
     try {
       const competitionToRemove = await Competition.findOneBy({
-        id: competition.id,
+        id: competitionId.id,
       });
       if (!competitionToRemove) {
-        throw new Error(`Competition with ID ${competition.id} not found`);
+        throw new Error(`Competition with ID ${competitionId.id} not found`);
       } else {
         await competitionToRemove.remove();
         return new DeleteResponseStatus("success");

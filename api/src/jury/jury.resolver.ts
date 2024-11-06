@@ -30,6 +30,7 @@ export default class JuryResolver {
     return await Jury.find({
       relations: {
         users: true,
+        competition: true,
       },
     });
   }

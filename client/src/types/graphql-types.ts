@@ -25,6 +25,10 @@ export type Competition = {
   name: Scalars['String']['output'];
 };
 
+export type CompetitionId = {
+  id: Scalars['Float']['input'];
+};
+
 export type CompetitionInput = {
   date: Scalars['String']['input'];
   id?: InputMaybe<Scalars['Float']['input']>;
@@ -99,7 +103,7 @@ export type MutationEditTeamArgs = {
 
 
 export type MutationRemoveCompetitionArgs = {
-  competition: CompetitionInput;
+  competition: CompetitionId;
 };
 
 
@@ -211,7 +215,7 @@ export type EditCompetitionMutationVariables = Exact<{
 export type EditCompetitionMutation = { __typename?: 'Mutation', editCompetition: { __typename?: 'Competition', id: number, name: string, location: string, date: string } };
 
 export type RemoveCompetitionMutationVariables = Exact<{
-  competition: CompetitionInput;
+  competitionId: CompetitionId;
 }>;
 
 
@@ -493,8 +497,8 @@ export type EditCompetitionMutationHookResult = ReturnType<typeof useEditCompeti
 export type EditCompetitionMutationResult = Apollo.MutationResult<EditCompetitionMutation>;
 export type EditCompetitionMutationOptions = Apollo.BaseMutationOptions<EditCompetitionMutation, EditCompetitionMutationVariables>;
 export const RemoveCompetitionDocument = gql`
-    mutation removeCompetition($competition: CompetitionInput!) {
-  removeCompetition(competition: $competition) {
+    mutation removeCompetition($competitionId: CompetitionId!) {
+  removeCompetition(competition: $competitionId) {
     success
     message
   }
@@ -515,7 +519,7 @@ export type RemoveCompetitionMutationFn = Apollo.MutationFunction<RemoveCompetit
  * @example
  * const [removeCompetitionMutation, { data, loading, error }] = useRemoveCompetitionMutation({
  *   variables: {
- *      competition: // value for 'competition'
+ *      competitionId: // value for 'competitionId'
  *   },
  * });
  */
