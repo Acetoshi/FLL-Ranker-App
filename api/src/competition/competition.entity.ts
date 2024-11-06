@@ -6,13 +6,13 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
-import { Field, ObjectType, ID } from "type-graphql";
+import { Field, ObjectType, Int } from "type-graphql";
 import { Jury } from "../jury/jury.entity";
 
 @ObjectType()
 @Entity()
 export class Competition extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 

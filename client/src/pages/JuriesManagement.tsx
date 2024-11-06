@@ -1,4 +1,9 @@
-import { useGetAllJuriesQuery, Jury } from "../types/graphql-types";
+import { useParams } from "react-router";
+import {
+  useGetJuriesOfCompetitionQuery,
+  Jury,
+  GetCompetitionByIdQueryVariables,
+} from "../types/graphql-types";
 import ManageJuryAddRow from "../components/ManageJuryAddRow";
 import ManageJuryRow from "../components/ManageJuryRow";
 import Table from "@mui/material/Table";
@@ -8,30 +13,44 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Stack } from "@mui/material";
 
 export default function JuriesManagement() {
-  const { loading, error, data, refetch } = useGetAllJuriesQuery();
+  const { competitionId } = useParams<string>();
+  const { loading, error, data, refetch } = useGetJuriesOfCompetitionQuery({
+    variables: {
+      competitionId: parseInt(competitionId as string),
+    } as GetCompetitionByIdQueryVariables,
+  });
 
   if (loading) return <p>🥁 Loading...</p>;
   if (error) return <p>☠️ Error: {error.message}</p>;
 
   return (
-    <>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="25vh"
-      >
-        <Typography variant="h2" component="h1">
-          Gestion des jurys
-        </Typography>
-      </Box>
-
+    data && (
       <>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="Liste des jurys">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="25vh"
+        >
+          <Stack spacing={1} sx={{ alignItems: "center" }}>
+            <Typography variant="h2" component="h1">
+              Gestion des jurys
+            </Typography>
+            <Typography variant="h4" component="h3">
+              Compétition : {data && data.getCompetitionById.name}
+            </Typography>
+          </Stack>
+        </Box>
+
+        <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="Liste des jurys"
+          >
             <TableHead>
               <TableRow>
                 <TableCell align="left">#</TableCell>
@@ -40,15 +59,28 @@ export default function JuriesManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
+              <ManageJuryAddRow
+                refetch={refetch}
+                competitionId={parseInt(competitionId as string)}
+              />
               {data &&
-                data.getAllJuries.map((jury) => (
-                  <ManageJuryRow key={jury.id} jury={jury as Jury} />
-                ))}
-              <ManageJuryAddRow refetch={refetch} />
+                data.getCompetitionById.juries.reduce(
+                  (aggregate: JSX.Element[], jury) => {
+                    aggregate.unshift(
+                      <ManageJuryRow
+                        refetch={refetch}
+                        key={jury.id}
+                        jury={jury as Jury}
+                      />,
+                    );
+                    return aggregate;
+                  },
+                  [],
+                )}
             </TableBody>
           </Table>
         </TableContainer>
       </>
-    </>
+    )
   );
 }

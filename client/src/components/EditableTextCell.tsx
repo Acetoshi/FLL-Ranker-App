@@ -20,7 +20,7 @@ interface EditableTextCellProps {
 }
 
 /**
- * EditableTextCell component renders a TableCell that conditionally displays 
+ * EditableTextCell component renders a TableCell that conditionally displays
  * a TextField for editing or creating an entry, or static text for viewing.
  *
  * @param {ElementType<TableCellBaseProps>} [component] - The component type for the TableCell, defaults to 'td'.
@@ -39,7 +39,7 @@ interface EditableTextCellProps {
 
 export default function EditableTextCell({
   component = undefined,
-  scope = undefined, 
+  scope = undefined,
   displayMode,
   inputRef,
   label,
@@ -61,7 +61,7 @@ export default function EditableTextCell({
           required
           onChange={onChange}
           error={error}
-          helperText={helperText}
+          helperText={error ? helperText : ""}
           {...textFieldProps}
         />
       ) : (

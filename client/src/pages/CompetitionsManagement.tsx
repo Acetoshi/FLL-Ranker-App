@@ -10,7 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import { useGetAllCompetitionsQuery } from "../types/graphql-types";
-import CompetitionAddRow from "../components/CompetitionAddRow";
+import CompetitionRow from "../components/CompetitionRow";
 
 export default function CompetitionsManagement() {
   const { loading, error, data } = useGetAllCompetitionsQuery();
@@ -45,23 +45,9 @@ export default function CompetitionsManagement() {
           <TableBody>
             {data &&
               data.getAllCompetitions.map((competition) => (
-                <TableRow
-                  key={competition.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {competition.name}
-                  </TableCell>
-                  <TableCell>{competition.location}</TableCell>
-                  <TableCell>
-                    {new Date(Date.parse(competition.date)).toLocaleDateString(
-                      "fr-FR"
-                    )}
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
+                <CompetitionRow mode="consult" competition={competition} />
               ))}
-            <CompetitionAddRow />
+            <CompetitionRow mode="create" />
           </TableBody>
         </Table>
       </TableContainer>
