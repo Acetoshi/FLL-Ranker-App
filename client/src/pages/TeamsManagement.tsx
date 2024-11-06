@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetAllTeamsQuery } from "../types/graphql-types";
 import {
   TableContainer,
@@ -15,16 +15,13 @@ import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
 
-  const [searchParams] = useSearchParams();
-  const competitionId = searchParams.get('competitionId') ? parseInt(searchParams.get('competitionId') as string) : null;
+  const { competitionId } = useParams();
 
   const { loading, error, data, refetch } = useGetAllTeamsQuery();
 
   if (loading) return <p>Loading...</p>;
 
   if (error) return <p>Error :(</p>;
-
-  
 
   if (data)
     return (

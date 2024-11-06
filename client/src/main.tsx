@@ -10,7 +10,7 @@ import Manage from "./pages/Manage.tsx";
 import TeamsManagement from "./pages/TeamsManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
-import SessionsManagement from "./pages/SessionsManagement.tsx"
+import SessionsManagement from "./pages/SessionsManagement.tsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -42,10 +42,6 @@ const router = createBrowserRouter([
             element: <Manage />,
           },
           {
-            path: "teams",
-            element: <TeamsManagement />,
-          },
-          {
             path: "competitions",
             element: <Outlet />,
             children: [
@@ -57,7 +53,11 @@ const router = createBrowserRouter([
                 path: ":competitionId/planning",
                 element: <SessionsManagement />,
               },
-            ]
+              {
+                path: ":competitionId/teams",
+                element: <TeamsManagement />,
+              },
+            ],
           },
         ],
       },
@@ -70,5 +70,5 @@ createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={connexion}>
       <RouterProvider router={router} />
     </ApolloProvider>
-  </StrictMode>,
+  </StrictMode>
 );
