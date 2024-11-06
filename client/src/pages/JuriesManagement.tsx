@@ -27,24 +27,24 @@ export default function JuriesManagement() {
   if (error) return <p>☠️ Error: {error.message}</p>;
 
   return (
-    <>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="25vh"
-      >
-        <Stack spacing={1} sx={{ alignItems: "center" }}>
-          <Typography variant="h2" component="h1">
-            Gestion des jurys
-          </Typography>
-          <Typography variant="h4" component="h3">
-            Compétition : {data && data.getCompetitionById.name}
-          </Typography>
-        </Stack>
-      </Box>
-
+    data && (
       <>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="25vh"
+        >
+          <Stack spacing={1} sx={{ alignItems: "center" }}>
+            <Typography variant="h2" component="h1">
+              Gestion des jurys
+            </Typography>
+            <Typography variant="h4" component="h3">
+              Compétition : {data && data.getCompetitionById.name}
+            </Typography>
+          </Stack>
+        </Box>
+
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
             stickyHeader
@@ -59,7 +59,10 @@ export default function JuriesManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <ManageJuryAddRow refetch={refetch} />
+              <ManageJuryAddRow
+                refetch={refetch}
+                competitionId={parseInt(competitionId as string)}
+              />
               {data &&
                 data.getCompetitionById.juries.map((jury) => (
                   <ManageJuryRow
@@ -72,6 +75,6 @@ export default function JuriesManagement() {
           </Table>
         </TableContainer>
       </>
-    </>
+    )
   );
 }
