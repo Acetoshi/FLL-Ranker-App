@@ -14,10 +14,10 @@ import {
 import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
-  const competitionId  = parseInt(useParams().competitionId as string);
+  const competitionId = parseInt(useParams().competitionId as string);
 
   const { loading, error, data, refetch } = useGetTeamsOfCompetitionByIdQuery({
-    variables: { competitionId: competitionId  },
+    variables: { competitionId: competitionId },
   });
 
   if (loading) return <p>Loading...</p>;
@@ -25,7 +25,6 @@ export default function TeamsManagement() {
   if (error) return <p>Error :(</p>;
 
   if (data)
-
     return (
       <>
         <Box
@@ -56,16 +55,20 @@ export default function TeamsManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TeamRow mode={"create"} refetch={refetch} competitionId={competitionId} />
+              <TeamRow
+                mode={"create"}
+                refetch={refetch}
+                competitionId={competitionId}
+              />
               {data &&
-                data.getCompetitionById.teams.map((team) => (
-                  <TeamRow
-                    key={team.id}
-                    mode={"consult"}
-                    team={team}
-                    refetch={refetch}
-                  />
-                ))}
+                data.getCompetitionById.teams.reduce((aggregat: JSX.Element[], team) => {
+                  aggregat.unshift(
+                    <TeamRow
+                      key={team.id}
+                      mode={"consult"}
+                      team={team}
+                      refetch={refetch}
+                    />); return aggregat;}, [])}
             </TableBody>
           </Table>
         </TableContainer>
