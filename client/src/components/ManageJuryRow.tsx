@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
-import { ApolloQueryResult } from "@apollo/client";
 import {
-  Exact,
   useGetUsersByRoleQuery,
   useAddUserToJuryMutation,
   useRemoveUserFromJuryMutation,
   useDeleteJuryMutation,
-  GetAllJuriesQuery,
   Jury,
   User,
   DeleteJuryMutation,
 } from "../types/graphql-types";
+import { JuriesOfCompetitionRefetchType } from "../types/types";
 import { useDialog } from "../hooks/useDialog";
 import { useNotification } from "../hooks/useNotification";
 import TableCell from "@mui/material/TableCell";
@@ -25,16 +23,12 @@ import { Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { red } from "@mui/material/colors";
 
-type refetchType = (
-  variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
-) => Promise<ApolloQueryResult<GetAllJuriesQuery>>;
-
 export default function ManageJuryRow({
   jury,
   refetch,
 }: {
   jury: Jury;
-  refetch: refetchType;
+  refetch: JuriesOfCompetitionRefetchType;
 }) {
   const { notifySuccess, notifyError } = useNotification();
   const { askUser } = useDialog();
