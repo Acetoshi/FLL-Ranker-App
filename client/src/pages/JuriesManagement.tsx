@@ -64,13 +64,16 @@ export default function JuriesManagement() {
                 competitionId={parseInt(competitionId as string)}
               />
               {data &&
-                data.getCompetitionById.juries.map((jury) => (
-                  <ManageJuryRow
-                    refetch={refetch}
-                    key={jury.id}
-                    jury={jury as Jury}
-                  />
-                ))}
+                data.getCompetitionById.juries
+                  .slice(0) // make a copy before reversing
+                  .reverse()
+                  .map((jury) => (
+                    <ManageJuryRow
+                      refetch={refetch}
+                      key={jury.id}
+                      jury={jury as Jury}
+                    />
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>
