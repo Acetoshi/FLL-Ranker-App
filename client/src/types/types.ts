@@ -1,5 +1,5 @@
 import { RefObject } from "react";
-import { Exact, GetAllTeamsQuery, Team } from "./graphql-types";
+import { Exact, GetTeamsOfCompetitionByIdQuery, Team } from "./graphql-types";
 import { ApolloQueryResult } from "@apollo/client";
 
 // used to change display mode in tables
@@ -25,7 +25,8 @@ export type TeamRowProps = {
   mode: Mode;
   refetch: (
     variables?: Partial<Exact<{ [key: string]: never }>> | undefined
-  ) => Promise<ApolloQueryResult<GetAllTeamsQuery>>;
+  ) => Promise<ApolloQueryResult<GetTeamsOfCompetitionByIdQuery>>;
+  competitionId?: number;
 };
 
 export type BtnCRUDProps = {

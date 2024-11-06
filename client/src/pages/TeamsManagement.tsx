@@ -14,10 +14,10 @@ import {
 import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
-  const { competitionId } = useParams();
+  const competitionId  = parseInt(useParams().competitionId as string);
 
   const { loading, error, data, refetch } = useGetTeamsOfCompetitionByIdQuery({
-    variables: { competitionId: parseInt(competitionId as string) },
+    variables: { competitionId: competitionId  },
   });
 
   if (loading) return <p>Loading...</p>;
@@ -56,7 +56,7 @@ export default function TeamsManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TeamRow mode={"create"} refetch={refetch} />
+              <TeamRow mode={"create"} refetch={refetch} competitionId={competitionId} />
               {data &&
                 data.getCompetitionById[0].teams.map((team) => (
                   <TeamRow
