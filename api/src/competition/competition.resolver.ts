@@ -27,14 +27,16 @@ export default class CompetitionResolver {
     return await Competition.find();
   }
 
-  @Query(() => [Competition])
+  @Query(() => Competition)
   async getCompetitionById(@Arg("competitionId") competitionId: number) {
-    return await Competition.find({
+    return await Competition.findOneOrFail({
       where: {
         id: competitionId,
       },
       relations: {
-        juries: true,
+        juries: {
+          users: true,
+        },
         teams: true,
       },
     });
