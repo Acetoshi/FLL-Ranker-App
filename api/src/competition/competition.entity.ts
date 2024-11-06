@@ -1,6 +1,13 @@
 import "reflect-metadata";
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  OneToMany,
+} from "typeorm";
 import { Field, ObjectType, ID } from "type-graphql";
+import { Jury } from "../jury/jury.entity";
 
 @ObjectType()
 @Entity()
@@ -20,4 +27,8 @@ export class Competition extends BaseEntity {
   @Field()
   @Column()
   date: string;
+
+  @Field(() => [Jury])
+  @OneToMany(() => Jury, (jury) => jury.competition)
+  juries: Jury[];
 }
