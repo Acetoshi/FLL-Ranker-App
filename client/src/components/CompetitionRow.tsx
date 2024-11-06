@@ -10,12 +10,14 @@ import BtnCRUD from "./BtnCRUD";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
-  competition?: {
-    id: number;
-    name: string;
-    location: string;
-    date: string;
-  };
+  competition?: Competition;
+};
+
+type Competition = {
+  id: number;
+  name: string;
+  location: string;
+  date: string;
 };
 
 export default function CompetitionRow({
@@ -116,6 +118,13 @@ export default function CompetitionRow({
     setDisplayMode("consult");
   };
 
+  const getMyDate = (competition: Competition) => {
+    if (displayMode === "consult")
+      return new Date(Date.parse(competition.date)).toLocaleDateString("fr-FR");
+    if (displayMode === "edit") return competition.date;
+    return "";
+  };
+
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -161,15 +170,7 @@ export default function CompetitionRow({
             helperText={
               errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
             }
-            defaultValue={
-              competition && displayMode == "consult"
-                ? new Date(Date.parse(competition.date)).toLocaleDateString(
-                    "fr-FR"
-                  )
-                : competition && displayMode == "edit"
-                ? competition.date
-                : ""
-            }
+            defaultValue={competition && getMyDate(competition)}
           />
         </TableCell>
         <TableCell align="right">
