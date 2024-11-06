@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetAllTeamsQuery } from "../types/graphql-types";
+import { useGetTeamsOfCompetitionByIdQuery } from "../types/graphql-types";
 import {
   TableContainer,
   Table,
@@ -14,16 +14,18 @@ import {
 import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
-
   const { competitionId } = useParams();
 
-  const { loading, error, data, refetch } = useGetAllTeamsQuery();
+  const { loading, error, data, refetch } = useGetTeamsOfCompetitionByIdQuery({
+    variables: { competitionId: parseInt(competitionId as string) },
+  });
 
   if (loading) return <p>Loading...</p>;
 
   if (error) return <p>Error :(</p>;
 
   if (data)
+
     return (
       <>
         <Box
@@ -38,7 +40,11 @@ export default function TeamsManagement() {
         </Box>
 
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
-          <Table stickyHeader sx={{ minWidth: 650 }} aria-label="liste des équipes">
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="liste des équipes"
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Nom</TableCell>
@@ -52,7 +58,7 @@ export default function TeamsManagement() {
             <TableBody>
               <TeamRow mode={"create"} refetch={refetch} />
               {data &&
-                data.allTeams.map((team) => (
+                data.getCompetitionById[0].teams.map((team) => (
                   <TeamRow
                     key={team.id}
                     mode={"consult"}

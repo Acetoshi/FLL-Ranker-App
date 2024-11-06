@@ -70,3 +70,22 @@ export const GET_COMPETITION_BY_ID = gql`
     }
   }
 `;
+
+export const GET_TEAMS_OF_COMPETITION_BY_ID = gql`
+  query GetTeamsOfCompetitionById($competitionId: Float!) {
+    getCompetitionById(competitionId: $competitionId) {
+      date
+      id
+      location
+      name
+      teams{
+        name
+        contact
+        location
+        id
+      }
+    }
+  }
+`;
+
+
