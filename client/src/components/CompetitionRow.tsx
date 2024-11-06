@@ -160,8 +160,7 @@ export default function CompetitionRow({
         </TableCell>
         <TableCell align="left">
           <EditableTextCell
-            type="date"
-            InputLabelProps={{ shrink: true, required: true }}
+            textFieldProps={{ type: "date", InputLabelProps: { shrink: true } }}
             displayMode={displayMode}
             inputRef={inputRefs.date}
             label="Date"

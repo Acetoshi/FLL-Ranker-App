@@ -1,10 +1,12 @@
-[{"id":1,"name":"Willms, Wehner and Cruickshank"},
-{"id":2,"name":"Ruecker-Auer"},
-{"id":3,"name":"Hintz Inc"},
-{"id":4,"name":"Pouros, Sanford and Legros"},
-{"id":5,"name":"Weimann LLC"},
-{"id":6,"name":"Vandervort, Hodkiewicz and Wyman"},
-{"id":7,"name":"Yundt-Yost"},
-{"id":8,"name":"Witting-Hickle"},
-{"id":9,"name":"Hammes-Hahn"},
-{"id":10,"name":"Kozey, Aufderhar and Fahey"}]
+[
+  { "id": 1, "name": "Jury Willms", "competitionId": 1 },
+  { "id": 2, "name": "Super Jury", "competitionId": 1 },
+  { "id": 3, "name": "Mulhouse in da place", "competitionId": 1 },
+  { "id": 4, "name": "Pouros United", "competitionId": 1 },
+  { "id": 5, "name": "Weimann Bros", "competitionId": 1 },
+  { "id": 6, "name": "Jury Vandervort", "competitionId": 1 },
+  { "id": 7, "name": "LegoLand Jury", "competitionId": 1 },
+  { "id": 8, "name": "Ghibli Jury", "competitionId": 1 },
+  { "id": 9, "name": "Jury Ashitaka", "competitionId": 1 },
+  { "id": 10, "name": "Vesoul Jury Inc", "competitionId": 1 }
+]

@@ -2,6 +2,7 @@ import { IsString, IsNotEmpty, Length, validate } from "class-validator";
 import { Resolver, Query, Mutation, InputType, Field, Arg } from "type-graphql";
 import { Jury } from "./jury.entity";
 import { User } from "./../user/user.entity";
+import { DeleteResponseStatus } from "../types/deleteResponseStatus";
 
 @InputType()
 class CreateJuryInput {
@@ -23,6 +24,13 @@ class UserJuryInput {
   userId: number;
 }
 
+@InputType()
+class JuryInput {
+  @Field()
+  @IsNotEmpty()
+  juryId: number;
+}
+
 @Resolver(Jury)
 export default class JuryResolver {
   @Query(() => [Jury])
@@ -30,6 +38,9 @@ export default class JuryResolver {
     return await Jury.find({
       relations: {
         users: true,
+      },
+      order: {
+        id: "DESC",
       },
     });
   }
@@ -137,6 +148,26 @@ export default class JuryResolver {
     } catch (error) {
       console.error(error);
       throw new Error("Failed to remove a user from a jury");
+    }
+  }
+
+  @Mutation(() => DeleteResponseStatus)
+  async deleteJury(@Arg("data") data: JuryInput) {
+    try {
+      const jury = await Jury.findOneBy({ id: data.juryId });
+
+      if (!jury) {
+        return new DeleteResponseStatus(
+          "error",
+          `Le jury n°${data.juryId} n'existe pas`
+        );
+      } else {
+        await jury.remove();
+        return new DeleteResponseStatus("success");
+      }
+    } catch (error) {
+      console.error(error);
+      return new DeleteResponseStatus("error", "server error");
     }
   }
 }

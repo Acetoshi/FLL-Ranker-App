@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import { createPortal } from "react-dom";
 import {
+  Exact,
   useCreateNewJuryMutation,
-  useGetAllJuriesQuery,
+  GetAllJuriesQuery,
 } from "../types/graphql-types";
 import {
   TableRow,
@@ -13,7 +15,9 @@ import {
   Alert,
 } from "@mui/material";
 
-type refetchType = Promise<typeof useGetAllJuriesQuery>;
+type refetchType = (
+  variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
+) => Promise<ApolloQueryResult<GetAllJuriesQuery>>;
 
 export default function ManageJuryAddRow({
   refetch,
@@ -38,7 +42,7 @@ export default function ManageJuryAddRow({
   const handleNameValidation = () => {
     const value = nameRef.current && nameRef.current.value;
     return value
-      ? /.{5,100}/.test(value) && /^[A-Za-z0-9_-\s]+$/.test(value)
+      ? /.{5,100}/.test(value) && /^[A-Za-z0-9À-ÖØ-öø-ÿ@_-\s]+$/.test(value)
       : false;
   };
 
@@ -68,6 +72,8 @@ export default function ManageJuryAddRow({
           },
         });
         (await refetch)();
+
+        if (nameRef.current) nameRef.current.value = "";
       } catch {
         setMessage("Le nom doit être unique");
         setOpenAlert(true);

@@ -30,6 +30,9 @@ import user_juries_jury from "../seed_data/user_juries_jury.json";
 
     // init sequences
     await queryRunner.query("DELETE FROM sqlite_sequence WHERE name='role'");
+    await queryRunner.query(
+      "DELETE FROM sqlite_sequence WHERE name='competition'"
+    );
 
     // competitions
     const seedCompetitions = await Promise.all(
@@ -58,7 +61,11 @@ import user_juries_jury from "../seed_data/user_juries_jury.json";
     const seedJuries = await Promise.all(
       juries.map(async (el) => {
         const jury = new Jury();
+        const competition = seedCompetitions.find(
+          (comp) => comp.id === el.competitionId
+        ) as Competition;
         jury.name = el.name;
+        jury.competition = competition;
         return await jury.save();
       })
     );
