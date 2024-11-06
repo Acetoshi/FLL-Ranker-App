@@ -16,7 +16,7 @@ import TeamRow from "../components/TeamRow";
 export default function TeamsManagement() {
 
   const [searchParams] = useSearchParams();
-  const competitionId = searchParams.get('competitionId');
+  const competitionId = searchParams.get('competitionId') ? parseInt(searchParams.get('competitionId') as string) : null;
 
   const { loading, error, data, refetch } = useGetAllTeamsQuery();
 
