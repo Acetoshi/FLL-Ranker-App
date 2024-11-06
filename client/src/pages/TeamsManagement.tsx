@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { useGetAllTeamsQuery } from "../types/graphql-types";
 import {
   TableContainer,
@@ -13,11 +14,17 @@ import {
 import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
+
+  const [searchParams] = useSearchParams();
+  const competitionId = searchParams.get('competitionId');
+
   const { loading, error, data, refetch } = useGetAllTeamsQuery();
 
   if (loading) return <p>Loading...</p>;
 
   if (error) return <p>Error :(</p>;
+
+  
 
   if (data)
     return (
@@ -29,7 +36,7 @@ export default function TeamsManagement() {
           height="25vh"
         >
           <Typography variant="h2" component="h1">
-            Gestion des équipes
+            Gestion des équipes {competitionId}
           </Typography>
         </Box>
 
