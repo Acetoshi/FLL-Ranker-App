@@ -35,6 +35,7 @@ export default class CompetitionResolver {
       },
       relations: {
         juries: true,
+        teams: true,
       },
     });
   }
