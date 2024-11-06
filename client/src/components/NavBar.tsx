@@ -1,62 +1,77 @@
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { Link as MUILink } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const pages = [
   { content: "Page d'accueil", to: "/" },
-  { content: "Jurys", to: "manage/juries" },
-  { content: "Equipes", to: "manage/teams" },
-  { content: "Compétitions", to: "manage/competitions" },
-  { content: "Tableau de bord", to: "manage" },
+  { content: "Jurys", to: "/manage/juries" },
+  { content: "équipes", to: "/manage/teams" },
+  { content: "Compétitions", to: "/manage/competitions" },
+  { content: "Tableau de bord", to: "/manage" },
 ];
 
-const linkStyle = {
-  color: "white",
-  backgroundColor: "primary.main",
-  textDecoration: "none",
-  width: "15%",
-  textAlign: "center",
-};
 function NavBar() {
+  // needed despite the existence of Navlink to have only one underlined link even though routes are nested
+  const location = useLocation();
+
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+    <AppBar
+      color="secondary"
+      position="static"
+      sx={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Typography
+        variant="h6"
+        noWrap
+        component="a"
+        href="#app-bar-with-responsive-menu"
+        sx={{
+          mr: 2,
+          display: { xs: "none", md: "flex" },
+          fontFamily: "monospace",
+          fontWeight: 700,
+          letterSpacing: ".3rem",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        FLL
+      </Typography>
+
+      <Box
+        component="nav"
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "right",
+          gap: "16px",
+        }}
+      >
+        {pages.map((page) => (
+          <MUILink
+            key={page.to}
+            color="secondary.contrastText"
+            component={RouterLink}
+            to={page.to}
+            variant="body1"
             sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              textTransform: "uppercase",
+              textDecoration: location.pathname === page.to ?'underline':'none'
             }}
           >
-            FLL
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "right" }}>
-            {pages.map((pages) => (
-              <MUILink component={RouterLink} to={pages.to} sx={linkStyle}>
-                <Typography variant="body1" component="span">
-                  {pages.content}
-                </Typography>
-              </MUILink>
-            ))}
-          </Box>
-        </Toolbar>
-      </Container>
+            {page.content}
+          </MUILink>
+        ))}
+      </Box>
     </AppBar>
   );
 }
 export default NavBar;
-
