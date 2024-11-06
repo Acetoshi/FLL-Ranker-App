@@ -1,11 +1,7 @@
 import { useRef, useState } from "react";
-import { ApolloQueryResult } from "@apollo/client";
 import { createPortal } from "react-dom";
-import {
-  Exact,
-  useCreateNewJuryMutation,
-  GetAllJuriesQuery,
-} from "../types/graphql-types";
+import { useCreateNewJuryMutation } from "../types/graphql-types";
+import { JuriesOfCompetitionRefetchType } from "../types/types";
 import {
   TableRow,
   TableCell,
@@ -15,14 +11,10 @@ import {
   Alert,
 } from "@mui/material";
 
-type refetchType = (
-  variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
-) => Promise<ApolloQueryResult<GetAllJuriesQuery>>;
-
 export default function ManageJuryAddRow({
   refetch,
 }: {
-  refetch: refetchType;
+  refetch: JuriesOfCompetitionRefetchType;
 }) {
   const [createNewJury] = useCreateNewJuryMutation();
 
