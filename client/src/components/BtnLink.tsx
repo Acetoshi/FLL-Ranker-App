@@ -9,7 +9,6 @@ const buttonStyle = {
   textTransform: "uppercase",
   borderRadius: "4px",
   textDecoration: "none",
-  width: "100%",
   textAlign: "center",
   "&:hover": {
     backgroundColor: "primary.dark",
