@@ -1,5 +1,5 @@
 import { useRef, useState, RefObject } from "react";
-import { TableRow, TableCell } from "@mui/material";
+import { TableRow, TableCell, Stack } from "@mui/material";
 import {
   useCreateCompetitionMutation,
   useEditCompetitionMutation,
@@ -7,6 +7,7 @@ import {
 import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "./BtnCRUD";
+import BtnLink from "./BtnLink";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
@@ -173,6 +174,7 @@ export default function CompetitionRow({
           />
         </TableCell>
         <TableCell align="right">
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
           {displayMode == "create" ? (
             <BtnCRUD
               disabled={handleDisabled()}
@@ -193,12 +195,18 @@ export default function CompetitionRow({
               />
             </>
           ) : (
-            <BtnCRUD
-              disabled={false}
-              handleClick={() => setDisplayMode("edit")}
-              type={"edit"}
-            />
+            <>
+              <BtnLink to={`/manage/competitions/${competition && competition.id}/juries`} content="Jurys" />
+              <BtnLink to={`/manage/competitions/${competition && competition.id}/teams`} content="équipes" />
+              <BtnLink to={`/manage/competitions/${competition && competition.id}/planning`} content="planning" />
+              <BtnCRUD
+                disabled={false}
+                handleClick={() => setDisplayMode("edit")}
+                type={"edit"}
+              />
+            </>
           )}
+          </Stack>
         </TableCell>
       </TableRow>
     </>
