@@ -58,7 +58,7 @@ export default function TeamsManagement() {
             <TableBody>
               <TeamRow mode={"create"} refetch={refetch} competitionId={competitionId} />
               {data &&
-                data.getCompetitionById[0].teams.map((team) => (
+                data.getCompetitionById.teams.map((team) => (
                   <TeamRow
                     key={team.id}
                     mode={"consult"}
