@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
+import { ApolloQueryResult } from "@apollo/client";
 import {
+  Exact,
   useGetUsersByRoleQuery,
   useAddUserToJuryMutation,
   useRemoveUserFromJuryMutation,
+  useDeleteJuryMutation,
+  GetAllJuriesQuery,
   Jury,
   User,
+  DeleteJuryMutation,
 } from "../types/graphql-types";
+import { useDialog } from "../hooks/useDialog";
+import { useNotification } from "../hooks/useNotification";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";
@@ -15,8 +22,23 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Box } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { red } from "@mui/material/colors";
 
-export default function ManageJuryRow({ jury }: { jury: Jury }) {
+type refetchType = (
+  variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
+) => Promise<ApolloQueryResult<GetAllJuriesQuery>>;
+
+export default function ManageJuryRow({
+  jury,
+  refetch,
+}: {
+  jury: Jury;
+  refetch: refetchType;
+}) {
+  const { notifySuccess, notifyError } = useNotification();
+  const { askUser } = useDialog();
+
   const [jurors, setJurors] = useState<User[]>(jury.users);
   const [juror] = useState<string>("");
   const [usersSelect, setUsersSelect] = useState<User[]>([]);
@@ -25,6 +47,7 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
       roleId: 2, // we want only juror role here
     },
   });
+  const [deleteJury] = useDeleteJuryMutation();
   const [addUserToJury] = useAddUserToJuryMutation();
   const [removeUserFromJury] = useRemoveUserFromJuryMutation();
 
@@ -72,6 +95,34 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
     ]);
   };
 
+  const handleDeleteJury = async (jury: Jury) => {
+    const userConfirms = await askUser(
+      `Supprimer le jury ${jury && jury.name} ?`,
+      "Cette action est définitive !",
+    );
+
+    if (jury && userConfirms) {
+      const {
+        data: {
+          deleteJury: { success, message },
+        },
+      } = (await deleteJury({
+        variables: {
+          data: {
+            juryId: jury.id,
+          },
+        },
+      })) as { data: DeleteJuryMutation };
+
+      if (success) {
+        notifySuccess("Jury supprimé");
+        (await refetch)();
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
   if (loading)
     return (
       <TableRow>
@@ -93,7 +144,19 @@ export default function ManageJuryRow({ jury }: { jury: Jury }) {
       <TableCell align="left">{jury.id}</TableCell>
       <TableCell component="th" scope="row">
         <Stack spacing={1}>
-          <strong>{jury.name}</strong>
+          <Stack direction="row" spacing={1}>
+            <strong>{jury.name}</strong>{" "}
+            <DeleteIcon
+              onClick={() => handleDeleteJury(jury)}
+              fontSize="small"
+              sx={{
+                color: red[100],
+                "&:hover": {
+                  color: "red",
+                },
+              }}
+            />
+          </Stack>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             {jurors &&
               jurors.map((user: User) => (
