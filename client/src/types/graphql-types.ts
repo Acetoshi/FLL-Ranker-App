@@ -27,6 +27,10 @@ export type Competition = {
   teams: Array<Team>;
 };
 
+export type CompetitionId = {
+  id: Scalars['Float']['input'];
+};
+
 export type CompetitionInput = {
   date: Scalars['String']['input'];
   id?: InputMaybe<Scalars['Float']['input']>;
@@ -67,6 +71,7 @@ export type Mutation = {
   deleteTeam: DeleteResponseStatus;
   editCompetition: Competition;
   editTeam: Team;
+  removeCompetition: DeleteResponseStatus;
   removeUserFromJury: User;
 };
 
@@ -108,6 +113,11 @@ export type MutationEditCompetitionArgs = {
 
 export type MutationEditTeamArgs = {
   team: TeamInput;
+};
+
+
+export type MutationRemoveCompetitionArgs = {
+  competition: CompetitionId;
 };
 
 
@@ -232,6 +242,13 @@ export type EditCompetitionMutationVariables = Exact<{
 
 
 export type EditCompetitionMutation = { __typename?: 'Mutation', editCompetition: { __typename?: 'Competition', id: number, name: string, location: string, date: string } };
+
+export type RemoveCompetitionMutationVariables = Exact<{
+  competitionId: CompetitionId;
+}>;
+
+
+export type RemoveCompetitionMutation = { __typename?: 'Mutation', removeCompetition: { __typename?: 'DeleteResponseStatus', success: boolean, message?: string | null } };
 
 export type DeleteTeamMutationVariables = Exact<{
   team: TeamIdInput;
@@ -563,6 +580,40 @@ export function useEditCompetitionMutation(baseOptions?: Apollo.MutationHookOpti
 export type EditCompetitionMutationHookResult = ReturnType<typeof useEditCompetitionMutation>;
 export type EditCompetitionMutationResult = Apollo.MutationResult<EditCompetitionMutation>;
 export type EditCompetitionMutationOptions = Apollo.BaseMutationOptions<EditCompetitionMutation, EditCompetitionMutationVariables>;
+export const RemoveCompetitionDocument = gql`
+    mutation removeCompetition($competitionId: CompetitionId!) {
+  removeCompetition(competition: $competitionId) {
+    success
+    message
+  }
+}
+    `;
+export type RemoveCompetitionMutationFn = Apollo.MutationFunction<RemoveCompetitionMutation, RemoveCompetitionMutationVariables>;
+
+/**
+ * __useRemoveCompetitionMutation__
+ *
+ * To run a mutation, you first call `useRemoveCompetitionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCompetitionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCompetitionMutation, { data, loading, error }] = useRemoveCompetitionMutation({
+ *   variables: {
+ *      competitionId: // value for 'competitionId'
+ *   },
+ * });
+ */
+export function useRemoveCompetitionMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCompetitionMutation, RemoveCompetitionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCompetitionMutation, RemoveCompetitionMutationVariables>(RemoveCompetitionDocument, options);
+      }
+export type RemoveCompetitionMutationHookResult = ReturnType<typeof useRemoveCompetitionMutation>;
+export type RemoveCompetitionMutationResult = Apollo.MutationResult<RemoveCompetitionMutation>;
+export type RemoveCompetitionMutationOptions = Apollo.BaseMutationOptions<RemoveCompetitionMutation, RemoveCompetitionMutationVariables>;
 export const DeleteTeamDocument = gql`
     mutation deleteTeam($team: TeamIdInput!) {
   deleteTeam(team: $team) {

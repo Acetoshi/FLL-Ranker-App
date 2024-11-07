@@ -32,8 +32,11 @@ export class Competition extends BaseEntity {
   date: string;
 
   @Field(() => [Jury])
-  @OneToMany(() => Jury, (jury) => jury.competition)
-  juries: Jury[];
+  @OneToMany(() => Jury, (jury) => jury.competition, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  juries?: [Jury];
 
   @Field(() => [Team])
   @ManyToMany(() => Team, (team) => team.competitions)
