@@ -3,10 +3,15 @@ import { TableRow, TableCell, Stack } from "@mui/material";
 import {
   useCreateCompetitionMutation,
   useEditCompetitionMutation,
+  useRemoveCompetitionMutation,
+  RemoveCompetitionMutation,
 } from "../types/graphql-types";
 import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "./BtnCRUD";
+import { DataHandlerResult } from "../types/types";
+import { useDialog } from "../hooks/useDialog";
+import { useNotification } from "../hooks/useNotification";
 import BtnLink from "./BtnLink";
 
 type CompetitionRowProps = {
@@ -28,6 +33,9 @@ export default function CompetitionRow({
   const [displayMode, setDisplayMode] = useState(mode);
   const [createCompetition] = useCreateCompetitionMutation();
   const [editCompetition] = useEditCompetitionMutation();
+  const [removeCompetition] = useRemoveCompetitionMutation();
+  const { askUser } = useDialog();
+  const { notifySuccess, notifyError } = useNotification();
 
   const inputRefs = {
     name: useRef<HTMLInputElement>(null),
@@ -97,8 +105,10 @@ export default function CompetitionRow({
         },
       });
       clearInputFields(inputRefs);
+      notifySuccess("Compétition créée avec succès");
     } catch {
       setErrors((prevErrors) => ({ ...prevErrors, name: false }));
+      notifyError("Erreur à la création de la compétition");
     }
   };
 
@@ -116,7 +126,40 @@ export default function CompetitionRow({
         },
       },
     });
+    notifySuccess("Compétition modifiée avec succès");
     setDisplayMode("consult");
+  };
+
+  const submitDeletion = async () => {
+    const userConfirms = await askUser(
+      `Supprimer la compétition ${competition && competition.name} ?`,
+      "Cette action est définitive, elle supprime également l'ensemble des jurys associés à cette compétition !"
+    );
+
+    if (competition && userConfirms) {
+      const { success, message } = await handleRemove();
+      if (success) {
+        notifySuccess("compétition supprimée");
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const handleRemove = async (): Promise<DataHandlerResult> => {
+    const competitionInput = {
+      id: competition!.id,
+    };
+    const {
+      data: {
+        removeCompetition: { success, message },
+      },
+    } = (await removeCompetition({
+      refetchQueries: [{ query: GET_COMPETITIONS }],
+      variables: { competitionId: competitionInput },
+    })) as { data: RemoveCompetitionMutation };
+
+    return { success, message };
   };
 
   const getMyDate = (competition: Competition) => {
@@ -129,83 +172,97 @@ export default function CompetitionRow({
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-        <TableCell align="left">
-          <EditableTextCell
-            displayMode={displayMode}
-            inputRef={inputRefs.name}
-            label="Nom"
-            onChange={() => handleInputChange("name", inputRefs.name)}
-            error={errors.name}
-            helperText={
-              errors.name
-                ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
-                : ""
-            }
-            defaultValue={competition ? competition.name : ""}
-          />
-        </TableCell>
-        <TableCell align="left">
-          <EditableTextCell
-            displayMode={displayMode}
-            inputRef={inputRefs.location}
-            label="Lieu"
-            onChange={() => handleInputChange("location", inputRefs.location)}
-            error={errors.location}
-            helperText={
-              errors.location
-                ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
-                : ""
-            }
-            defaultValue={competition ? competition.location : ""}
-          />
-        </TableCell>
-        <TableCell align="left">
-          <EditableTextCell
-            textFieldProps={{ type: "date", InputLabelProps: { shrink: true } }}
-            displayMode={displayMode}
-            inputRef={inputRefs.date}
-            label="Date"
-            onChange={() => handleInputChange("date", inputRefs.date)}
-            error={errors.date}
-            helperText={
-              errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
-            }
-            defaultValue={competition && getMyDate(competition)}
-          />
-        </TableCell>
+        <EditableTextCell
+          displayMode={displayMode}
+          inputRef={inputRefs.name}
+          label="Nom"
+          onChange={() => handleInputChange("name", inputRefs.name)}
+          error={errors.name}
+          helperText={
+            errors.name
+              ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
+              : ""
+          }
+          defaultValue={competition ? competition.name : ""}
+        />
+        <EditableTextCell
+          displayMode={displayMode}
+          inputRef={inputRefs.location}
+          label="Lieu"
+          onChange={() => handleInputChange("location", inputRefs.location)}
+          error={errors.location}
+          helperText={
+            errors.location
+              ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
+              : ""
+          }
+          defaultValue={competition ? competition.location : ""}
+        />
+        <EditableTextCell
+          textFieldProps={{ type: "date", InputLabelProps: { shrink: true } }}
+          displayMode={displayMode}
+          inputRef={inputRefs.date}
+          label="Date"
+          onChange={() => handleInputChange("date", inputRefs.date)}
+          error={errors.date}
+          helperText={
+            errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
+          }
+          defaultValue={competition && getMyDate(competition)}
+        />
         <TableCell align="right">
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          {displayMode == "create" ? (
-            <BtnCRUD
-              disabled={handleDisabled()}
-              handleClick={handleAdd}
-              type={"add"}
-            />
-          ) : displayMode == "edit" ? (
-            <>
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            {displayMode == "create" ? (
               <BtnCRUD
                 disabled={handleDisabled()}
-                handleClick={handleEdit}
-                type={"save"}
+                handleClick={handleAdd}
+                type={"add"}
               />
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("consult")}
-                type={"cancel"}
-              />
-            </>
-          ) : (
-            <>
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/juries`} content="Jurys" />
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/teams`} content="équipes" />
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/planning`} content="planning" />
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("edit")}
-                type={"edit"}
-              />
-            </>
-          )}
+            ) : displayMode == "edit" ? (
+              <>
+                <BtnCRUD
+                  disabled={handleDisabled()}
+                  handleClick={handleEdit}
+                  type={"save"}
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("consult")}
+                  type={"cancel"}
+                />
+              </>
+            ) : (
+              <>
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/juries`}
+                  content="Jurys"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/teams`}
+                  content="équipes"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/planning`}
+                  content="planning"
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("edit")}
+                  type={"edit"}
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={submitDeletion}
+                  type={"delete"}
+                />
+              </>
+            )}
           </Stack>
         </TableCell>
       </TableRow>

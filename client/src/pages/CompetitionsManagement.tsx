@@ -43,11 +43,17 @@ export default function CompetitionsManagement() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data &&
-              data.getAllCompetitions.map((competition) => (
-                <CompetitionRow mode="consult" competition={competition} />
-              ))}
             <CompetitionRow mode="create" />
+            {data &&
+              data.getAllCompetitions.reduce(
+                (aggregat: JSX.Element[], competition) => {
+                  aggregat.unshift(
+                    <CompetitionRow mode="consult" competition={competition} />
+                  );
+                  return aggregat;
+                },
+                []
+              )}
           </TableBody>
         </Table>
       </TableContainer>

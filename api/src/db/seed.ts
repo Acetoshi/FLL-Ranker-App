@@ -62,7 +62,7 @@ import user_juries_jury from "../seed_data/user_juries_jury.json";
       juries.map(async (el) => {
         const jury = new Jury();
         const competition = seedCompetitions.find(
-          (comp) => comp.id === el.competitionId
+          (comp) => comp.id === el.competition
         ) as Competition;
         jury.name = el.name;
         jury.competition = competition;
