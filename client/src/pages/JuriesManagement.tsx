@@ -14,6 +14,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography, Box, Stack } from "@mui/material";
+import MiniNavbar from "../components/MiniNavbar";
 
 export default function JuriesManagement() {
   const { competitionId } = useParams<string>();
@@ -37,13 +38,12 @@ export default function JuriesManagement() {
         >
           <Stack spacing={1} sx={{ alignItems: "center" }}>
             <Typography variant="h2" component="h1">
-              Gestion des jurys
-            </Typography>
-            <Typography variant="h4" component="h3">
-              Compétition : {data && data.getCompetitionById.name}
+              Jurys {data && data.getCompetitionById.name}
             </Typography>
           </Stack>
         </Box>
+
+        <MiniNavbar competition={parseInt(competitionId as string)} />
 
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
