@@ -6,8 +6,7 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const pages = [
   { content: "Page d'accueil", to: "/" },
-  { content: "Compétitions", to: "/manage/competitions" },
-  { content: "Tableau de bord", to: "/manage" },
+  { content: "Tableau de bord", to: "/manage/competitions" },
 ];
 
 function NavBar() {
@@ -62,7 +61,8 @@ function NavBar() {
             variant="body1"
             sx={{
               textTransform: "uppercase",
-              textDecoration: location.pathname === page.to ?'underline':'none'
+              textDecoration:
+                location.pathname === page.to ? "underline" : "none",
             }}
           >
             {page.content}
