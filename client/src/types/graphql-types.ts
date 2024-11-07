@@ -50,6 +50,10 @@ export type DeleteResponseStatus = {
   success: Scalars['Boolean']['output'];
 };
 
+export type IdInput = {
+  id: Scalars['Float']['input'];
+};
+
 export type Jury = {
   __typename?: 'Jury';
   competition: Competition;
@@ -71,6 +75,7 @@ export type Mutation = {
   createSession: Session;
   createTeam: Team;
   deleteJury: DeleteResponseStatus;
+  deleteSession: DeleteResponseStatus;
   deleteTeam: DeleteResponseStatus;
   editCompetition: Competition;
   editTeam: Team;
@@ -109,8 +114,13 @@ export type MutationDeleteJuryArgs = {
 };
 
 
+export type MutationDeleteSessionArgs = {
+  session: IdInput;
+};
+
+
 export type MutationDeleteTeamArgs = {
-  team: TeamIdInput;
+  team: IdInput;
 };
 
 
@@ -184,10 +194,6 @@ export type Team = {
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
   sessions: Array<Session>;
-};
-
-export type TeamIdInput = {
-  id?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type TeamInput = {
@@ -278,7 +284,7 @@ export type RemoveCompetitionMutationVariables = Exact<{
 export type RemoveCompetitionMutation = { __typename?: 'Mutation', removeCompetition: { __typename?: 'DeleteResponseStatus', success: boolean, message?: string | null } };
 
 export type DeleteTeamMutationVariables = Exact<{
-  team: TeamIdInput;
+  team: IdInput;
 }>;
 
 
@@ -649,7 +655,7 @@ export type RemoveCompetitionMutationHookResult = ReturnType<typeof useRemoveCom
 export type RemoveCompetitionMutationResult = Apollo.MutationResult<RemoveCompetitionMutation>;
 export type RemoveCompetitionMutationOptions = Apollo.BaseMutationOptions<RemoveCompetitionMutation, RemoveCompetitionMutationVariables>;
 export const DeleteTeamDocument = gql`
-    mutation deleteTeam($team: TeamIdInput!) {
+    mutation deleteTeam($team: IdInput!) {
   deleteTeam(team: $team) {
     success
     message

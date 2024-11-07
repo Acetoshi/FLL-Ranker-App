@@ -88,7 +88,7 @@ export const DELETE_COMPETITION = gql`
 `;
 
 export const DELETE_TEAM = gql`
-  mutation deleteTeam($team: TeamIdInput!) {
+  mutation deleteTeam($team: IdInput!) {
     deleteTeam(team: $team) {
       success
       message
