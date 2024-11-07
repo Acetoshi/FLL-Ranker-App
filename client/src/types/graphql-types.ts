@@ -24,6 +24,7 @@ export type Competition = {
   juries: Array<Jury>;
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  teams: Array<Team>;
 };
 
 export type CompetitionInput = {
@@ -34,6 +35,7 @@ export type CompetitionInput = {
 };
 
 export type CreateJuryInput = {
+  competitionId: Scalars['Float']['input'];
   name: Scalars['String']['input'];
 };
 
@@ -118,7 +120,7 @@ export type Query = {
   allTeams: Array<Team>;
   getAllCompetitions: Array<Competition>;
   getAllJuries: Array<Jury>;
-  getCompetitionById: Array<Competition>;
+  getCompetitionById: Competition;
   getUsersByRole: Array<User>;
 };
 
@@ -140,6 +142,7 @@ export type Role = {
 
 export type Team = {
   __typename?: 'Team';
+  competitions: Array<Competition>;
   contact: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   location: Scalars['String']['output'];
@@ -151,6 +154,7 @@ export type TeamIdInput = {
 };
 
 export type TeamInput = {
+  competitionId?: InputMaybe<Scalars['Float']['input']>;
   contact: Scalars['String']['input'];
   id?: InputMaybe<Scalars['Float']['input']>;
   location: Scalars['String']['input'];
@@ -241,6 +245,13 @@ export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllJuriesQuery = { __typename?: 'Query', getAllJuries: Array<{ __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, email: string, firstname: string, lastname: string }> }> };
 
+export type GetJuriesOfCompetitionQueryVariables = Exact<{
+  competitionId: Scalars['Float']['input'];
+}>;
+
+
+export type GetJuriesOfCompetitionQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', id: number, name: string, location: string, juries: Array<{ __typename?: 'Jury', id: number, name: string, users: Array<{ __typename?: 'User', id: number, firstname: string, lastname: string }> }> } };
+
 export type GetAllTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -263,7 +274,14 @@ export type GetCompetitionByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: Array<{ __typename?: 'Competition', date: string, id: number, location: string, name: string, juries: Array<{ __typename?: 'Jury', name: string, id: number }> }> };
+export type GetCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', date: string, id: number, location: string, name: string, juries: Array<{ __typename?: 'Jury', name: string, id: number }> } };
+
+export type GetTeamsOfCompetitionByIdQueryVariables = Exact<{
+  competitionId: Scalars['Float']['input'];
+}>;
+
+
+export type GetTeamsOfCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', date: string, id: number, location: string, name: string, teams: Array<{ __typename?: 'Team', name: string, contact: string, location: string, id: number }> } };
 
 
 export const CreateNewJuryDocument = gql`
@@ -625,6 +643,57 @@ export type GetAllJuriesQueryHookResult = ReturnType<typeof useGetAllJuriesQuery
 export type GetAllJuriesLazyQueryHookResult = ReturnType<typeof useGetAllJuriesLazyQuery>;
 export type GetAllJuriesSuspenseQueryHookResult = ReturnType<typeof useGetAllJuriesSuspenseQuery>;
 export type GetAllJuriesQueryResult = Apollo.QueryResult<GetAllJuriesQuery, GetAllJuriesQueryVariables>;
+export const GetJuriesOfCompetitionDocument = gql`
+    query GetJuriesOfCompetition($competitionId: Float!) {
+  getCompetitionById(competitionId: $competitionId) {
+    id
+    name
+    location
+    juries {
+      id
+      name
+      users {
+        id
+        firstname
+        lastname
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetJuriesOfCompetitionQuery__
+ *
+ * To run a query within a React component, call `useGetJuriesOfCompetitionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetJuriesOfCompetitionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetJuriesOfCompetitionQuery({
+ *   variables: {
+ *      competitionId: // value for 'competitionId'
+ *   },
+ * });
+ */
+export function useGetJuriesOfCompetitionQuery(baseOptions: Apollo.QueryHookOptions<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables> & ({ variables: GetJuriesOfCompetitionQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>(GetJuriesOfCompetitionDocument, options);
+      }
+export function useGetJuriesOfCompetitionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>(GetJuriesOfCompetitionDocument, options);
+        }
+export function useGetJuriesOfCompetitionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>(GetJuriesOfCompetitionDocument, options);
+        }
+export type GetJuriesOfCompetitionQueryHookResult = ReturnType<typeof useGetJuriesOfCompetitionQuery>;
+export type GetJuriesOfCompetitionLazyQueryHookResult = ReturnType<typeof useGetJuriesOfCompetitionLazyQuery>;
+export type GetJuriesOfCompetitionSuspenseQueryHookResult = ReturnType<typeof useGetJuriesOfCompetitionSuspenseQuery>;
+export type GetJuriesOfCompetitionQueryResult = Apollo.QueryResult<GetJuriesOfCompetitionQuery, GetJuriesOfCompetitionQueryVariables>;
 export const GetAllTeamsDocument = gql`
     query GetAllTeams {
   allTeams {
@@ -807,3 +876,52 @@ export type GetCompetitionByIdQueryHookResult = ReturnType<typeof useGetCompetit
 export type GetCompetitionByIdLazyQueryHookResult = ReturnType<typeof useGetCompetitionByIdLazyQuery>;
 export type GetCompetitionByIdSuspenseQueryHookResult = ReturnType<typeof useGetCompetitionByIdSuspenseQuery>;
 export type GetCompetitionByIdQueryResult = Apollo.QueryResult<GetCompetitionByIdQuery, GetCompetitionByIdQueryVariables>;
+export const GetTeamsOfCompetitionByIdDocument = gql`
+    query GetTeamsOfCompetitionById($competitionId: Float!) {
+  getCompetitionById(competitionId: $competitionId) {
+    date
+    id
+    location
+    name
+    teams {
+      name
+      contact
+      location
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTeamsOfCompetitionByIdQuery__
+ *
+ * To run a query within a React component, call `useGetTeamsOfCompetitionByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamsOfCompetitionByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTeamsOfCompetitionByIdQuery({
+ *   variables: {
+ *      competitionId: // value for 'competitionId'
+ *   },
+ * });
+ */
+export function useGetTeamsOfCompetitionByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables> & ({ variables: GetTeamsOfCompetitionByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>(GetTeamsOfCompetitionByIdDocument, options);
+      }
+export function useGetTeamsOfCompetitionByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>(GetTeamsOfCompetitionByIdDocument, options);
+        }
+export function useGetTeamsOfCompetitionByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>(GetTeamsOfCompetitionByIdDocument, options);
+        }
+export type GetTeamsOfCompetitionByIdQueryHookResult = ReturnType<typeof useGetTeamsOfCompetitionByIdQuery>;
+export type GetTeamsOfCompetitionByIdLazyQueryHookResult = ReturnType<typeof useGetTeamsOfCompetitionByIdLazyQuery>;
+export type GetTeamsOfCompetitionByIdSuspenseQueryHookResult = ReturnType<typeof useGetTeamsOfCompetitionByIdSuspenseQuery>;
+export type GetTeamsOfCompetitionByIdQueryResult = Apollo.QueryResult<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>;

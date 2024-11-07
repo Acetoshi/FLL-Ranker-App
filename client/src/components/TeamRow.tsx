@@ -6,7 +6,7 @@ import { useTeamsOperations } from "../services/teams";
 import { useNotification } from "../hooks/useNotification";
 import EditableTextCell from "./EditableTextCell";
 import { useDialog } from "../hooks/useDialog";
-export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
+export default function TeamRow({ mode, team, refetch, competitionId }: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to give feedback to the user
@@ -88,7 +88,7 @@ export default function TeamRow({ mode, team, refetch }: TeamRowProps) {
   };
 
   const submitCreation = async () => {
-    const { success, message } = await handleAdd(teamRef, validateInput);
+    const { success, message } = await handleAdd(teamRef, competitionId, validateInput);
     if (success) {
       notifySuccess("équipe créée avec succès");
       clearInputFields(teamRef);

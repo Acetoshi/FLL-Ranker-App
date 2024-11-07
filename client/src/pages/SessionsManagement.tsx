@@ -23,7 +23,7 @@ export default function CompetitionsManagement() {
   if (error) return <p>Error :(</p>;
 
   // aliasing the data for legibility
-  const competition = data ? data.getCompetitionById[0] : undefined;
+  const competition = data ? data.getCompetitionById : undefined;
 
   if (data)
     return (
