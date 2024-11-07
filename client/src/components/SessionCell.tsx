@@ -2,11 +2,10 @@ import { MenuItem, Select, SelectChangeEvent, TableCell } from "@mui/material";
 import { useState } from "react";
 import { useSessionsOperations } from "../services/sessions";
 import { useNotification } from "../hooks/useNotification";
-import { MinimalTeam, SessionCellProps } from "../types/types";
+import { MinimalTeam, MinimalSession, SessionCellProps } from "../types/types";
 
 export default function SessionCell({
-  refetch,
-  session,
+  initialSession,
   teams,
   juryId,
   competitionId,
@@ -23,11 +22,12 @@ export default function SessionCell({
     id: 0,
     name: "disponible",
   };
-  const defaultTeam = session ? session.team : noTeam;
+  const defaultTeam = initialSession ? initialSession.team : noTeam;
   const [selectedTeam, setSelectedTeam] = useState<MinimalTeam>(defaultTeam);
+  const [session, setSession] = useState<MinimalSession | undefined>(initialSession);
 
   const submitCreation = async (targetTeam: MinimalTeam) => {
-    const { success, message } = await handleAddSession(
+    const { success, message, createdSession } = await handleAddSession(
       startTime,
       endTime,
       competitionId,
@@ -37,6 +37,7 @@ export default function SessionCell({
     if (success) {
       notifySuccess("Créneau enregistré");
       setSelectedTeam(targetTeam);
+      setSession(createdSession);
     } else {
       notifyError(message as string);
     }
@@ -46,7 +47,7 @@ export default function SessionCell({
     if (session) {
       const { success, message } = await handleEditSession(
         session.id,
-        targetTeam.id,
+        targetTeam.id
       );
       if (success) {
         notifySuccess("Modification enregistrée");
@@ -63,6 +64,7 @@ export default function SessionCell({
       if (success) {
         notifySuccess("Créneau supprimé");
         setSelectedTeam(noTeam);
+        setSession(undefined);
       } else {
         notifyError(message as string);
       }
@@ -77,11 +79,11 @@ export default function SessionCell({
       } else {
         await submitCreation(targetTeam);
       }
-      await refetch();
+      //await refetch();
     } else {
       await submitDeletion();
 
-      await refetch();
+      //await refetch();
     }
   };
 

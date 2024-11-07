@@ -16,7 +16,7 @@ import MiniNavbar from "../components/MiniNavbar";
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
 
-  const { loading, error, data, refetch } = useGetCompetitionByIdQuery({
+  const { loading, error, data } = useGetCompetitionByIdQuery({
     variables: { competitionId: parseInt(competitionId as string) },
   });
 
@@ -102,8 +102,7 @@ export default function CompetitionsManagement() {
                 {competition &&
                   competition.juries.map((jury) => (
                     <SessionCell
-                      refetch={refetch}
-                      session={filterSessionByStartTimeAndJuryId(
+                      initialSession={filterSessionByStartTimeAndJuryId(
                         timeSlot.startTime,
                         jury.id
                       )}
