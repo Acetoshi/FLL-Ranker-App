@@ -10,7 +10,7 @@ import {
   TableCell,
 } from "@mui/material";
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
-// import SessionCell from "../components/SessionCell";
+import SessionCell from "../components/SessionCell";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -25,20 +25,32 @@ export default function CompetitionsManagement() {
 
   // aliasing the data for legibility
   const competition = data ? data.getCompetitionById : undefined;
-  // const teams= data ? data.getCompetitionById : undefined;
+  const teams = data ? data.getCompetitionById.teams : undefined;
+
+  const stickyColumnStyle = {
+    position: "sticky",
+    left: 0,
+    background: "white",
+    borderRight: "1px solid lightgrey",
+    zIndex: "1 !important",
+  };
+
+  const fixedSizeCell = {
+    width: 200,
+  };
 
   const timeSlots = [
-    "09h00-09h45",
-    "09h45-10h30",
-    "10h30-11h15",
-    "11h15-12h00",
-    "12h00-12h45",
-    "12h45-13h30",
-    "13h30-14h15",
-    "14h15-15h00",
-    "15h00-15h45",
-    "15h45-16h30",
-    "16h30-17h00",
+    "09h00\n\n09h45",
+    "09h45\n\n10h30",
+    "10h30\n\n11h15",
+    "11h15\n\n12h00",
+    "12h00\n\n12h45",
+    "12h45\n\n13h30",
+    "13h30\n\n14h15",
+    "14h15\n\n15h00",
+    "15h00\n\n15h45",
+    "15h45\n\n16h30",
+    "16h30\n\n17h00",
   ];
 
   if (data)
@@ -55,11 +67,15 @@ export default function CompetitionsManagement() {
           </Typography>
         </Box>
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="Liste des jurys">
+        <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="Liste des jurys"
+          >
             <TableHead>
               <TableRow>
-                <TableCell align="left">Créneau</TableCell>
+                <TableCell align="left" sx={fixedSizeCell}>Créneau</TableCell>
                 {competition &&
                   competition.juries.map((jury) => (
                     <TableCell key={`jury-${jury.id}`}>{jury.name}</TableCell>
@@ -67,13 +83,17 @@ export default function CompetitionsManagement() {
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
+            <></>
+
             {timeSlots.map((timeSlot) => (
               <TableRow>
-                <TableCell align="left">{timeSlot}</TableCell>
-                {/* {competition &&
-                  competition.juries.map((jury) => (
+                <TableCell align="left" sx={stickyColumnStyle}>
+                  {timeSlot}
+                </TableCell>
+                {competition &&
+                  competition.juries.map(() => (
                     <SessionCell teams={teams} />
-                  ))} */}
+                  ))}
               </TableRow>
             ))}
           </Table>
