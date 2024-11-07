@@ -19,12 +19,12 @@ export class Session extends BaseEntity {
   id: number;
 
   @Field()
-  @Column({ type: "varchar", width: 100, nullable: false })
-  start: string;
+  @Column({ type: "time" })
+  startTime: string;
 
   @Field()
-  @Column({ type: "varchar", width: 50, nullable: false })
-  end: string;
+  @Column({ type: "time" })
+  endTime: string;
 
   @Field(() => Competition)
   @ManyToOne(() => Competition, (competition) => competition.sessions)
