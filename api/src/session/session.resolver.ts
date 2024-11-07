@@ -33,7 +33,7 @@ class SessionInput implements Partial<Session> {
 @Resolver(Session)
 export default class SessionResolver {
   @Mutation(() => Session)
-  async addSession(@Arg("session") newSession: SessionInput) {
+  async createSession(@Arg("session") newSession: SessionInput) {
     try {
       const sessionToInsert = new Session();
 

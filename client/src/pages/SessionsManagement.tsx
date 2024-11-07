@@ -36,17 +36,17 @@ export default function CompetitionsManagement() {
   };
 
   const timeSlots = [
-    "09h00\n\n09h45",
-    "09h45\n\n10h30",
-    "10h30\n\n11h15",
-    "11h15\n\n12h00",
-    "12h00\n\n12h45",
-    "12h45\n\n13h30",
-    "13h30\n\n14h15",
-    "14h15\n\n15h00",
-    "15h00\n\n15h45",
-    "15h45\n\n16h30",
-    "16h30\n\n17h00",
+    { startTime: "09h00", endTime: "09h45" },
+    { startTime: "09h45", endTime: "10h30" },
+    { startTime: "10h30", endTime: "11h15" },
+    { startTime: "11h15", endTime: "12h00" },
+    { startTime: "12h00", endTime: "12h45" },
+    { startTime: "12h45", endTime: "13h30" },
+    { startTime: "13h30", endTime: "14h15" },
+    { startTime: "14h15", endTime: "15h00" },
+    { startTime: "15h00", endTime: "15h45" },
+    { startTime: "15h45", endTime: "16h30" },
+    { startTime: "16h30", endTime: "17h00" },
   ];
 
   if (data)
@@ -83,10 +83,18 @@ export default function CompetitionsManagement() {
             {timeSlots.map((timeSlot) => (
               <TableRow>
                 <TableCell align="center" sx={stickyColumnStyle}>
-                  {timeSlot}
+                  {`${timeSlot.startTime}\n${timeSlot.endTime}`}
                 </TableCell>
                 {competition &&
-                  competition.juries.map(() => <SessionCell teams={teams} />)}
+                  competition.juries.map((jury) => (
+                    <SessionCell
+                      juryId={jury.id}
+                      competitionId={parseInt(competitionId as string)}
+                      startTime={timeSlot.startTime}
+                      endTime={timeSlot.endTime}
+                      teams={teams}
+                    />
+                  ))}
               </TableRow>
             ))}
           </Table>
