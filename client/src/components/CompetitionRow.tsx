@@ -8,6 +8,7 @@ import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "./BtnCRUD";
 import BtnLink from "./BtnLink";
+import { useNotification } from "../hooks/useNotification";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
@@ -28,6 +29,7 @@ export default function CompetitionRow({
   const [displayMode, setDisplayMode] = useState(mode);
   const [createCompetition] = useCreateCompetitionMutation();
   const [editCompetition] = useEditCompetitionMutation();
+  const { notifySuccess, notifyError } = useNotification();
 
   const inputRefs = {
     name: useRef<HTMLInputElement>(null),
@@ -97,8 +99,10 @@ export default function CompetitionRow({
         },
       });
       clearInputFields(inputRefs);
+      notifySuccess("Compétition créée avec succès");
     } catch {
       setErrors((prevErrors) => ({ ...prevErrors, name: false }));
+      notifyError("Erreur à la création de la compétition");
     }
   };
 
@@ -116,6 +120,7 @@ export default function CompetitionRow({
         },
       },
     });
+    notifySuccess("Compétition modifiée avec succès");
     setDisplayMode("consult");
   };
 
@@ -137,9 +142,7 @@ export default function CompetitionRow({
             onChange={() => handleInputChange("name", inputRefs.name)}
             error={errors.name}
             helperText={
-              errors.name
-                ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
-                : ""
+              errors.name ? "Le nom doit faire entre 5 et 100 caractères" : ""
             }
             defaultValue={competition ? competition.name : ""}
           />
@@ -153,7 +156,7 @@ export default function CompetitionRow({
             error={errors.location}
             helperText={
               errors.location
-                ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
+                ? "Le lieu doit faire entre 5 et 100 caractères"
                 : ""
             }
             defaultValue={competition ? competition.location : ""}
@@ -174,38 +177,53 @@ export default function CompetitionRow({
           />
         </TableCell>
         <TableCell align="right">
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          {displayMode == "create" ? (
-            <BtnCRUD
-              disabled={handleDisabled()}
-              handleClick={handleAdd}
-              type={"add"}
-            />
-          ) : displayMode == "edit" ? (
-            <>
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            {displayMode == "create" ? (
               <BtnCRUD
                 disabled={handleDisabled()}
-                handleClick={handleEdit}
-                type={"save"}
+                handleClick={handleAdd}
+                type={"add"}
               />
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("consult")}
-                type={"cancel"}
-              />
-            </>
-          ) : (
-            <>
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/juries`} content="Jurys" />
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/teams`} content="équipes" />
-              <BtnLink to={`/manage/competitions/${competition && competition.id}/planning`} content="planning" />
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("edit")}
-                type={"edit"}
-              />
-            </>
-          )}
+            ) : displayMode == "edit" ? (
+              <>
+                <BtnCRUD
+                  disabled={handleDisabled()}
+                  handleClick={handleEdit}
+                  type={"save"}
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("consult")}
+                  type={"cancel"}
+                />
+              </>
+            ) : (
+              <>
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/juries`}
+                  content="Jurys"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/teams`}
+                  content="équipes"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/planning`}
+                  content="planning"
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("edit")}
+                  type={"edit"}
+                />
+              </>
+            )}
           </Stack>
         </TableCell>
       </TableRow>
