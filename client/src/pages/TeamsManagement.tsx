@@ -1,4 +1,5 @@
-import { useGetAllTeamsQuery } from "../types/graphql-types";
+import { useParams } from "react-router-dom";
+import { useGetTeamsOfCompetitionByIdQuery } from "../types/graphql-types";
 import {
   TableContainer,
   Table,
@@ -13,7 +14,11 @@ import {
 import TeamRow from "../components/TeamRow";
 
 export default function TeamsManagement() {
-  const { loading, error, data, refetch } = useGetAllTeamsQuery();
+  const competitionId = parseInt(useParams().competitionId as string);
+
+  const { loading, error, data, refetch } = useGetTeamsOfCompetitionByIdQuery({
+    variables: { competitionId: competitionId },
+  });
 
   if (loading) return <p>Loading...</p>;
 
@@ -29,12 +34,16 @@ export default function TeamsManagement() {
           height="25vh"
         >
           <Typography variant="h2" component="h1">
-            Gestion des équipes
+            Gestion des équipes {competitionId}
           </Typography>
         </Box>
 
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
-          <Table stickyHeader sx={{ minWidth: 650 }} aria-label="liste des équipes">
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="liste des équipes"
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Nom</TableCell>
@@ -46,16 +55,20 @@ export default function TeamsManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TeamRow mode={"create"} refetch={refetch} />
+              <TeamRow
+                mode={"create"}
+                refetch={refetch}
+                competitionId={competitionId}
+              />
               {data &&
-                data.allTeams.map((team) => (
-                  <TeamRow
-                    key={team.id}
-                    mode={"consult"}
-                    team={team}
-                    refetch={refetch}
-                  />
-                ))}
+                data.getCompetitionById.teams.reduce((aggregat: JSX.Element[], team) => {
+                  aggregat.unshift(
+                    <TeamRow
+                      key={team.id}
+                      mode={"consult"}
+                      team={team}
+                      refetch={refetch}
+                    />); return aggregat;}, [])}
             </TableBody>
           </Table>
         </TableContainer>

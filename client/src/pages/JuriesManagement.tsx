@@ -64,13 +64,19 @@ export default function JuriesManagement() {
                 competitionId={parseInt(competitionId as string)}
               />
               {data &&
-                data.getCompetitionById.juries.map((jury) => (
-                  <ManageJuryRow
-                    refetch={refetch}
-                    key={jury.id}
-                    jury={jury as Jury}
-                  />
-                ))}
+                data.getCompetitionById.juries.reduce(
+                  (aggregate: JSX.Element[], jury) => {
+                    aggregate.unshift(
+                      <ManageJuryRow
+                        refetch={refetch}
+                        key={jury.id}
+                        jury={jury as Jury}
+                      />,
+                    );
+                    return aggregate;
+                  },
+                  [],
+                )}
             </TableBody>
           </Table>
         </TableContainer>

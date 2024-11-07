@@ -12,15 +12,18 @@ import BtnCRUD from "./BtnCRUD";
 import { DataHandlerResult } from "../types/types";
 import { useDialog } from "../hooks/useDialog";
 import { useNotification } from "../hooks/useNotification";
+import BtnLink from "./BtnLink";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
-  competition?: {
-    id: number;
-    name: string;
-    location: string;
-    date: string;
-  };
+  competition?: Competition;
+};
+
+type Competition = {
+  id: number;
+  name: string;
+  location: string;
+  date: string;
 };
 
 export default function CompetitionRow({
@@ -156,6 +159,13 @@ export default function CompetitionRow({
     return { success, message };
   };
 
+  const getMyDate = (competition: Competition) => {
+    if (displayMode === "consult")
+      return new Date(Date.parse(competition.date)).toLocaleDateString("fr-FR");
+    if (displayMode === "edit") return competition.date;
+    return "";
+  };
+
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -195,50 +205,62 @@ export default function CompetitionRow({
           helperText={
             errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
           }
-          defaultValue={
-            competition && displayMode == "consult"
-              ? new Date(Date.parse(competition.date)).toLocaleDateString(
-                  "fr-FR"
-                )
-              : competition && displayMode == "edit"
-              ? competition.date
-              : ""
-          }
+          defaultValue={competition && getMyDate(competition)}
         />
         <TableCell align="right">
-          {displayMode == "create" ? (
-            <BtnCRUD
-              disabled={handleDisabled()}
-              handleClick={handleAdd}
-              type={"add"}
-            />
-          ) : displayMode == "edit" ? (
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            {displayMode == "create" ? (
               <BtnCRUD
                 disabled={handleDisabled()}
-                handleClick={handleEdit}
-                type={"save"}
+                handleClick={handleAdd}
+                type={"add"}
               />
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("consult")}
-                type={"cancel"}
-              />
-            </Stack>
-          ) : (
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <BtnCRUD
-                disabled={false}
-                handleClick={() => setDisplayMode("edit")}
-                type={"edit"}
-              />
-              <BtnCRUD
-                disabled={false}
-                handleClick={submitDeletion}
-                type={"delete"}
-              />
-            </Stack>
-          )}
+            ) : displayMode == "edit" ? (
+              <>
+                <BtnCRUD
+                  disabled={handleDisabled()}
+                  handleClick={handleEdit}
+                  type={"save"}
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("consult")}
+                  type={"cancel"}
+                />
+              </>
+            ) : (
+              <>
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/juries`}
+                  content="Jurys"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/teams`}
+                  content="équipes"
+                />
+                <BtnLink
+                  to={`/manage/competitions/${
+                    competition && competition.id
+                  }/planning`}
+                  content="planning"
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={() => setDisplayMode("edit")}
+                  type={"edit"}
+                />
+                <BtnCRUD
+                  disabled={false}
+                  handleClick={submitDeletion}
+                  type={"delete"}
+                />
+              </>
+            )}
+          </Stack>
         </TableCell>
       </TableRow>
     </>

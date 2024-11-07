@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import {
   Exact,
-  GetAllTeamsQuery,
+  GetTeamsOfCompetitionByIdQuery,
   Team,
   GetJuriesOfCompetitionQuery,
 } from "./graphql-types";
@@ -29,8 +29,9 @@ export type TeamRowProps = {
   team?: Team;
   mode: Mode;
   refetch: (
-    variables?: Partial<Exact<{ [key: string]: never }>> | undefined,
-  ) => Promise<ApolloQueryResult<GetAllTeamsQuery>>;
+    variables?: Partial<Exact<{ [key: string]: never }>> | undefined
+  ) => Promise<ApolloQueryResult<GetTeamsOfCompetitionByIdQuery>>;
+  competitionId?: number;
 };
 
 export type BtnCRUDProps = {

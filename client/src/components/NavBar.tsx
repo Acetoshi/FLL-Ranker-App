@@ -6,8 +6,6 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const pages = [
   { content: "Page d'accueil", to: "/" },
-  { content: "Jurys", to: "/manage/juries" },
-  { content: "équipes", to: "/manage/teams" },
   { content: "Compétitions", to: "/manage/competitions" },
   { content: "Tableau de bord", to: "/manage" },
 ];

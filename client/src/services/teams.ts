@@ -26,7 +26,11 @@ export const useTeamsOperations = () => {
     return isValidName && isValidContact && isValidLocation;
   };
 
-  const createTeamInput = (inputRefs: RefMap, id?: number) => {
+  const createTeamInput = (
+    inputRefs: RefMap,
+    competitionId: number,
+    id?: number
+  ) => {
     const team: TeamInput = {
       id: id || null,
       name: inputRefs.name.current ? inputRefs.name.current.value : "",
@@ -34,13 +38,12 @@ export const useTeamsOperations = () => {
       location: inputRefs.location.current
         ? inputRefs.location.current.value
         : "",
+      competitionId: competitionId,
     };
     return team;
   };
 
-  const handleDelete = async (
-    targetId: number
-  ): Promise<DataHandlerResult> => {
+  const handleDelete = async (targetId: number): Promise<DataHandlerResult> => {
     const targetTeam: TeamIdInput = {
       id: targetId,
     };
@@ -57,12 +60,13 @@ export const useTeamsOperations = () => {
 
   const handleAdd = async (
     teamRef: RefMap,
+    competitionId: number,
     validateInput: (inputRef: RefObject<HTMLInputElement>) => boolean
   ): Promise<DataHandlerResult> => {
     if (handleTeamInputValidation(teamRef, validateInput)) {
       try {
         await addTeam({
-          variables: { team: createTeamInput(teamRef) },
+          variables: { team: createTeamInput(teamRef, competitionId) },
         });
 
         return { success: true, message: "" };

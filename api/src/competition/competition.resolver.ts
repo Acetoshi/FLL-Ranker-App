@@ -56,6 +56,7 @@ export default class CompetitionResolver {
         juries: {
           users: true,
         },
+        teams: true,
       },
     });
   }
