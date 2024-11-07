@@ -7,6 +7,7 @@ import {
   IsNumber,
 } from "class-validator";
 import { Competition } from "./competition.entity";
+import { DeleteResponseStatus } from "../types/deleteResponseStatus";
 
 @InputType()
 class CompetitionInput {
@@ -31,11 +32,18 @@ class CompetitionInput {
   date: string;
 }
 
+@InputType()
+class CompetitionId {
+  @Field()
+  @IsNumber()
+  id: number;
+}
+
 @Resolver(Competition)
 export default class CompetitionResolver {
   @Query(() => [Competition])
   async getAllCompetitions() {
-    return await Competition.find();
+    return await Competition.find({ relations: { juries: true } });
   }
 
   @Query(() => Competition)
@@ -83,6 +91,33 @@ export default class CompetitionResolver {
         const result = await competitionToEdit.save();
         return result;
       }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to edit competition");
+    }
+  }
+
+  @Mutation(() => DeleteResponseStatus)
+  async removeCompetition(@Arg("competition") competitionId: CompetitionId) {
+    try {
+      const competitionToRemove = await Competition.findOne({
+        where: {
+          id: competitionId.id,
+        },
+        relations: {
+          juries: true,
+        },
+      });
+      if (!competitionToRemove) {
+        throw new Error(`Competition with ID ${competitionId.id} not found`);
+      }
+      if (competitionToRemove.juries && competitionToRemove.juries.length > 0) {
+        for (const jury of competitionToRemove.juries) {
+          await jury.remove();
+        }
+      }
+      await competitionToRemove.remove();
+      return new DeleteResponseStatus("success");
     } catch (error) {
       console.error(error);
       throw new Error("Failed to edit competition");
