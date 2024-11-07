@@ -23,55 +23,44 @@ export default function MiniNavbar() {
   const location = useLocation();
   const currentPage = location.pathname.split("/").at(-1);
 
+  const pages = [
+    {
+      title: "Tableau de bord",
+      icon: <DashboardIcon />,
+      to: "/manage/competitions",
+    },
+    {
+      title: "Jurys",
+      icon: <Diversity3Icon />,
+      to: `/manage/competitions/${competitionId}/juries`,
+    },
+    {
+      title: "Teams",
+      icon: <Diversity3Icon />,
+      to: `/manage/competitions/${competitionId}/teams`,
+    },
+    {
+      title: "Planning",
+      icon: <AlarmIcon />,
+      to: `/manage/competitions/${competitionId}/planning`,
+    },
+  ];
+
   return (
     <div style={{ marginBottom: "1em" }}>
       <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
-        <MUILink component={Link} to={`/manage/competitions`} sx={buttonStyle}>
-          <Typography variant="body1" component="span">
-            <Stack direction="row" spacing={1}>
-              <DashboardIcon /> <span>Tableau de bord</span>
-            </Stack>
-          </Typography>
-        </MUILink>
-        {currentPage !== "juries" && (
-          <MUILink
-            component={Link}
-            to={`/manage/competitions/${competitionId}/juries`}
-            sx={buttonStyle}
-          >
-            <Typography variant="body1" component="span">
-              <Stack direction="row" spacing={1}>
-                <Diversity3Icon /> <span>Jurys</span>
-              </Stack>
-            </Typography>
-          </MUILink>
-        )}
-        {currentPage !== "teams" && (
-          <MUILink
-            component={Link}
-            to={`/manage/competitions/${competitionId}/teams`}
-            sx={buttonStyle}
-          >
-            <Typography variant="body1" component="span">
-              <Stack direction="row" spacing={1}>
-                <Diversity3Icon /> <span>Equipes</span>
-              </Stack>
-            </Typography>
-          </MUILink>
-        )}
-        {currentPage !== "planning" && (
-          <MUILink
-            component={Link}
-            to={`/manage/competitions/${competitionId}/planning`}
-            sx={buttonStyle}
-          >
-            <Typography variant="body1" component="span">
-              <Stack direction="row" spacing={1}>
-                <AlarmIcon /> <span>Planning</span>
-              </Stack>
-            </Typography>
-          </MUILink>
-        )}
+        {pages &&
+          pages
+            .filter((page) => !page.to.includes(currentPage as string))
+            .map((page) => (
+              <MUILink component={Link} to={page.to} sx={buttonStyle}>
+                <Typography variant="body1" component="span">
+                  <Stack direction="row" spacing={1}>
+                    {page.icon} <span>{page.title}</span>
+                  </Stack>
+                </Typography>
+              </MUILink>
+            ))}
       </Stack>
     </div>
   );
