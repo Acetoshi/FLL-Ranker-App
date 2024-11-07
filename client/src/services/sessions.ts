@@ -3,7 +3,7 @@ import { SessionInput, useCreateSessionMutation } from "../types/graphql-types";
 export const useSessionsOperations = () => {
   const [createSession] = useCreateSessionMutation();
 
-  const handleAdd = async (
+  const handleAddSession = async (
     startTime: string,
     endTime: string,
     competitionId: number,
@@ -33,6 +33,6 @@ export const useSessionsOperations = () => {
   };
 
   return {
-    handleAdd,
+    handleAddSession,
   };
 };

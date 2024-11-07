@@ -36,17 +36,17 @@ export default function CompetitionsManagement() {
   };
 
   const timeSlots = [
-    { startTime: "09h00", endTime: "09h45" },
-    { startTime: "09h45", endTime: "10h30" },
-    { startTime: "10h30", endTime: "11h15" },
-    { startTime: "11h15", endTime: "12h00" },
-    { startTime: "12h00", endTime: "12h45" },
-    { startTime: "12h45", endTime: "13h30" },
-    { startTime: "13h30", endTime: "14h15" },
-    { startTime: "14h15", endTime: "15h00" },
-    { startTime: "15h00", endTime: "15h45" },
-    { startTime: "15h45", endTime: "16h30" },
-    { startTime: "16h30", endTime: "17h00" },
+    { startTime: "09:00", endTime: "09:45" },
+    { startTime: "09:45", endTime: "10:30" },
+    { startTime: "10:30", endTime: "11:15" },
+    { startTime: "11:15", endTime: "12:00" },
+    { startTime: "12:00", endTime: "12:45" },
+    { startTime: "12:45", endTime: "13:30" },
+    { startTime: "13:30", endTime: "14:15" },
+    { startTime: "14:15", endTime: "15:00" },
+    { startTime: "15:00", endTime: "15:45" },
+    { startTime: "15:45", endTime: "16:30" },
+    { startTime: "16:30", endTime: "17:00" },
   ];
 
   if (data)
