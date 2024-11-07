@@ -2,21 +2,7 @@ import { MenuItem, Select, SelectChangeEvent, TableCell } from "@mui/material";
 import { useState } from "react";
 import { useSessionsOperations } from "../services/sessions";
 import { useNotification } from "../hooks/useNotification";
-import { Session } from "../types/graphql-types";
-
-type MinimalTeam = {
-  id: number;
-  name: string;
-};
-
-type SessionCellProps = {
-  session: Session | undefined;
-  teams: MinimalTeam[];
-  startTime: string;
-  endTime: string;
-  competitionId: number;
-  juryId: number;
-};
+import { MinimalTeam, SessionCellProps } from "../types/types";
 
 export default function SessionCell({
   refetch,
@@ -66,7 +52,7 @@ export default function SessionCell({
   };
 
   const handleSelect = async (event: SelectChangeEvent) => {
-    const targetTeam = teams.find((team) => team.name === event.target.value);
+    const targetTeam = teams?.find((team) => team.name === event.target.value);
     if (targetTeam) {
       // submitEdition goes here in the future, if nothing to edit, create
       await submitCreation(targetTeam);
@@ -94,7 +80,7 @@ export default function SessionCell({
         onChange={handleSelect}
       >
         <MenuItem value="disponible">-</MenuItem>
-        {teams.map((team) => (
+        {teams?.map((team) => (
           <MenuItem key={team.id} value={team.name}>
             {team.name}
           </MenuItem>
