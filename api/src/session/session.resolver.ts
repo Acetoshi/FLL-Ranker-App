@@ -33,11 +33,13 @@ class SessionInput implements Partial<Session> {
 }
 
 @InputType()
-export class ModifyTeamOfSessionInput {
+export class ModifyTeamOfSessionInput implements Partial<Session> {
   @Field()
+  @IsNumber()
   id: number;
 
   @Field()
+  @IsNumber()
   teamId: number;
 }
 
