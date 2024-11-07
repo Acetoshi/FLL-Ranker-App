@@ -16,7 +16,7 @@ import MiniNavbar from "../components/MiniNavbar";
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
 
-  const { loading, error, data } = useGetCompetitionByIdQuery({
+  const { loading, error, data, refetch } = useGetCompetitionByIdQuery({
     variables: { competitionId: parseInt(competitionId as string) },
   });
 
@@ -31,10 +31,10 @@ export default function CompetitionsManagement() {
 
   const filterSessionByStartTimeAndJuryId = (
     startTime: string,
-    juryId: number,
+    juryId: number
   ) => {
     return sessions?.find(
-      (session) => session.jury.id === juryId && session.startTime === startTime 
+      (session) => session.jury.id === juryId && session.startTime === startTime
     );
   };
 
@@ -102,7 +102,11 @@ export default function CompetitionsManagement() {
                 {competition &&
                   competition.juries.map((jury) => (
                     <SessionCell
-                    session={filterSessionByStartTimeAndJuryId(timeSlot.startTime,jury.id)}
+                      refetch={refetch}
+                      session={filterSessionByStartTimeAndJuryId(
+                        timeSlot.startTime,
+                        jury.id
+                      )}
                       juryId={jury.id}
                       competitionId={parseInt(competitionId as string)}
                       startTime={timeSlot.startTime}

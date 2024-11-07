@@ -19,6 +19,7 @@ type SessionCellProps = {
 };
 
 export default function SessionCell({
+  refetch,
   session,
   teams,
   juryId,
@@ -26,7 +27,7 @@ export default function SessionCell({
   startTime,
   endTime,
 }: SessionCellProps) {
-  const { handleAddSession } = useSessionsOperations();
+  const { handleAddSession , handleDeleteSession} = useSessionsOperations();
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
@@ -49,19 +50,33 @@ export default function SessionCell({
     if (success) {
       notifySuccess("Créneau enregistré");
     } else {
-      notifyError(message);
+      notifyError(message as string);
     }
   };
 
-  const handleSelect = (event: SelectChangeEvent) => {
+  const submitDeletion = async () => {
+    if (session) {
+      const { success, message } = await handleDeleteSession(session.id);
+      if (success) {
+        notifySuccess("Créneau supprimé");
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const handleSelect = async (event: SelectChangeEvent) => {
     const targetTeam = teams.find((team) => team.name === event.target.value);
     if (targetTeam) {
       // submitEdition goes here in the future, if nothing to edit, create
-      submitCreation(targetTeam);
+      await submitCreation(targetTeam);
       setSelectedTeam(targetTeam);
+      await refetch()
     } else {
       // submitDeletion goes here in the future
+      await submitDeletion();
       setSelectedTeam(noTeam);
+      await refetch()
     }
   };
 

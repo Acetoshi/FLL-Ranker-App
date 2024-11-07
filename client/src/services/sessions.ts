@@ -1,7 +1,9 @@
-import { SessionInput, useCreateSessionMutation } from "../types/graphql-types";
+import { DeleteSessionMutation, IdInput, SessionInput, useCreateSessionMutation, useDeleteSessionMutation } from "../types/graphql-types";
+import { DataHandlerResult } from "../types/types";
 
 export const useSessionsOperations = () => {
   const [createSession] = useCreateSessionMutation();
+  const [deleteSession] = useDeleteSessionMutation();
 
   const handleAddSession = async (
     startTime: string,
@@ -32,7 +34,23 @@ export const useSessionsOperations = () => {
     }
   };
 
+  const handleDeleteSession = async (targetId: number): Promise<DataHandlerResult> => {
+    const targetSession: IdInput = {
+      id: targetId,
+    };
+    const {
+      data: {
+        deleteSession: { success, message },
+      },
+    } = (await deleteSession({
+      variables: { session: targetSession },
+    })) as { data: DeleteSessionMutation };
+
+    return { success, message };
+  };
+
   return {
     handleAddSession,
+    handleDeleteSession
   };
 };
