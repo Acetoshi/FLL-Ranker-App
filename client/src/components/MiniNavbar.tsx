@@ -1,28 +1,76 @@
-import { Link, useLocation } from "react-router-dom";
-import { Stack } from "@mui/material";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Stack, Link as MUILink, Typography } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import AlarmIcon from "@mui/icons-material/Alarm";
 
-type MiniNavbarType = {
-  competition: number;
+const buttonStyle = {
+  display: "inline-block",
+  padding: ".5em .75em",
+  color: "primary.contrastText",
+  backgroundColor: "primary.main",
+  textTransform: "uppercase",
+  borderRadius: "4px",
+  textDecoration: "none",
+  textAlign: "center",
+  "&:hover": {
+    backgroundColor: "primary.dark",
+  },
 };
 
-export default function MiniNavbar({ competition }: MiniNavbarType) {
+export default function MiniNavbar() {
+  const { competitionId } = useParams();
   const location = useLocation();
   const currentPage = location.pathname.split("/").at(-1);
 
   return (
-    <div>
-      <Stack direction="row" spacing={2}>
-        <Link to={`/manage/competitions`}>Tableau de bord</Link>
+    <div style={{ marginBottom: "1em" }}>
+      <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+        <MUILink component={Link} to={`/manage/competitions`} sx={buttonStyle}>
+          <Typography variant="body1" component="span">
+            <Stack direction="row" spacing={1}>
+              <DashboardIcon /> <span>Tableau de bord</span>
+            </Stack>
+          </Typography>
+        </MUILink>
         {currentPage !== "juries" && (
-          <Link to={`/manage/competitions/${competition}/juries`}>Jurys</Link>
+          <MUILink
+            component={Link}
+            to={`/manage/competitions/${competitionId}/juries`}
+            sx={buttonStyle}
+          >
+            <Typography variant="body1" component="span">
+              <Stack direction="row" spacing={1}>
+                <Diversity3Icon /> <span>Jurys</span>
+              </Stack>
+            </Typography>
+          </MUILink>
         )}
-        {currentPage !== "competitions" && (
-          <Link to={`/manage/competitions/${competition}/teams`}>Equipes</Link>
+        {currentPage !== "teams" && (
+          <MUILink
+            component={Link}
+            to={`/manage/competitions/${competitionId}/teams`}
+            sx={buttonStyle}
+          >
+            <Typography variant="body1" component="span">
+              <Stack direction="row" spacing={1}>
+                <Diversity3Icon /> <span>Equipes</span>
+              </Stack>
+            </Typography>
+          </MUILink>
         )}
         {currentPage !== "planning" && (
-          <Link to={`/manage/competitions/${competition}/planning`}>
-            Planning
-          </Link>
+          <MUILink
+            component={Link}
+            to={`/manage/competitions/${competitionId}/planning`}
+            sx={buttonStyle}
+          >
+            <Typography variant="body1" component="span">
+              <Stack direction="row" spacing={1}>
+                <AlarmIcon /> <span>Planning</span>
+              </Stack>
+            </Typography>
+          </MUILink>
         )}
       </Stack>
     </div>

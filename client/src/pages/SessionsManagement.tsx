@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
 import SessionCell from "../components/SessionCell";
+import MiniNavbar from "../components/MiniNavbar";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -62,6 +63,9 @@ export default function CompetitionsManagement() {
             {`Gestion planning ${competition && competition.name}`}
           </Typography>
         </Box>
+
+        <MiniNavbar />
+
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
             stickyHeader

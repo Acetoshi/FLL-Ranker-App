@@ -43,7 +43,7 @@ export default function JuriesManagement() {
           </Stack>
         </Box>
 
-        <MiniNavbar competition={parseInt(competitionId as string)} />
+        <MiniNavbar />
 
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
