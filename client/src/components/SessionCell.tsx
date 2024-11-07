@@ -13,7 +13,8 @@ export default function SessionCell({
   startTime,
   endTime,
 }: SessionCellProps) {
-  const { handleAddSession , handleDeleteSession} = useSessionsOperations();
+  const { handleAddSession, handleEditSession, handleDeleteSession } =
+    useSessionsOperations();
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
@@ -35,8 +36,24 @@ export default function SessionCell({
     );
     if (success) {
       notifySuccess("Créneau enregistré");
+      setSelectedTeam(targetTeam);
     } else {
       notifyError(message as string);
+    }
+  };
+
+  const submitEdition = async (targetTeam: MinimalTeam) => {
+    if (session) {
+      const { success, message } = await handleEditSession(
+        session.id,
+        targetTeam.id,
+      );
+      if (success) {
+        notifySuccess("Modification enregistrée");
+        setSelectedTeam(targetTeam);
+      } else {
+        notifyError(message as string);
+      }
     }
   };
 
@@ -45,6 +62,7 @@ export default function SessionCell({
       const { success, message } = await handleDeleteSession(session.id);
       if (success) {
         notifySuccess("Créneau supprimé");
+        setSelectedTeam(noTeam);
       } else {
         notifyError(message as string);
       }
@@ -54,15 +72,16 @@ export default function SessionCell({
   const handleSelect = async (event: SelectChangeEvent) => {
     const targetTeam = teams?.find((team) => team.name === event.target.value);
     if (targetTeam) {
-      // submitEdition goes here in the future, if nothing to edit, create
-      await submitCreation(targetTeam);
-      setSelectedTeam(targetTeam);
-      await refetch()
+      if (session) {
+        await submitEdition(targetTeam);
+      } else {
+        await submitCreation(targetTeam);
+      }
+      await refetch();
     } else {
-      // submitDeletion goes here in the future
       await submitDeletion();
-      setSelectedTeam(noTeam);
-      await refetch()
+
+      await refetch();
     }
   };
 

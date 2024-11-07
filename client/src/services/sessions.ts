@@ -43,8 +43,8 @@ export const useSessionsOperations = () => {
   };
 
   const handleEditSession = async (
-    teamId: number,
-    id: number
+    id: number,
+    teamId: number
   ): Promise<DataHandlerResult> => {
     try {
       await editSession({
@@ -54,7 +54,7 @@ export const useSessionsOperations = () => {
     } catch {
       return {
         success: false,
-        message: "Erreur serveur : vérifier les données saisies.",
+        message: "Erreur : vérifier les données saisies.",
       };
     }
   };
