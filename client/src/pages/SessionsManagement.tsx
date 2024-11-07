@@ -35,10 +35,6 @@ export default function CompetitionsManagement() {
     zIndex: "1 !important",
   };
 
-  const fixedSizeCell = {
-    width: 200,
-  };
-
   const timeSlots = [
     "09h00\n\n09h45",
     "09h45\n\n10h30",
@@ -66,7 +62,6 @@ export default function CompetitionsManagement() {
             {`Gestion planning ${competition && competition.name}`}
           </Typography>
         </Box>
-
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
             stickyHeader
@@ -75,25 +70,23 @@ export default function CompetitionsManagement() {
           >
             <TableHead>
               <TableRow>
-                <TableCell align="left" sx={fixedSizeCell}>Créneau</TableCell>
+                <TableCell align="left">
+                  Créneau
+                </TableCell>
                 {competition &&
                   competition.juries.map((jury) => (
-                    <TableCell key={`jury-${jury.id}`}>{jury.name}</TableCell>
+                    <TableCell key={`jury-${jury.id}`} align="center">{jury.name}</TableCell>
                   ))}
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
-            <></>
-
             {timeSlots.map((timeSlot) => (
               <TableRow>
-                <TableCell align="left" sx={stickyColumnStyle}>
+                <TableCell align="center" sx={stickyColumnStyle}>
                   {timeSlot}
                 </TableCell>
                 {competition &&
-                  competition.juries.map(() => (
-                    <SessionCell teams={teams} />
-                  ))}
+                  competition.juries.map(() => <SessionCell teams={teams} />)}
               </TableRow>
             ))}
           </Table>
