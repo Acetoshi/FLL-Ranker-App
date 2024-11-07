@@ -86,6 +86,10 @@ export const GET_COMPETITION_BY_ID = gql`
         name
         id
       }
+      teams {
+        name
+        id
+      }  
     }
   }
 `;

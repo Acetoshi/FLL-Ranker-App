@@ -10,6 +10,7 @@ import {
   TableCell,
 } from "@mui/material";
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
+// import SessionCell from "../components/SessionCell";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -23,7 +24,8 @@ export default function CompetitionsManagement() {
   if (error) return <p>Error :(</p>;
 
   // aliasing the data for legibility
-  const competition = data ? data.getCompetitionById[0] : undefined;
+  const competition = data ? data.getCompetitionById : undefined;
+  // const teams= data ? data.getCompetitionById : undefined;
 
   const timeSlots = [
     "09h00-09h45",
@@ -68,6 +70,10 @@ export default function CompetitionsManagement() {
             {timeSlots.map((timeSlot) => (
               <TableRow>
                 <TableCell align="left">{timeSlot}</TableCell>
+                {/* {competition &&
+                  competition.juries.map((jury) => (
+                    <SessionCell teams={teams} />
+                  ))} */}
               </TableRow>
             ))}
           </Table>
