@@ -2,6 +2,7 @@ import { Team } from "./team.entity";
 import { Resolver, Query, InputType, Field, Mutation, Arg } from "type-graphql";
 import { IsNumber, IsString, IsOptional, Length } from "class-validator";
 import { DeleteResponseStatus } from "../types/deleteResponseStatus";
+import { Competition } from "../competition/competition.entity";
 
 @InputType()
 class TeamInput implements Partial<Team> {
@@ -24,6 +25,11 @@ class TeamInput implements Partial<Team> {
   @IsString()
   @Length(5, 100)
   contact: string;
+
+  @Field({ nullable: true })
+  @IsNumber()
+  @IsOptional()
+  competitionId?: number;
 }
 
 @InputType()
@@ -44,9 +50,14 @@ export default class TeamResolver {
   async createTeam(@Arg("team") newTeam: TeamInput) {
     const teamToInsert = new Team();
 
+    const competition = await Competition.findOneBy({
+      id: newTeam.competitionId,
+    });
+
     teamToInsert.name = newTeam.name;
     teamToInsert.location = newTeam.location;
     teamToInsert.contact = newTeam.contact;
+    teamToInsert.competitions = competition ? [competition] : [];
 
     const result = await teamToInsert.save();
     return result;
