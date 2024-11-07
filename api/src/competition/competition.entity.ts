@@ -6,6 +6,7 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
+
 import { Field, ObjectType, Int } from "type-graphql";
 import { Jury } from "../jury/jury.entity";
 
@@ -29,6 +30,9 @@ export class Competition extends BaseEntity {
   date: string;
 
   @Field(() => [Jury])
-  @OneToMany(() => Jury, (jury) => jury.competition, { cascade: true })
+  @OneToMany(() => Jury, (jury) => jury.competition, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   juries?: [Jury];
 }

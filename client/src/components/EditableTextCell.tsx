@@ -17,8 +17,6 @@ interface EditableTextCellProps {
   error: boolean;
   helperText: string;
   textFieldProps?: TextFieldProps; // optional for any additional props
-  type?: string;
-  InputLabelProps?: { shrink: boolean; required: boolean };
 }
 
 /**
@@ -50,8 +48,6 @@ export default function EditableTextCell({
   error,
   helperText,
   textFieldProps,
-  type,
-  InputLabelProps,
 }: EditableTextCellProps) {
   return (
     <TableCell component={component} scope={scope}>
@@ -65,9 +61,7 @@ export default function EditableTextCell({
           required
           onChange={onChange}
           error={error}
-          helperText={helperText}
-          type={type}
-          InputLabelProps={InputLabelProps}
+          helperText={error ? helperText : ""}
           {...textFieldProps}
         />
       ) : (

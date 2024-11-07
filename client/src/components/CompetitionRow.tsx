@@ -10,6 +10,8 @@ import { GET_COMPETITIONS } from "../schemas/queries";
 import EditableTextCell from "./EditableTextCell";
 import BtnCRUD from "./BtnCRUD";
 import { DataHandlerResult } from "../types/types";
+import { useDialog } from "../hooks/useDialog";
+import { useNotification } from "../hooks/useNotification";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";
@@ -29,6 +31,8 @@ export default function CompetitionRow({
   const [createCompetition] = useCreateCompetitionMutation();
   const [editCompetition] = useEditCompetitionMutation();
   const [removeCompetition] = useRemoveCompetitionMutation();
+  const { askUser } = useDialog();
+  const { notifySuccess, notifyError } = useNotification();
 
   const inputRefs = {
     name: useRef<HTMLInputElement>(null),
@@ -120,6 +124,22 @@ export default function CompetitionRow({
     setDisplayMode("consult");
   };
 
+  const submitDeletion = async () => {
+    const userConfirms = await askUser(
+      `Supprimer la compétition ${competition && competition.name} ?`,
+      "Cette action est définitive, elle supprime également l'ensemble des jurys associés à cette compétition !"
+    );
+
+    if (competition && userConfirms) {
+      const { success, message } = await handleRemove();
+      if (success) {
+        notifySuccess("compétition supprimée");
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
   const handleRemove = async (): Promise<DataHandlerResult> => {
     const competitionInput = {
       id: competition!.id,
@@ -139,59 +159,52 @@ export default function CompetitionRow({
   return (
     <>
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-        <TableCell align="left">
-          <EditableTextCell
-            displayMode={displayMode}
-            inputRef={inputRefs.name}
-            label="Nom"
-            onChange={() => handleInputChange("name", inputRefs.name)}
-            error={errors.name}
-            helperText={
-              errors.name
-                ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
-                : ""
-            }
-            defaultValue={competition ? competition.name : ""}
-          />
-        </TableCell>
-        <TableCell align="left">
-          <EditableTextCell
-            displayMode={displayMode}
-            inputRef={inputRefs.location}
-            label="Lieu"
-            onChange={() => handleInputChange("location", inputRefs.location)}
-            error={errors.location}
-            helperText={
-              errors.location
-                ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
-                : ""
-            }
-            defaultValue={competition ? competition.location : ""}
-          />
-        </TableCell>
-        <TableCell align="left">
-          <EditableTextCell
-            type="date"
-            InputLabelProps={{ shrink: true, required: true }}
-            displayMode={displayMode}
-            inputRef={inputRefs.date}
-            label="Date"
-            onChange={() => handleInputChange("date", inputRefs.date)}
-            error={errors.date}
-            helperText={
-              errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
-            }
-            defaultValue={
-              competition && displayMode == "consult"
-                ? new Date(Date.parse(competition.date)).toLocaleDateString(
-                    "fr-FR"
-                  )
-                : competition && displayMode == "edit"
-                ? competition.date
-                : ""
-            }
-          />
-        </TableCell>
+        <EditableTextCell
+          displayMode={displayMode}
+          inputRef={inputRefs.name}
+          label="Nom"
+          onChange={() => handleInputChange("name", inputRefs.name)}
+          error={errors.name}
+          helperText={
+            errors.name
+              ? "Le nom doit faire entre 5 et 100 caractères alphanumériques"
+              : ""
+          }
+          defaultValue={competition ? competition.name : ""}
+        />
+        <EditableTextCell
+          displayMode={displayMode}
+          inputRef={inputRefs.location}
+          label="Lieu"
+          onChange={() => handleInputChange("location", inputRefs.location)}
+          error={errors.location}
+          helperText={
+            errors.location
+              ? "Le lieu doit faire entre 5 et 100 caractères alphanumériques"
+              : ""
+          }
+          defaultValue={competition ? competition.location : ""}
+        />
+        <EditableTextCell
+          textFieldProps={{ type: "date", InputLabelProps: { shrink: true } }}
+          displayMode={displayMode}
+          inputRef={inputRefs.date}
+          label="Date"
+          onChange={() => handleInputChange("date", inputRefs.date)}
+          error={errors.date}
+          helperText={
+            errors.date ? "La date ne peut être antérieure à aujourd'hui" : ""
+          }
+          defaultValue={
+            competition && displayMode == "consult"
+              ? new Date(Date.parse(competition.date)).toLocaleDateString(
+                  "fr-FR"
+                )
+              : competition && displayMode == "edit"
+              ? competition.date
+              : ""
+          }
+        />
         <TableCell align="right">
           {displayMode == "create" ? (
             <BtnCRUD
@@ -221,7 +234,7 @@ export default function CompetitionRow({
               />
               <BtnCRUD
                 disabled={false}
-                handleClick={handleRemove}
+                handleClick={submitDeletion}
                 type={"delete"}
               />
             </Stack>

@@ -1,9 +1,7 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  useCreateNewJuryMutation,
-  useGetAllJuriesQuery,
-} from "../types/graphql-types";
+import { useCreateNewJuryMutation } from "../types/graphql-types";
+import { JuriesOfCompetitionRefetchType } from "../types/types";
 import {
   TableRow,
   TableCell,
@@ -13,12 +11,12 @@ import {
   Alert,
 } from "@mui/material";
 
-type refetchType = Promise<typeof useGetAllJuriesQuery>;
-
 export default function ManageJuryAddRow({
+  competitionId,
   refetch,
 }: {
-  refetch: refetchType;
+  competitionId: number;
+  refetch: JuriesOfCompetitionRefetchType;
 }) {
   const [createNewJury] = useCreateNewJuryMutation();
 
@@ -38,7 +36,7 @@ export default function ManageJuryAddRow({
   const handleNameValidation = () => {
     const value = nameRef.current && nameRef.current.value;
     return value
-      ? /.{5,100}/.test(value) && /^[A-Za-z0-9_-\s]+$/.test(value)
+      ? /.{5,100}/.test(value) && /^[A-Za-z0-9À-ÖØ-öø-ÿ@_-\s]+$/.test(value)
       : false;
   };
 
@@ -64,10 +62,13 @@ export default function ManageJuryAddRow({
           variables: {
             data: {
               name: nameRef.current ? nameRef.current.value : "",
+              competitionId: competitionId,
             },
           },
         });
         (await refetch)();
+
+        if (nameRef.current) nameRef.current.value = "";
       } catch {
         setMessage("Le nom doit être unique");
         setOpenAlert(true);

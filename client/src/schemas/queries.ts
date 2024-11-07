@@ -15,6 +15,25 @@ export const GET_JURIES = gql`
   }
 `;
 
+export const GET_JURIES_OF_COMPETITION = gql`
+  query GetJuriesOfCompetition($competitionId: Float!) {
+    getCompetitionById(competitionId: $competitionId) {
+      id
+      name
+      location
+      juries {
+        id
+        name
+        users {
+          id
+          firstname
+          lastname
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ALL_TEAMS = gql`
   query GetAllTeams {
     allTeams {
@@ -52,6 +71,21 @@ export const GET_COMPETITIONS = gql`
       name
       location
       date
+    }
+  }
+`;
+
+export const GET_COMPETITION_BY_ID = gql`
+  query GetCompetitionById($competitionId: Float!) {
+    getCompetitionById(competitionId: $competitionId) {
+      date
+      id
+      location
+      name
+      juries {
+        name
+        id
+      }
     }
   }
 `;

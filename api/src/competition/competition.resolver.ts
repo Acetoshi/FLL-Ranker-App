@@ -46,6 +46,20 @@ export default class CompetitionResolver {
     return await Competition.find({ relations: { juries: true } });
   }
 
+  @Query(() => Competition)
+  async getCompetitionById(@Arg("competitionId") competitionId: number) {
+    return await Competition.findOneOrFail({
+      where: {
+        id: competitionId,
+      },
+      relations: {
+        juries: {
+          users: true,
+        },
+      },
+    });
+  }
+
   @Mutation(() => Competition)
   async createCompetition(
     @Arg("competition") newCompetition: CompetitionInput
@@ -85,15 +99,24 @@ export default class CompetitionResolver {
   @Mutation(() => DeleteResponseStatus)
   async removeCompetition(@Arg("competition") competitionId: CompetitionId) {
     try {
-      const competitionToRemove = await Competition.findOneBy({
-        id: competitionId.id,
+      const competitionToRemove = await Competition.findOne({
+        where: {
+          id: competitionId.id,
+        },
+        relations: {
+          juries: true,
+        },
       });
       if (!competitionToRemove) {
         throw new Error(`Competition with ID ${competitionId.id} not found`);
-      } else {
-        await competitionToRemove.remove();
-        return new DeleteResponseStatus("success");
       }
+      if (competitionToRemove.juries && competitionToRemove.juries.length > 0) {
+        for (const jury of competitionToRemove.juries) {
+          await jury.remove();
+        }
+      }
+      await competitionToRemove.remove();
+      return new DeleteResponseStatus("success");
     } catch (error) {
       console.error(error);
       throw new Error("Failed to edit competition");
