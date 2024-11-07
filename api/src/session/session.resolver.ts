@@ -37,19 +37,15 @@ export default class SessionResolver {
     try {
       const sessionToInsert = new Session();
 
-      const competition = await Competition.findOneBy({
+      const competition = await Competition.findOneByOrFail({
         id: newSession.competitionId,
       });
-      const team = await Team.findOneBy({
+      const team = await Team.findOneByOrFail({
         id: newSession.teamId,
       });
-      const jury = await Jury.findOneBy({
+      const jury = await Jury.findOneByOrFail({
         id: newSession.juryId,
       });
-
-      if (!competition) throw new Error(`Competition not found`);
-      if (!team) throw new Error(`Team not found`);
-      if (!jury) throw new Error(`Jury not found`);
 
       sessionToInsert.startTime = newSession.startTime;
       sessionToInsert.endTime = newSession.endTime;
