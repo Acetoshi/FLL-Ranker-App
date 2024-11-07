@@ -43,11 +43,14 @@ export default function CompetitionsManagement() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data &&
-              data.getAllCompetitions.map((competition) => (
-                <CompetitionRow mode="consult" competition={competition} />
-              ))}
             <CompetitionRow mode="create" />
+            {data &&
+              data.getAllCompetitions
+                .slice(0)
+                .reverse()
+                .map((competition) => (
+                  <CompetitionRow mode="consult" competition={competition} />
+                ))}
           </TableBody>
         </Table>
       </TableContainer>
