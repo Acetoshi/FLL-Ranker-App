@@ -24,8 +24,8 @@ export default function CompetitionsManagement() {
   if (error) return <p>Error :(</p>;
 
   // aliasing the data for legibility
-  const competition = data ? data.getCompetitionById : undefined;
-  const teams = data ? data.getCompetitionById.teams : undefined;
+  const competition = data?.getCompetitionById;
+  const teams = data?.getCompetitionById.teams;
 
   const stickyColumnStyle = {
     position: "sticky",
