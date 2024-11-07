@@ -291,7 +291,7 @@ export type GetCompetitionByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', date: string, id: number, location: string, name: string, juries: Array<{ __typename?: 'Jury', name: string, id: number }> } };
+export type GetCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', date: string, id: number, location: string, name: string, juries: Array<{ __typename?: 'Jury', name: string, id: number }>, teams: Array<{ __typename?: 'Team', name: string, id: number }> } };
 
 export type GetTeamsOfCompetitionByIdQueryVariables = Exact<{
   competitionId: Scalars['Float']['input'];
@@ -888,6 +888,10 @@ export const GetCompetitionByIdDocument = gql`
     location
     name
     juries {
+      name
+      id
+    }
+    teams {
       name
       id
     }

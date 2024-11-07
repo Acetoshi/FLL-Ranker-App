@@ -10,6 +10,7 @@ import {
   TableCell,
 } from "@mui/material";
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
+import SessionCell from "../components/SessionCell";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -23,7 +24,30 @@ export default function CompetitionsManagement() {
   if (error) return <p>Error :(</p>;
 
   // aliasing the data for legibility
-  const competition = data ? data.getCompetitionById : undefined;
+  const competition = data?.getCompetitionById;
+  const teams = data?.getCompetitionById.teams;
+
+  const stickyColumnStyle = {
+    position: "sticky",
+    left: 0,
+    background: "white",
+    borderRight: "1px solid lightgrey",
+    zIndex: "1 !important",
+  };
+
+  const timeSlots = [
+    "09h00\n\n09h45",
+    "09h45\n\n10h30",
+    "10h30\n\n11h15",
+    "11h15\n\n12h00",
+    "12h00\n\n12h45",
+    "12h45\n\n13h30",
+    "13h30\n\n14h15",
+    "14h15\n\n15h00",
+    "15h00\n\n15h45",
+    "15h45\n\n16h30",
+    "16h30\n\n17h00",
+  ];
 
   if (data)
     return (
@@ -38,19 +62,33 @@ export default function CompetitionsManagement() {
             {`Gestion planning ${competition && competition.name}`}
           </Typography>
         </Box>
-
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="Liste des jurys">
+        <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
+          <Table
+            stickyHeader
+            sx={{ minWidth: 650 }}
+            aria-label="Liste des jurys"
+          >
             <TableHead>
               <TableRow>
                 <TableCell align="left">Créneau</TableCell>
                 {competition &&
                   competition.juries.map((jury) => (
-                    <TableCell key={`jury-${jury.id}`}>{jury.name}</TableCell>
+                    <TableCell key={`jury-${jury.id}`} align="center">
+                      {jury.name}
+                    </TableCell>
                   ))}
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
+            {timeSlots.map((timeSlot) => (
+              <TableRow>
+                <TableCell align="center" sx={stickyColumnStyle}>
+                  {timeSlot}
+                </TableCell>
+                {competition &&
+                  competition.juries.map(() => <SessionCell teams={teams} />)}
+              </TableRow>
+            ))}
           </Table>
         </TableContainer>
       </>
