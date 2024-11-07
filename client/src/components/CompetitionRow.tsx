@@ -105,8 +105,10 @@ export default function CompetitionRow({
         },
       });
       clearInputFields(inputRefs);
+      notifySuccess("Compétition créée avec succès");
     } catch {
       setErrors((prevErrors) => ({ ...prevErrors, name: false }));
+      notifyError("Erreur à la création de la compétition");
     }
   };
 
@@ -124,6 +126,7 @@ export default function CompetitionRow({
         },
       },
     });
+    notifySuccess("Compétition modifiée avec succès");
     setDisplayMode("consult");
   };
 
