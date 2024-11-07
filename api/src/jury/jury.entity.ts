@@ -6,11 +6,13 @@ import {
   BaseEntity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Field, ObjectType, Int } from "type-graphql";
 import { IsNotEmpty, IsString, Length } from "class-validator";
 import { User } from "../user/user.entity";
 import { Competition } from "../competition/competition.entity";
+import { Session } from "../session/session.entity";
 
 @ObjectType()
 @Entity()
@@ -33,4 +35,8 @@ export class Jury extends BaseEntity {
   @Field(() => Competition)
   @ManyToOne(() => Competition, (competition) => competition.juries)
   competition: Competition;
+
+  @Field(() => [Session])
+  @OneToMany(() => Session, (session) => session.jury)
+  sessions: Session[];
 }
