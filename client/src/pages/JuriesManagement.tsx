@@ -6,6 +6,7 @@ import {
 } from "../types/graphql-types";
 import ManageJuryAddRow from "../components/ManageJuryAddRow";
 import ManageJuryRow from "../components/ManageJuryRow";
+import MiniNavbar from "../components/MiniNavbar";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,7 +15,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography, Box, Stack } from "@mui/material";
-import MiniNavbar from "../components/MiniNavbar";
 
 export default function JuriesManagement() {
   const { competitionId } = useParams<string>();
