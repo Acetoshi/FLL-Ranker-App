@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { Stack, Link as MUILink, Typography } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import GroupsIcon from "@mui/icons-material/Groups";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import AlarmIcon from "@mui/icons-material/Alarm";
 
@@ -31,7 +32,7 @@ export default function MiniNavbar() {
     },
     {
       title: "Jurys",
-      icon: <Diversity3Icon />,
+      icon: <GroupsIcon />,
       to: `/manage/competitions/${competitionId}/juries`,
     },
     {
@@ -53,7 +54,12 @@ export default function MiniNavbar() {
           pages
             .filter((page) => !page.to.includes(currentPage as string))
             .map((page) => (
-              <MUILink component={Link} to={page.to} sx={buttonStyle}>
+              <MUILink
+                key={page.title}
+                component={Link}
+                to={page.to}
+                sx={buttonStyle}
+              >
                 <Typography variant="body1" component="span">
                   <Stack direction="row" spacing={1}>
                     {page.icon} <span>{page.title}</span>
