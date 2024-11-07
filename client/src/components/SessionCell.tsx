@@ -23,7 +23,7 @@ export default function SessionCell({
   startTime,
   endTime,
 }: SessionCellProps) {
-  const { handleAdd } = useSessionsOperations();
+  const { handleAddSession } = useSessionsOperations();
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
@@ -36,7 +36,7 @@ export default function SessionCell({
   const [selectedTeam, setSelectedTeam] = useState<MinimalTeam>(noTeam);
 
   const submitCreation = async (targetTeam: MinimalTeam) => {
-    const { success, message } = await handleAdd(
+    const { success, message } = await handleAddSession(
       startTime,
       endTime,
       competitionId,
