@@ -6,11 +6,10 @@ import connexion from "./services/connexion";
 import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
-import Manage from "./pages/Manage.tsx";
 import TeamsManagement from "./pages/TeamsManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
-import SessionsManagement from "./pages/SessionsManagement.tsx";;
+import SessionsManagement from "./pages/SessionsManagement.tsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -33,10 +32,6 @@ const router = createBrowserRouter([
         path: "manage",
         element: <Outlet />,
         children: [
-          {
-            index: true,
-            element: <Manage />,
-          },
           {
             path: "competitions",
             element: <Outlet />,
@@ -70,5 +65,5 @@ createRoot(document.getElementById("root")!).render(
     <ApolloProvider client={connexion}>
       <RouterProvider router={router} />
     </ApolloProvider>
-  </StrictMode>
+  </StrictMode>,
 );
