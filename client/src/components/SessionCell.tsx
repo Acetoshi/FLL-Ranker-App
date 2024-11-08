@@ -2,23 +2,10 @@ import { MenuItem, Select, SelectChangeEvent, TableCell } from "@mui/material";
 import { useState } from "react";
 import { useSessionsOperations } from "../services/sessions";
 import { useNotification } from "../hooks/useNotification";
-import { Session } from "../types/graphql-types";
-
-type MinimalTeam = {
-  id: number;
-  name: string;
-};
-
-type SessionCellProps = {
-  session: Session | undefined;
-  teams: MinimalTeam[];
-  startTime: string;
-  endTime: string;
-  competitionId: number;
-  juryId: number;
-};
+import { MinimalTeam, SessionCellProps } from "../types/types";
 
 export default function SessionCell({
+  refetch,
   session,
   teams,
   juryId,
@@ -26,7 +13,7 @@ export default function SessionCell({
   startTime,
   endTime,
 }: SessionCellProps) {
-  const { handleAddSession } = useSessionsOperations();
+  const { handleAddSession , handleDeleteSession} = useSessionsOperations();
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
@@ -49,19 +36,33 @@ export default function SessionCell({
     if (success) {
       notifySuccess("Créneau enregistré");
     } else {
-      notifyError(message);
+      notifyError(message as string);
     }
   };
 
-  const handleSelect = (event: SelectChangeEvent) => {
-    const targetTeam = teams.find((team) => team.name === event.target.value);
+  const submitDeletion = async () => {
+    if (session) {
+      const { success, message } = await handleDeleteSession(session.id);
+      if (success) {
+        notifySuccess("Créneau supprimé");
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const handleSelect = async (event: SelectChangeEvent) => {
+    const targetTeam = teams?.find((team) => team.name === event.target.value);
     if (targetTeam) {
       // submitEdition goes here in the future, if nothing to edit, create
-      submitCreation(targetTeam);
+      await submitCreation(targetTeam);
       setSelectedTeam(targetTeam);
+      await refetch()
     } else {
       // submitDeletion goes here in the future
+      await submitDeletion();
       setSelectedTeam(noTeam);
+      await refetch()
     }
   };
 
@@ -79,7 +80,7 @@ export default function SessionCell({
         onChange={handleSelect}
       >
         <MenuItem value="disponible">-</MenuItem>
-        {teams.map((team) => (
+        {teams?.map((team) => (
           <MenuItem key={team.id} value={team.name}>
             {team.name}
           </MenuItem>

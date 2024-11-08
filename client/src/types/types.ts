@@ -4,6 +4,7 @@ import {
   GetTeamsOfCompetitionByIdQuery,
   Team,
   GetJuriesOfCompetitionQuery,
+  GetCompetitionByIdQuery,
 } from "./graphql-types";
 import { ApolloQueryResult } from "@apollo/client";
 
@@ -48,3 +49,36 @@ export type DataHandlerResult = {
 export type JuriesOfCompetitionRefetchType = (
   variables?: Partial<Exact<{ competitionId: number }>> | undefined,
 ) => Promise<ApolloQueryResult<GetJuriesOfCompetitionQuery>>;
+
+
+export type MinimalTeam = {
+  id: number;
+  name: string;
+};
+
+type MinimalSession = {
+  startTime: string;
+    endTime: string;
+    id: number;
+    team: {
+        __typename?: "Team";
+        id: number;
+        name: string;
+    };
+    jury: {
+        __typename?: "Jury";
+        id: number;
+    };
+}
+
+export type SessionCellProps = {
+  session: MinimalSession | undefined;
+  teams: MinimalTeam[] | undefined;
+  startTime: string;
+  endTime: string;
+  competitionId: number;
+  juryId: number;
+  refetch: (
+    variables?: Partial<Exact<{ [key: string]: never }>> | undefined
+  ) => Promise<ApolloQueryResult<GetCompetitionByIdQuery>>;
+};
