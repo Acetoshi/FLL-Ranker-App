@@ -112,3 +112,14 @@ export const DELETE_SESSION = gql`
     }
   }
 `;
+
+export const EDIT_SESSION = gql`
+  mutation editSession($session: ModifyTeamOfSessionInput!) {
+    editSession(session: $session) {
+      team {
+        id
+        name
+      }
+    }
+  }
+`;

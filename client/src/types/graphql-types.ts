@@ -67,6 +67,11 @@ export type JuryInput = {
   juryId: Scalars['Float']['input'];
 };
 
+export type ModifyTeamOfSessionInput = {
+  id: Scalars['Float']['input'];
+  teamId: Scalars['Float']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addUserToJury: User;
@@ -78,6 +83,7 @@ export type Mutation = {
   deleteSession: DeleteResponseStatus;
   deleteTeam: DeleteResponseStatus;
   editCompetition: Competition;
+  editSession: Session;
   editTeam: Team;
   removeCompetition: DeleteResponseStatus;
   removeUserFromJury: User;
@@ -126,6 +132,11 @@ export type MutationDeleteTeamArgs = {
 
 export type MutationEditCompetitionArgs = {
   competition: CompetitionInput;
+};
+
+
+export type MutationEditSessionArgs = {
+  session: ModifyTeamOfSessionInput;
 };
 
 
@@ -303,6 +314,13 @@ export type DeleteSessionMutationVariables = Exact<{
 
 
 export type DeleteSessionMutation = { __typename?: 'Mutation', deleteSession: { __typename?: 'DeleteResponseStatus', message?: string | null, success: boolean } };
+
+export type EditSessionMutationVariables = Exact<{
+  session: ModifyTeamOfSessionInput;
+}>;
+
+
+export type EditSessionMutation = { __typename?: 'Mutation', editSession: { __typename?: 'Session', team: { __typename?: 'Team', id: number, name: string } } };
 
 export type GetAllJuriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -762,6 +780,42 @@ export function useDeleteSessionMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteSessionMutationHookResult = ReturnType<typeof useDeleteSessionMutation>;
 export type DeleteSessionMutationResult = Apollo.MutationResult<DeleteSessionMutation>;
 export type DeleteSessionMutationOptions = Apollo.BaseMutationOptions<DeleteSessionMutation, DeleteSessionMutationVariables>;
+export const EditSessionDocument = gql`
+    mutation editSession($session: ModifyTeamOfSessionInput!) {
+  editSession(session: $session) {
+    team {
+      id
+      name
+    }
+  }
+}
+    `;
+export type EditSessionMutationFn = Apollo.MutationFunction<EditSessionMutation, EditSessionMutationVariables>;
+
+/**
+ * __useEditSessionMutation__
+ *
+ * To run a mutation, you first call `useEditSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editSessionMutation, { data, loading, error }] = useEditSessionMutation({
+ *   variables: {
+ *      session: // value for 'session'
+ *   },
+ * });
+ */
+export function useEditSessionMutation(baseOptions?: Apollo.MutationHookOptions<EditSessionMutation, EditSessionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditSessionMutation, EditSessionMutationVariables>(EditSessionDocument, options);
+      }
+export type EditSessionMutationHookResult = ReturnType<typeof useEditSessionMutation>;
+export type EditSessionMutationResult = Apollo.MutationResult<EditSessionMutation>;
+export type EditSessionMutationOptions = Apollo.BaseMutationOptions<EditSessionMutation, EditSessionMutationVariables>;
 export const GetAllJuriesDocument = gql`
     query GetAllJuries {
   getAllJuries {

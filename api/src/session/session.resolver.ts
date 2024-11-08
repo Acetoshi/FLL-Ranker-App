@@ -32,6 +32,17 @@ class SessionInput implements Partial<Session> {
   juryId: number;
 }
 
+@InputType()
+export class ModifyTeamOfSessionInput implements Partial<Session> {
+  @Field()
+  @IsNumber()
+  id: number;
+
+  @Field()
+  @IsNumber()
+  teamId: number;
+}
+
 @Resolver(Session)
 export default class SessionResolver {
   @Mutation(() => Session)
@@ -59,6 +70,23 @@ export default class SessionResolver {
     } catch (error) {
       console.error(error);
       throw new Error("Failed to create a new session");
+    }
+  }
+
+  @Mutation(() => Session)
+  async editSession(@Arg("session") newSession: ModifyTeamOfSessionInput) {
+    try {
+      const sessionToEdit = await Session.findOneByOrFail({
+        id: newSession.id,
+      });
+      sessionToEdit.team = await Team.findOneByOrFail({
+        id: newSession.teamId,
+      });
+
+      return await sessionToEdit.save();
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to edit session");
     }
   }
 
