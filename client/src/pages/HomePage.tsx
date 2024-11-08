@@ -9,7 +9,13 @@ export default function HomePage() {
     <>
       <Grid container spacing={5} justifyContent="center" sx={{ marginTop: 9 }}>
         <Grid size={12}>
-          <Stack direction="column" spacing={2} justifyContent="center" alignItems="center" minHeight={300}>
+          <Stack
+            direction="column"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+            minHeight={300}
+          >
             <Typography variant="h1" gutterBottom>
               Découvrez le classement !
             </Typography>
@@ -18,10 +24,11 @@ export default function HomePage() {
             </Typography>
           </Stack>
         </Grid>
-
         <Grid size={5}>
           <img
-            src={"https://firstlegoleaguefrance.fr/wp-content/uploads/2024/05/FLLWF2023_015-2048x1365.jpeg"}
+            src={
+              "https://firstlegoleaguefrance.fr/wp-content/uploads/2024/05/FLLWF2023_015-2048x1365.jpeg"
+            }
             style={imgStyle}
             alt="Un enfant qui construit un robot"
           />
@@ -37,7 +44,6 @@ export default function HomePage() {
             passent un oral devant le jury.
           </Typography>
         </Grid>
-
         <Grid size={5}>
           <Typography variant="h4" gutterBottom>
             Découvrez les résultats
@@ -49,21 +55,36 @@ export default function HomePage() {
         </Grid>
         <Grid size={5}>
           <img
-            src={"https://firstlegoleaguefrance.fr/wp-content/uploads/2024/05/finale-fll-nantes.jpg"}
+            src={
+              "https://firstlegoleaguefrance.fr/wp-content/uploads/2024/05/finale-fll-nantes.jpg"
+            }
             style={imgStyle}
             alt="beaucoup de gens autour d'une piste de compétition"
           />
         </Grid>
-
         <Grid size={12}>
-          <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" minHeight={200}>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+            minHeight={200}
+          >
             <BtnLink to="competition/3/ranking" content="Nationale Paris" />
-            <BtnLink to="competition/3/ranking" content="Finale régionale Nantes" />
-            <BtnLink to="competition/3/ranking" content="Finale régionale Bordeaux" />
-            <BtnLink to="competition/3/ranking" content="Internationale de Mulhouse" />
+            <BtnLink
+              to="competition/3/ranking"
+              content="Finale régionale Nantes"
+            />
+            <BtnLink
+              to="competition/3/ranking"
+              content="Finale régionale Bordeaux"
+            />
+            <BtnLink
+              to="competition/3/ranking"
+              content="Internationale de Mulhouse"
+            />
           </Stack>
         </Grid>
-
         <Grid size={5}>
           <img
             src={
