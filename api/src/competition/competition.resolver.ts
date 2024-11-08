@@ -7,7 +7,7 @@ import {
   IsNumber,
 } from "class-validator";
 import { Competition } from "./competition.entity";
-import { DeleteResponseStatus } from "../types/deleteResponseStatus";
+import { DeleteResponseStatus } from "../utilities/deleteResponseStatus";
 
 @InputType()
 class CompetitionInput {
@@ -57,6 +57,10 @@ export default class CompetitionResolver {
           users: true,
         },
         teams: true,
+        sessions: {
+          team: true,
+          jury: true,
+        },
       },
     });
   }

@@ -2,28 +2,18 @@ import { MenuItem, Select, SelectChangeEvent, TableCell } from "@mui/material";
 import { useState } from "react";
 import { useSessionsOperations } from "../services/sessions";
 import { useNotification } from "../hooks/useNotification";
-
-type MinimalTeam = {
-  id: number;
-  name: string;
-};
-
-type SessionCellProps = {
-  teams: MinimalTeam[];
-  startTime: string;
-  endTime: string;
-  competitionId: number;
-  juryId: number;
-};
+import { MinimalTeam, MinimalSession, SessionCellProps } from "../types/types";
 
 export default function SessionCell({
+  initialSession,
   teams,
   juryId,
   competitionId,
   startTime,
   endTime,
 }: SessionCellProps) {
-  const { handleAddSession } = useSessionsOperations();
+  const { handleAddSession, handleEditSession, handleDeleteSession } =
+    useSessionsOperations();
 
   // used to give feedback to the user
   const { notifySuccess, notifyError } = useNotification();
@@ -32,11 +22,12 @@ export default function SessionCell({
     id: 0,
     name: "disponible",
   };
-
-  const [selectedTeam, setSelectedTeam] = useState<MinimalTeam>(noTeam);
+  const defaultTeam = initialSession ? initialSession.team : noTeam;
+  const [selectedTeam, setSelectedTeam] = useState<MinimalTeam>(defaultTeam);
+  const [session, setSession] = useState<MinimalSession | undefined>(initialSession);
 
   const submitCreation = async (targetTeam: MinimalTeam) => {
-    const { success, message } = await handleAddSession(
+    const { success, message, createdSession } = await handleAddSession(
       startTime,
       endTime,
       competitionId,
@@ -45,20 +36,51 @@ export default function SessionCell({
     );
     if (success) {
       notifySuccess("Créneau enregistré");
+      setSelectedTeam(targetTeam);
+      setSession(createdSession);
     } else {
-      notifyError(message);
+      notifyError(message as string);
     }
   };
 
-  const handleSelect = (event: SelectChangeEvent) => {
-    const targetTeam = teams.find((team) => team.name === event.target.value);
+  const submitEdition = async (targetTeam: MinimalTeam) => {
+    if (session) {
+      const { success, message } = await handleEditSession(
+        session.id,
+        targetTeam.id
+      );
+      if (success) {
+        notifySuccess("Modification enregistrée");
+        setSelectedTeam(targetTeam);
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const submitDeletion = async () => {
+    if (session) {
+      const { success, message } = await handleDeleteSession(session.id);
+      if (success) {
+        notifySuccess("Créneau supprimé");
+        setSelectedTeam(noTeam);
+        setSession(undefined);
+      } else {
+        notifyError(message as string);
+      }
+    }
+  };
+
+  const handleSelect = async (event: SelectChangeEvent) => {
+    const targetTeam = teams?.find((team) => team.name === event.target.value);
     if (targetTeam) {
-      // submitEdition goes here in the future, if nothing to edit, create
-      submitCreation(targetTeam);
-      setSelectedTeam(targetTeam);
+      if (session) {
+        await submitEdition(targetTeam);
+      } else {
+        await submitCreation(targetTeam);
+      }
     } else {
-      // submitDeletion goes here in the future
-      setSelectedTeam(noTeam);
+      await submitDeletion();
     }
   };
 
@@ -76,7 +98,7 @@ export default function SessionCell({
         onChange={handleSelect}
       >
         <MenuItem value="disponible">-</MenuItem>
-        {teams.map((team) => (
+        {teams?.map((team) => (
           <MenuItem key={team.id} value={team.name}>
             {team.name}
           </MenuItem>
