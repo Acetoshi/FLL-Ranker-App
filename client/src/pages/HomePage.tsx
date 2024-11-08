@@ -43,7 +43,7 @@ export default function HomePage() {
             Découvrez les résultats
           </Typography>
           <Typography variant="body1">
-            A la fin de la journée, vous aurez ccès au classement général des
+            A la fin de la journée, vous aurez accès au classement général des
             équipes, et aux prix décernés en détail.
           </Typography>
         </Grid>
@@ -57,10 +57,10 @@ export default function HomePage() {
 
         <Grid size={12}>
           <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" minHeight={200}>
-            <BtnLink to="/ranking" content="Nationale Paris" />
-            <BtnLink to="/ranking" content="Finale régionale Nantes" />
-            <BtnLink to="/ranking" content="Finale régionale Bordeaux" />
-            <BtnLink to="/ranking" content="Internationale de Mulhouse" />
+            <BtnLink to="competition/3/ranking" content="Nationale Paris" />
+            <BtnLink to="competition/3/ranking" content="Finale régionale Nantes" />
+            <BtnLink to="competition/3/ranking" content="Finale régionale Bordeaux" />
+            <BtnLink to="competition/3/ranking" content="Internationale de Mulhouse" />
           </Stack>
         </Grid>
 
