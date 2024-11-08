@@ -1,12 +1,12 @@
+import { Outlet } from "react-router";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Container from "@mui/material/Container";
-import { Outlet } from "react-router";
-import NotificationProvider from "./contexts/NotificationContext";
-import NavBar from "./components/NavBar";
-import DialogProvider from "./contexts/DialogContext";
-import "./global.css";
-import Footer from "./components/Footer";
 import { Stack } from "@mui/material";
+import NotificationProvider from "./contexts/NotificationContext";
+import DialogProvider from "./contexts/DialogContext";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+import "./global.css";
 
 const theme = createTheme({
   palette: {
