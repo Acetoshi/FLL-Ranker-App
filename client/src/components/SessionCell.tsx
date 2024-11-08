@@ -79,11 +79,8 @@ export default function SessionCell({
       } else {
         await submitCreation(targetTeam);
       }
-      //await refetch();
     } else {
       await submitDeletion();
-
-      //await refetch();
     }
   };
 
