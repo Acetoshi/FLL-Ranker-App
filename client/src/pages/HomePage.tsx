@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import BtnLink from "../components/BtnLink";
 import imgFirst from "../../assets/images/pexels-vanessa-loring-7868838.jpg";
 import imgSnd from "../../assets/images/pexels-vanessa-loring-7868890.jpg";
+import { Typography } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -20,6 +21,14 @@ export default function HomePage() {
   return (
     <>
       <Grid container spacing={5} justifyContent="center" sx={{ marginTop: 9 }}>
+        <Grid size={12}>
+          <Typography variant="h1" gutterBottom>
+            Découvrez le classement !
+          </Typography>
+          <Typography variant="h2" gutterBottom>
+            Résultats des compétitions FLL
+          </Typography>
+        </Grid>
         <Grid size={5}>
           <img
             src={imgSnd}
@@ -28,18 +37,14 @@ export default function HomePage() {
           />
         </Grid>
         <Grid size={5}>
-          <Item>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nihil
-            debitis cum accusamus amet illo at, consequatur in neque repellendus
-            modi odio ab sunt quo commodi dignissimos culpa expedita est facere?
-            Commodi necessitatibus excepturi ducimus dolorem accusamus animi
-            magni earum nihil quaerat. Labore optio possimus earum asperiores
-            error placeat itaque perferendis pariatur accusamus. Voluptas
-            numquam laborum pariatur ab obcaecati! Nam, animi? Labore optio
-            possimus earum asperiores error placeat itaque perferendis pariatur
-            accusamus. Voluptas numquam laborum pariatur ab obcaecati! Nam,
-            animi?
-          </Item>
+          <Typography variant="h3" gutterBottom>
+            Un challenge ouvert à tous
+          </Typography>
+          <Typography variant="body1">
+            La FLL Challenge permet aux enfants de révéler leurs talents, qu’ils
+            soit doué en mécanique, en design, en programmation ou simplement en
+            sciences !
+          </Typography>
         </Grid>
         <Grid size={5}>
           <Item>
