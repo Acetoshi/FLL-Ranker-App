@@ -5,8 +5,8 @@ services:
     restart: always
     ports:
       - 4000:4000
-    # volumes:
-    #   - ./api:/app/
+    volumes:
+      - ./api/src/:/app/src/
     command: npm run start
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://api:4000/graphql"]
@@ -18,8 +18,8 @@ services:
   client:
     env_file: ./client/.env
     build: ./client
-    # volumes:
-    #   - ./src:/app/
+    volumes:
+      - ./client/src:/app/src
     restart: always
     command: npm run dev
     ports:
