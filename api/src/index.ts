@@ -4,11 +4,11 @@ import { dataSource } from "./db/data-source";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import * as dotenv from "dotenv";
-import TeamResolver from "./team/team.resolver";
-import JuryResolver from "./jury/jury.resolver";
-import UserResolver from "./user/user.resolver";
-import CompetitionResolver from "./competition/competition.resolver";
-import SessionResolver from "./session/session.resolver";
+import TeamResolver from "./modules/team/team.resolver";
+import JuryResolver from "./modules/jury/jury.resolver";
+import UserResolver from "./modules/user/user.resolver";
+import CompetitionResolver from "./modules/competition/competition.resolver";
+import SessionResolver from "./modules/session/session.resolver";
 
 dotenv.config();
 const { API_PORT } = process.env;
