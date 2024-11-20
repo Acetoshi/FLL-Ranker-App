@@ -4,19 +4,19 @@ import argon2 from "argon2";
 import { User } from "./user.entity";
 import { UserInput } from "./user.input";
 import { Role } from "../role/role.entity";
+import verifyPassword from "./verifyPassword.util";
 
 @Resolver(User)
 export default class UserResolver {
+  // TODO : protect mutation with roles
   @Mutation(() => User)
   async createUser(@Arg("user") newUser: UserInput): Promise<User> {
     const existingUser = await User.findOne({
       where: { email: newUser.email },
     });
     if (existingUser) {
-      throw new Error("User with this email already exists");
+      throw new Error("Bad user input"); // can't say that the mail already exists to protect against brute-force attacks
     }
-
-    // TODO : validate that password is sufficiently complex
 
     const hashedPassword = await argon2.hash(newUser.password); // no need to generate salt here, cause argon2 does it for us
 
@@ -58,27 +58,38 @@ export default class UserResolver {
     @Ctx()
     context: { res: { setHeader: (name: string, value: string) => void } }
   ) {
-    console.info(email, password);
+    const user = await User.findOne({
+      where: { email: email },
+      relations: {
+        role: true,
+      },
+    });
 
-    const me = { email: "me@me.com", password: "2" };
+    if (!user) return false;
 
-    if (email === me.email) {
-      if (password === me.password) {
-        //generate JWT token
-        const token = jwt.sign(
-          { email: "tex@test.com", name: "me", role: "admin" },
-          process.env.API_SECRET_KEY as string
-        );
-        const expiryDate = new Date();
-        expiryDate.setHours(expiryDate.getHours() + 24); // Token expires in 24 hours
+    const passwordMatches = await verifyPassword(user.password, password);
 
-        context.res.setHeader(
-          "Set-Cookie",
-          `AuthToken=${token};httpOnly;secure;SameSite=Strict;expires=${expiryDate}`
-        ); // see set cookie on MDN
-        return true;
-      }
+    if (passwordMatches) {
+      //generate JWT token
+      const token = jwt.sign(
+        {
+          email: "tex@test.com",
+          firstname: user.firstname,
+          lastname: user.lastname,
+          role: user.role.id,
+        },
+        process.env.API_SECRET_KEY as string
+      );
+      const expiryDate = new Date();
+      expiryDate.setHours(expiryDate.getHours() + 24); // Token expires in 24 hours
+
+      context.res.setHeader(
+        "Set-Cookie",
+        `AuthToken=${token};httpOnly;secure;SameSite=Strict;expires=${expiryDate}`
+      ); // see set cookie on MDN
+      return true;
+    } else {
+      return false;
     }
-    return false;
   }
 }
