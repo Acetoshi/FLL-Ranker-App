@@ -3,6 +3,8 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { dataSource } from "./db/data-source";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import setCookie from "set-cookie-parser";
+import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import TeamResolver from "./modules/team/team.resolver";
 import JuryResolver from "./modules/jury/jury.resolver";
@@ -32,6 +34,19 @@ const { API_PORT } = process.env;
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: API_PORT as undefined | number },
+    context: async ({ req, res }) => {
+      if (!req.headers.cookie) return { res };
+      const cookies = setCookie.parse(req.headers.cookie as string, {
+        map: true,
+      });
+      if (!cookies.AuthToken) return { res };
+      const payload = jwt.verify(
+        cookies.AuthToken.value,
+        process.env.API_SECRET_KEY as string
+      );
+      if (!payload) return { res };
+      return { res, cookie: payload };
+    },
   });
 
   console.info(`🚀  Server ready at: ${url}`);
