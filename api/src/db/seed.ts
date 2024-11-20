@@ -1,8 +1,8 @@
 import { dataSource } from "../db/data-source";
-import { Role } from "../role/role.entity";
-import { User } from "../user/user.entity";
-import { Jury } from "../jury/jury.entity";
-import { Competition } from "../competition/competition.entity";
+import { Role } from "../modules/role/role.entity";
+import { User } from "../modules/user/user.entity";
+import { Jury } from "../modules/jury/jury.entity";
+import { Competition } from "../modules/competition/competition.entity";
 import roles from "../seed_data/roles.json";
 import users from "../seed_data/users.json";
 import juries from "../seed_data/juries.json";

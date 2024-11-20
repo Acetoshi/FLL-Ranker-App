@@ -1,0 +1,13 @@
+FROM node:lts-alpine AS dev
+
+## make a directory and go inside it
+WORKDIR /app  
+COPY *.json ./
+## ok because node and npm is included in alpine, no need to install it
+## RUN npm install
+RUN npm install --force --loglevel verbose 
+COPY . .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "dev"]

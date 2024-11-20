@@ -1,9 +1,16 @@
 {
+  "workspaces": [
+    "client",
+    "api"
+  ],
   "scripts": {
+    "dev": "npm run dev --workspace=client & npm run dev --workspace=api",
+    "install-all-dependencies": "npm i && npm i --workspace=client && npm i --workspace=api",
     "prepare": "husky",
     "lint": "lint-staged",
     "lint-front": "cd client && npm run lint",
-    "lint-back": "cd api && npm run lint"
+    "lint-back": "cd api && npm run lint",
+    "dev-restart": "make devdown && make prune && make rebuild && make dev"
   },
   "dependencies": {
     "husky": "^9.1.6",
