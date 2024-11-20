@@ -1,0 +1,44 @@
+services:
+  api:
+    build: ./api
+    env_file: ./api/.env
+    restart: always
+    ports:
+      - 4000:4000
+    # volumes:
+    #   - ./api:/app/
+    command: npm run start
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://api:4000/graphql"]
+    #   interval: 30s
+    #   retries: 3
+    #   start_period: 10s
+    #   timeout: 10s
+
+  client:
+    env_file: ./client/.env
+    build: ./client
+    # volumes:
+    #   - ./src:/app/
+    restart: always
+    command: npm run dev
+    ports:
+      - 5173:5173
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://client:5173"]
+    #   interval: 30s
+    #   retries: 3
+    #   start_period: 10s
+    #   timeout: 10s
+
+  gateway:
+    image: nginx
+    ports:
+      - 5000:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    # depends_on:
+    #   client:
+    #     condition: service_healthy
+    #   api:
+    #     condition: service_healthy

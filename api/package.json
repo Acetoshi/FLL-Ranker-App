@@ -3,7 +3,8 @@
     "seed": "ts-node ./src/db/seed.ts",
     "dev": "ts-node ./src/index.ts",
     "lint": "eslint --fix",
-    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'"
+    "format": "prettier --write '*/**/*.{js,jsx,ts,tsx}'",
+    "start": "npm run seed && npm run dev"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
