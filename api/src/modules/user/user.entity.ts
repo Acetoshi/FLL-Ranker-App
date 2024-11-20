@@ -46,7 +46,6 @@ export class User extends BaseEntity {
   @Column({ nullable: true, type: "varchar", width: 50 })
   lastname: string;
 
-  @Field(() => String)
   @IsString()
   @IsNotEmpty()
   @Column({ nullable: false, type: "varchar" })
