@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link as MUILink } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
+import Login from "./Login";
 
 const pages = [
   { content: "Page d'accueil", to: "/" },
@@ -68,6 +69,7 @@ function NavBar() {
             {page.content}
           </MUILink>
         ))}
+        <Login />
       </Box>
     </AppBar>
   );
