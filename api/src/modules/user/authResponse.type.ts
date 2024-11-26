@@ -18,7 +18,7 @@ export class UserDetails {
 
 // Define the login response type
 @ObjectType()
-export class LoginResponse {
+export class AuthResponse {
   @Field()
   success: boolean;
 

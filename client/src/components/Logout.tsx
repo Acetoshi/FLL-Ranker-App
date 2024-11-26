@@ -13,7 +13,7 @@ export default function Logout() {
   const submitLogout = async () => {
     const userConfirms = await askUser(
       `Se déconnecter ?`,
-      "Vous serez redirigé vers la page d'accueil"
+      "Vous serez redirigé.e vers la page d'accueil"
     );
 
     if (userConfirms) {

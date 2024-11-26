@@ -12,6 +12,7 @@ import {
 import { useGetCompetitionByIdQuery } from "../types/graphql-types";
 import SessionCell from "../components/SessionCell";
 import MiniNavbar from "../components/MiniNavbar";
+import CenteredSpinner from "../components/CenteredSpinner";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -21,7 +22,7 @@ export default function CompetitionsManagement() {
     fetchPolicy: "network-only",
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <CenteredSpinner />;
 
   if (error) return <p>Error :(</p>;
 
@@ -103,6 +104,7 @@ export default function CompetitionsManagement() {
                 {competition &&
                   competition.juries.map((jury) => (
                     <SessionCell
+                      key = {`jury-${jury.id}-${timeSlot.startTime}-${timeSlot.endTime}`}
                       initialSession={filterSessionByStartTimeAndJuryId(
                         timeSlot.startTime,
                         jury.id

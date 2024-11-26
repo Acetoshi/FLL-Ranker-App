@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link as MUILink } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import Login from "./Login";
 import { useAuth } from "../hooks/useAuth";
+import Login from "./Login";
 import Logout from "./Logout";
 
 const pages = [
@@ -73,6 +73,7 @@ function NavBar() {
             {page.content}
           </MUILink>
         ))}
+        {user && `${user.firstname} ${user.lastname}`}
         {user ? <Logout /> : <Login />}
       </Box>
     </AppBar>

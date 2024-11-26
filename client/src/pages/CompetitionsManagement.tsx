@@ -11,11 +11,12 @@ import {
 } from "@mui/material";
 import { useGetAllCompetitionsQuery } from "../types/graphql-types";
 import CompetitionRow from "../components/CompetitionRow";
+import CenteredSpinner from "../components/CenteredSpinner";
 
 export default function CompetitionsManagement() {
   const { loading, error, data } = useGetAllCompetitionsQuery();
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <CenteredSpinner />;
 
   if (error) return <p>Error :(</p>;
 

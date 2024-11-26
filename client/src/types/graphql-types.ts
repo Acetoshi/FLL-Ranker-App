@@ -17,6 +17,12 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
+  success: Scalars['Boolean']['output'];
+  userDetails?: Maybe<UserDetails>;
+};
+
 export type Competition = {
   __typename?: 'Competition';
   date: Scalars['String']['output'];
@@ -65,12 +71,6 @@ export type Jury = {
 
 export type JuryInput = {
   juryId: Scalars['Float']['input'];
-};
-
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  success: Scalars['Boolean']['output'];
-  userDetails?: Maybe<UserDetails>;
 };
 
 export type ModifyTeamOfSessionInput = {
@@ -174,7 +174,8 @@ export type Query = {
   getAllJuries: Array<Jury>;
   getCompetitionById: Competition;
   getUsersByRole: Array<User>;
-  login: LoginResponse;
+  login: AuthResponse;
+  userData: AuthResponse;
 };
 
 
@@ -407,12 +408,17 @@ export type LoginQueryVariables = Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoginResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'AuthResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDataQuery = { __typename?: 'Query', userData: { __typename?: 'AuthResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
 
 
 export const CreateNewJuryDocument = gql`
@@ -1286,3 +1292,48 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const UserDataDocument = gql`
+    query UserData {
+  userData {
+    success
+    userDetails {
+      email
+      firstname
+      lastname
+      role
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserDataQuery__
+ *
+ * To run a query within a React component, call `useUserDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserDataQuery(baseOptions?: Apollo.QueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+      }
+export function useUserDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+        }
+export function useUserDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+        }
+export type UserDataQueryHookResult = ReturnType<typeof useUserDataQuery>;
+export type UserDataLazyQueryHookResult = ReturnType<typeof useUserDataLazyQuery>;
+export type UserDataSuspenseQueryHookResult = ReturnType<typeof useUserDataSuspenseQuery>;
+export type UserDataQueryResult = Apollo.QueryResult<UserDataQuery, UserDataQueryVariables>;

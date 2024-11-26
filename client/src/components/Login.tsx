@@ -6,8 +6,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { RefMap } from "../types/types";
 import { useAuth } from "../hooks/useAuth";
 import { useNotification } from "../hooks/useNotification";
@@ -17,6 +19,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { handleLogin } = useAuth();
   const { notifySuccess } = useNotification();
+  const [inputError, setInputError] = useState(false);
 
   const credentialsRef: RefMap = {
     email: useRef<HTMLInputElement>(null),
@@ -25,6 +28,7 @@ export default function Login() {
 
   const handleClose = () => {
     setOpen(false);
+    setInputError(false);
   };
 
   const handleOpen = () => {
@@ -41,11 +45,18 @@ export default function Login() {
     const password =
       credentialsRef.password.current && credentialsRef.password.current.value;
 
-    const { success, userDetails } = await handleLogin(email as string, password as string);
+    const { success, userDetails } = await handleLogin(
+      email as string,
+      password as string
+    );
 
     if (success) {
       handleClose();
-      notifySuccess(`Vous êtes connecté en tant que ${userDetails?.firstname} ${userDetails?.lastname}`)
+      notifySuccess(
+        `Vous êtes connecté en tant que ${userDetails?.firstname} ${userDetails?.lastname}`
+      );
+    } else {
+      setInputError(true);
     }
     setLoading(false);
   };
@@ -62,7 +73,23 @@ export default function Login() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Connexion</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              gap: "16px",
+            }}
+          >
+            Connexion
+            <IconButton sx={{ padding: 0 }}>
+              <CloseIcon onClick={handleClose} />
+            </IconButton>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -76,6 +103,8 @@ export default function Login() {
               inputRef={credentialsRef.email}
               label={"email"}
               variant={"outlined"}
+              error={inputError}
+              onChange={() => setInputError(false)}
               fullWidth
               required
             />
@@ -84,6 +113,9 @@ export default function Login() {
               variant={"outlined"}
               label={"password"}
               type="password"
+              error={inputError}
+              onChange={() => setInputError(false)}
+              helperText={inputError ? "Identifiants incorrects" : ""}
               fullWidth
               required
             />
@@ -92,31 +124,19 @@ export default function Login() {
         <DialogActions
           sx={{
             display: "flex",
-            flexDirection: "column",
+            justifyContent: "center",
+            paddingBottom: "24px",
           }}
         >
-          <Box
-            sx={{
-              maxWidth: 200,
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-            }}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            onClick={submitLogin}
+            autoFocus
           >
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              onClick={submitLogin}
-              autoFocus
-            >
-              Se connecter
-            </Button>
-            <Button variant="outlined" color="error" onClick={handleClose}>
-              ANNULER
-            </Button>
-          </Box>
+            Se connecter
+          </Button>
         </DialogActions>
       </Dialog>
     </>

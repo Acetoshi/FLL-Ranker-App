@@ -19,3 +19,17 @@ export const LOGOUT = gql`
     logout
   }
 `;
+
+export const GET_USER_DETAILS = gql`
+  query UserData {
+    userData {
+      success
+      userDetails {
+        email
+        firstname
+        lastname
+        role
+      }
+    }
+  }
+`;

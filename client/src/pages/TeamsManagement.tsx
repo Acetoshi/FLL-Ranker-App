@@ -13,6 +13,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import CenteredSpinner from "../components/CenteredSpinner";
 
 export default function TeamsManagement() {
   const competitionId = parseInt(useParams().competitionId as string);
@@ -21,7 +22,7 @@ export default function TeamsManagement() {
     variables: { competitionId: competitionId },
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <CenteredSpinner />;
 
   if (error) return <p>Error :(</p>;
 
@@ -72,11 +73,11 @@ export default function TeamsManagement() {
                         mode={"consult"}
                         team={team}
                         refetch={refetch}
-                      />,
+                      />
                     );
                     return aggregat;
                   },
-                  [],
+                  []
                 )}
             </TableBody>
           </Table>

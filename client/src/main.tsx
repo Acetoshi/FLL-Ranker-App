@@ -17,6 +17,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AuthProvider from "./contexts/AuthContext.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,11 @@ const router = createBrowserRouter([
       },
       {
         path: "juries",
-        element: <Outlet />,
+        element: (
+          <ProtectedRoute whitelist={["Juré", "Organisateur"]}>
+            <Outlet />
+          </ProtectedRoute>
+        ),
         children: [
           {
             index: true,
@@ -47,7 +52,11 @@ const router = createBrowserRouter([
       },
       {
         path: "manage",
-        element: <Outlet />,
+        element: (
+          <ProtectedRoute whitelist={["Organisateur"]}>
+            <Outlet />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "competitions",
