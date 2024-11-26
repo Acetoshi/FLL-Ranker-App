@@ -6,6 +6,7 @@ import { useTeamsOperations } from "./teams";
 import { useNotification } from "../../hooks/useNotification";
 import EditableTextCell from "../../components/EditableTextCell";
 import { useDialog } from "../../hooks/useDialog";
+
 export default function TeamRow({
   mode,
   team,
@@ -61,7 +62,7 @@ export default function TeamRow({
     if (team) {
       const { success, message } = await handleEdit(
         teamRef,
-        team.id,
+        team.id as number,
         validateInput
       );
       if (success) {
@@ -82,7 +83,7 @@ export default function TeamRow({
     );
 
     if (team && userConfirms) {
-      const { success, message } = await handleDelete(team.id);
+      const { success, message } = await handleDelete(team.id as number);
       if (success) {
         notifySuccess("équipe supprimée");
         (await refetch)();
@@ -95,7 +96,7 @@ export default function TeamRow({
   const submitCreation = async () => {
     const { success, message } = await handleAdd(
       teamRef,
-      competitionId,
+      competitionId as number,
       validateInput
     );
     if (success) {
@@ -103,7 +104,7 @@ export default function TeamRow({
       clearInputFields(teamRef);
       (await refetch)();
     } else {
-      notifyError(message);
+      notifyError(message as string);
       highlightName();
     }
   };

@@ -5,6 +5,7 @@ import {
   useDeleteTeamMutation,
   useEditTeamMutation,
   DeleteTeamMutation,
+  IdInput,
 } from "../../types/graphql-types";
 import { DataHandlerResult, RefMap } from "../../types/types";
 
@@ -43,7 +44,7 @@ export const useTeamsOperations = () => {
   };
 
   const handleDelete = async (targetId: number): Promise<DataHandlerResult> => {
-    const targetTeam: TeamIdInput = {
+    const targetTeam: Partial<TeamInput> = {
       id: targetId,
     };
     const {
@@ -51,7 +52,7 @@ export const useTeamsOperations = () => {
         deleteTeam: { success, message },
       },
     } = (await deleteTeam({
-      variables: { team: targetTeam },
+      variables: { team: targetTeam as IdInput },
     })) as { data: DeleteTeamMutation };
 
     return { success, message };
