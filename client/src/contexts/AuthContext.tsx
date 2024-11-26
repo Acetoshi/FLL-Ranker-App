@@ -38,8 +38,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (data?.userData.userDetails) {
       setUser(data.userData.userDetails as UserDetails);
       setLoading(false);
-    } 
-    
+    } else if (data?.userData.success === false){
+      setLoading(false);
+    }
   }, [data]);
 
   const handleLogin = async (email: string, password: string)=> {
