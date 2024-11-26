@@ -5,8 +5,8 @@ import {
   useCreateSessionMutation,
   useDeleteSessionMutation,
   useEditSessionMutation,
-} from "../types/graphql-types";
-import { DataHandlerResult } from "../types/types";
+} from "../../types/graphql-types";
+import { DataHandlerResult } from "../../types/types";
 
 type HandleAddSession = Promise<
   | {

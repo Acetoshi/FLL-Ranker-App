@@ -7,10 +7,10 @@ import {
   Jury,
   User,
   DeleteJuryMutation,
-} from "../types/graphql-types";
-import { JuriesOfCompetitionRefetchType } from "../types/types";
-import { useDialog } from "../hooks/useDialog";
-import { useNotification } from "../hooks/useNotification";
+} from "../../types/graphql-types";
+import { JuriesOfCompetitionRefetchType } from "../../types/types";
+import { useDialog } from "../../hooks/useDialog";
+import { useNotification } from "../../hooks/useNotification";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Stack from "@mui/material/Stack";

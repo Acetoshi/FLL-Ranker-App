@@ -5,14 +5,14 @@ import {
   useEditCompetitionMutation,
   useRemoveCompetitionMutation,
   RemoveCompetitionMutation,
-} from "../types/graphql-types";
-import { GET_COMPETITIONS } from "../schemas/queries";
-import EditableTextCell from "./EditableTextCell";
-import BtnCRUD from "./BtnCRUD";
-import { DataHandlerResult } from "../types/types";
-import { useDialog } from "../hooks/useDialog";
-import { useNotification } from "../hooks/useNotification";
-import BtnLink from "./BtnLink";
+} from "../../types/graphql-types";
+import { GET_COMPETITIONS } from "../../schemas/queries";
+import EditableTextCell from "../../components/EditableTextCell";
+import BtnCRUD from "../../components/BtnCRUD";
+import { DataHandlerResult } from "../../types/types";
+import { useDialog } from "../../hooks/useDialog";
+import { useNotification } from "../../hooks/useNotification";
+import BtnLink from "../../components/BtnLink";
 
 type CompetitionRowProps = {
   mode: "create" | "edit" | "consult";

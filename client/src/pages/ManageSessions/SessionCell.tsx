@@ -7,10 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useSessionsOperations } from "../services/sessions";
-import { useNotification } from "../hooks/useNotification";
-import { MinimalTeam, MinimalSession, SessionCellProps } from "../types/types";
-import BtnLink from "./BtnLink";
+import { useSessionsOperations } from "./sessions";
+import { useNotification } from "../../hooks/useNotification";
+import { MinimalTeam, MinimalSession, SessionCellProps } from "../../types/types";
+import BtnLink from "../../components/BtnLink";
 
 export default function SessionCell({
   initialSession,

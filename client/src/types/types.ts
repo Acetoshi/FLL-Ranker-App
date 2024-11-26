@@ -25,8 +25,9 @@ export type RefMap = {
   [key: string]: RefObject<HTMLInputElement>;
 };
 
+//TODO : move this into a separate file 
 export type TeamRowProps = {
-  team?: Team;
+  team?: Partial<Team>;
   mode: Mode;
   refetch: (
     variables?: Partial<Exact<{ [key: string]: never }>> | undefined

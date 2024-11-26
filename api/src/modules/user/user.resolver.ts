@@ -57,6 +57,16 @@ export default class UserResolver {
     });
   }
 
+  @Query(() => [User])
+  async allUsers() {
+    return await User.find({
+      relations: {
+        role: true,
+        juries: true,
+      },
+    });
+  }
+
   @Query(() => AuthResponse)
   async login(
     @Arg("email") email: string,
