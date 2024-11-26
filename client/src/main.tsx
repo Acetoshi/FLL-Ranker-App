@@ -6,7 +6,7 @@ import connexion from "./services/connexion";
 import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
-import TeamsManagement from "./pages/UsersManagement.tsx";
+import TeamsManagement from "./pages/TeamsManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
 import SessionsManagement from "./pages/SessionsManagement.tsx";

@@ -33,3 +33,18 @@ export const GET_USER_DETAILS = gql`
     }
   }
 `;
+
+export const GET_ALL_USERS = gql`
+  query AllUsers {
+    allUsers {
+      email
+      firstname
+      id
+      lastname
+      role {
+        id
+        label
+      }
+    }
+  }
+`;

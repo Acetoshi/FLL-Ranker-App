@@ -1,7 +1,4 @@
-import { useParams } from "react-router-dom";
-import { useGetTeamsOfCompetitionByIdQuery } from "../types/graphql-types";
-import TeamRow from "../components/TeamRow";
-import MiniNavbar from "../components/MiniNavbar";
+import { useAllUsersQuery } from "../types/graphql-types";
 import {
   TableContainer,
   Table,
@@ -16,11 +13,7 @@ import {
 import CenteredSpinner from "../components/CenteredSpinner";
 
 export default function UsersManagement() {
-  const competitionId = parseInt(useParams().competitionId as string);
-
-  const { loading, error, data, refetch } = useGetTeamsOfCompetitionByIdQuery({
-    variables: { competitionId: competitionId },
-  });
+  const { loading, error, data } = useAllUsersQuery();
 
   if (loading) return <CenteredSpinner />;
 
@@ -36,17 +29,15 @@ export default function UsersManagement() {
           height="25vh"
         >
           <Typography variant="h2" component="h1">
-            Gestion des équipes {competitionId}
+            Gestion des utilisateurs
           </Typography>
         </Box>
-
-        <MiniNavbar />
 
         <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
           <Table
             stickyHeader
             sx={{ minWidth: 650 }}
-            aria-label="liste des équipes"
+            aria-label="liste des utilisateurs"
           >
             <TableHead>
               <TableRow>
@@ -59,26 +50,11 @@ export default function UsersManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TeamRow
-                mode={"create"}
-                refetch={refetch}
-                competitionId={competitionId}
-              />
               {data &&
-                data.getCompetitionById.teams.reduce(
-                  (aggregat: JSX.Element[], team) => {
-                    aggregat.unshift(
-                      <TeamRow
-                        key={team.id}
-                        mode={"consult"}
-                        team={team}
-                        refetch={refetch}
-                      />
-                    );
-                    return aggregat;
-                  },
-                  []
-                )}
+                data.allUsers.reduce((aggregat: JSX.Element[], user) => {
+                  aggregat.unshift(<p>{user.email}</p>);
+                  return aggregat;
+                }, [])}
             </TableBody>
           </Table>
         </TableContainer>
