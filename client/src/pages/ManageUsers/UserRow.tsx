@@ -5,7 +5,7 @@ import { BooleanMap, Mode, RefMap } from "../../types/types";
 // import { useNotification } from "../../hooks/useNotification";
 import EditableTextCell from "../../components/EditableTextCell";
 import { UserRowProps } from "./UserRow.props.type";
-import EditableSelectCell from "./EditableSelectCell";
+import EditableSelectCell from "../../components/EditableSelectCell";
 // import { useDialog } from "../../hooks/useDialog";
 
 export default function UserRow({ mode, user }: UserRowProps) {

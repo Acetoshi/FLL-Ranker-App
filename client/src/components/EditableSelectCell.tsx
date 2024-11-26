@@ -1,5 +1,14 @@
 import { MenuItem, Select, TableCell } from "@mui/material";
-import { useState } from "react";
+import { Ref, useState } from "react";
+import { Mode } from "../types/types";
+
+interface EditableSelectCellProps {
+  displayMode: Mode;
+  defaultValue: string;
+  options: Array<{ id: number; label: string }>;
+  inputRef: Ref<HTMLInputElement>;
+  error?: boolean;
+}
 
 export default function EditableSelectCell({
   displayMode,
@@ -7,10 +16,10 @@ export default function EditableSelectCell({
   options,
   inputRef,
   error,
-}) {
-  const [selectedValue, setSelectedValue] = useState(defaultValue || "");
+}: EditableSelectCellProps) {
+  const [selectedValue, setSelectedValue] = useState(defaultValue);
 
-  const handleChange = (event) => {
+  const handleChange = (event: { target: { value: string } }) => {
     setSelectedValue(event.target.value as string);
   };
 
@@ -19,7 +28,6 @@ export default function EditableSelectCell({
       {displayMode === "create" || displayMode === "edit" ? (
         <Select
           fullWidth
-          id="add-team-select"
           value={selectedValue}
           onChange={handleChange}
           ref={inputRef}
