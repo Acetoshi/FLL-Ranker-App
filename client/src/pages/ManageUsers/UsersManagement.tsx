@@ -11,7 +11,7 @@ import {
   Box,
 } from "@mui/material";
 import CenteredSpinner from "../../components/CenteredSpinner";
-import UserRow from "./UsersRow";
+import UserRow from "./UserRow";
 
 export default function UsersManagement() {
   const { loading, error, data } = useAllUsersQuery();
@@ -52,9 +52,13 @@ export default function UsersManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
+              <UserRow
+                mode={"create"}
+                // refetch={refetch}
+              />
               {data &&
                 data.allUsers.reduce((aggregat: JSX.Element[], user) => {
-                  aggregat.unshift(<UserRow user={user} />);
+                  aggregat.unshift(<UserRow key={user.id} mode={"consult"} user={user} />);
                   return aggregat;
                 }, [])}
             </TableBody>

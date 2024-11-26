@@ -4,8 +4,11 @@ import BtnCRUD from "../../components/BtnCRUD";
 import { BooleanMap, Mode, RefMap } from "../../types/types";
 // import { useNotification } from "../../hooks/useNotification";
 import EditableTextCell from "../../components/EditableTextCell";
+import { UserRowProps } from "./UserRow.props.type";
+import EditableSelectCell from "./EditableSelectCell";
 // import { useDialog } from "../../hooks/useDialog";
-export default function UserRow({ mode = "consult", user }) {
+
+export default function UserRow({ mode, user }: UserRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to give feedback to the user
@@ -27,6 +30,7 @@ export default function UserRow({ mode = "consult", user }) {
     lastname: useRef<HTMLInputElement>(null),
     email: useRef<HTMLInputElement>(null),
     role: useRef<HTMLInputElement>(null),
+    password: useRef<HTMLInputElement>(null),
   };
 
   const validateInput = (inputRef: RefObject<HTMLInputElement>) => {
@@ -145,7 +149,7 @@ export default function UserRow({ mode = "consult", user }) {
           defaultValue={user && user.firstname}
           onChange={() => handleInputChange("firstname", userRef.firstname)}
           error={inputError.firstname}
-          helperText={"Entrez un nom unique de plus de 5 caractères"}
+          helperText={"5 caractères minimum"}
         />
         <EditableTextCell
           component="th"
@@ -156,7 +160,7 @@ export default function UserRow({ mode = "consult", user }) {
           defaultValue={user && user.lastname}
           onChange={() => handleInputChange("lastname", userRef.lastname)}
           error={inputError.lastname}
-          helperText={"Entrez un nom unique de plus de 5 caractères"}
+          helperText={"5 caractères minimum"}
         />
         <EditableTextCell
           displayMode={displayMode}
@@ -167,14 +171,15 @@ export default function UserRow({ mode = "consult", user }) {
           error={inputError.email}
           helperText={"Entrez un email de plus de 5 caractères"}
         />
-        <EditableTextCell //TODO : this needs to because a selector
+        <EditableSelectCell
           displayMode={displayMode}
+          options={[
+            { id: 1, label: "Organisateur" }, //TODO : faire un role resolver pour ne plus avoir les data en dur
+            { id: 2, label: "Juré" },
+          ]}
           inputRef={userRef.role}
-          label="rôle"
-          defaultValue={user && user.role.label}
-          onChange={() => handleInputChange("role", userRef.role)}
+          defaultValue={user?.role ? user.role.label : "Juré"}
           error={inputError.role}
-          helperText={"Entrez une provenance de plus de 5 caractères"}
         />
         <TableCell align="right">{actionsMap[displayMode]}</TableCell>
       </TableRow>

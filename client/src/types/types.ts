@@ -25,6 +25,7 @@ export type RefMap = {
   [key: string]: RefObject<HTMLInputElement>;
 };
 
+//TODO : move this into a separate file 
 export type TeamRowProps = {
   team?: Team;
   mode: Mode;
