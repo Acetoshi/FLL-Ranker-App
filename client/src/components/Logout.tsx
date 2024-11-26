@@ -27,7 +27,15 @@ export default function Logout() {
 
   return (
     <>
-      <Button variant="outlined" color="changeIt" onClick={submitLogout}>
+      <Button
+        variant="outlined"
+        sx={{
+          //TODO : this needs to be refactored into theme to be more DRY
+          color: "white", // Set text color to white
+          borderColor: "white", // Set border color to white
+        }}
+        onClick={submitLogout}
+      >
         Déconnexion
       </Button>
     </>

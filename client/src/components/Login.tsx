@@ -68,7 +68,14 @@ export default function Login() {
 
   return (
     <>
-      <Button variant="outlined" color="changeIt" onClick={handleOpen}>
+      <Button
+        variant="outlined"
+        sx={{ //TODO : this needs to be refactored into theme to be more DRY
+          color: "white", // Set text color to white
+          borderColor: "white", // Set border color to white
+        }}
+        onClick={handleOpen}
+      >
         Se Connecter
       </Button>
 
