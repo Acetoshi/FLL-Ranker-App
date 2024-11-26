@@ -17,6 +17,12 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
+  success: Scalars['Boolean']['output'];
+  userDetails?: Maybe<UserDetails>;
+};
+
 export type Competition = {
   __typename?: 'Competition';
   date: Scalars['String']['output'];
@@ -79,12 +85,14 @@ export type Mutation = {
   createNewJury: Jury;
   createSession: Session;
   createTeam: Team;
+  createUser: User;
   deleteJury: DeleteResponseStatus;
   deleteSession: DeleteResponseStatus;
   deleteTeam: DeleteResponseStatus;
   editCompetition: Competition;
   editSession: Session;
   editTeam: Team;
+  logout: Scalars['Boolean']['output'];
   removeCompetition: DeleteResponseStatus;
   removeUserFromJury: User;
 };
@@ -112,6 +120,11 @@ export type MutationCreateSessionArgs = {
 
 export type MutationCreateTeamArgs = {
   team: TeamInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  user: UserInput;
 };
 
 
@@ -161,6 +174,8 @@ export type Query = {
   getAllJuries: Array<Jury>;
   getCompetitionById: Competition;
   getUsersByRole: Array<User>;
+  login: AuthResponse;
+  userData: AuthResponse;
 };
 
 
@@ -171,6 +186,12 @@ export type QueryGetCompetitionByIdArgs = {
 
 export type QueryGetUsersByRoleArgs = {
   roleId: Scalars['Float']['input'];
+};
+
+
+export type QueryLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type Role = {
@@ -222,8 +243,24 @@ export type User = {
   id: Scalars['Int']['output'];
   juries: Array<Jury>;
   lastname: Scalars['String']['output'];
-  password: Scalars['String']['output'];
   role: Role;
+};
+
+export type UserDetails = {
+  __typename?: 'UserDetails';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  lastname: Scalars['String']['output'];
+  role: Scalars['String']['output'];
+};
+
+export type UserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  firstname?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Float']['input']>;
+  lastname?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  roleId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UserJuryInput = {
@@ -364,6 +401,24 @@ export type GetTeamsOfCompetitionByIdQueryVariables = Exact<{
 
 
 export type GetTeamsOfCompetitionByIdQuery = { __typename?: 'Query', getCompetitionById: { __typename?: 'Competition', date: string, id: number, location: string, name: string, teams: Array<{ __typename?: 'Team', name: string, contact: string, location: string, id: number }> } };
+
+export type LoginQueryVariables = Exact<{
+  password: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'AuthResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDataQuery = { __typename?: 'Query', userData: { __typename?: 'AuthResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
 
 
 export const CreateNewJuryDocument = gql`
@@ -1160,3 +1215,125 @@ export type GetTeamsOfCompetitionByIdQueryHookResult = ReturnType<typeof useGetT
 export type GetTeamsOfCompetitionByIdLazyQueryHookResult = ReturnType<typeof useGetTeamsOfCompetitionByIdLazyQuery>;
 export type GetTeamsOfCompetitionByIdSuspenseQueryHookResult = ReturnType<typeof useGetTeamsOfCompetitionByIdSuspenseQuery>;
 export type GetTeamsOfCompetitionByIdQueryResult = Apollo.QueryResult<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>;
+export const LoginDocument = gql`
+    query Login($password: String!, $email: String!) {
+  login(password: $password, email: $email) {
+    success
+    userDetails {
+      email
+      firstname
+      lastname
+      role
+    }
+  }
+}
+    `;
+
+/**
+ * __useLoginQuery__
+ *
+ * To run a query within a React component, call `useLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginQuery({
+ *   variables: {
+ *      password: // value for 'password'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables> & ({ variables: LoginQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+      }
+export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export function useLoginSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
+export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginSuspenseQueryHookResult = ReturnType<typeof useLoginSuspenseQuery>;
+export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const UserDataDocument = gql`
+    query UserData {
+  userData {
+    success
+    userDetails {
+      email
+      firstname
+      lastname
+      role
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserDataQuery__
+ *
+ * To run a query within a React component, call `useUserDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserDataQuery(baseOptions?: Apollo.QueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+      }
+export function useUserDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+        }
+export function useUserDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<UserDataQuery, UserDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserDataQuery, UserDataQueryVariables>(UserDataDocument, options);
+        }
+export type UserDataQueryHookResult = ReturnType<typeof useUserDataQuery>;
+export type UserDataLazyQueryHookResult = ReturnType<typeof useUserDataLazyQuery>;
+export type UserDataSuspenseQueryHookResult = ReturnType<typeof useUserDataSuspenseQuery>;
+export type UserDataQueryResult = Apollo.QueryResult<UserDataQuery, UserDataQueryVariables>;

@@ -15,6 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography, Box, Stack } from "@mui/material";
+import CenteredSpinner from "../components/CenteredSpinner";
 
 export default function JuriesManagement() {
   const { competitionId } = useParams<string>();
@@ -24,7 +25,8 @@ export default function JuriesManagement() {
     } as GetCompetitionByIdQueryVariables,
   });
 
-  if (loading) return <p>🥁 Loading...</p>;
+  if (loading) return <CenteredSpinner />;
+
   if (error) return <p>☠️ Error: {error.message}</p>;
 
   return (

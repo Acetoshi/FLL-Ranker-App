@@ -5,6 +5,12 @@ import { User } from "./user.entity";
 import { UserInput } from "./user.input";
 import { Role } from "../role/role.entity";
 import verifyPassword from "./verifyPassword.util";
+import { AuthResponse, UserDetails } from "./authResponse.type";
+
+interface AuthContext {
+  res: { setHeader: (name: string, value: string) => void };
+  cookie: UserDetails;
+}
 
 @Resolver(User)
 export default class UserResolver {
@@ -51,12 +57,12 @@ export default class UserResolver {
     });
   }
 
-  @Query(() => Boolean)
+  @Query(() => AuthResponse)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx()
-    context: { res: { setHeader: (name: string, value: string) => void } }
+    context: AuthContext
   ) {
     const user = await User.findOne({
       where: { email: email },
@@ -65,31 +71,82 @@ export default class UserResolver {
       },
     });
 
-    if (!user) return false;
+    if (!user) return { success: false };
 
     const passwordMatches = await verifyPassword(user.password, password);
 
     if (passwordMatches) {
-      //generate JWT token
+      const userDetails = {
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role.label,
+      };
+
       const token = jwt.sign(
-        {
-          email: "tex@test.com",
-          firstname: user.firstname,
-          lastname: user.lastname,
-          role: user.role.id,
-        },
-        process.env.API_SECRET_KEY as string
+        userDetails,
+        process.env.API_SECRET_KEY as string,
+        { expiresIn: "24h" }
       );
+
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 24); // Token expires in 24 hours
 
       context.res.setHeader(
         "Set-Cookie",
-        `AuthToken=${token};httpOnly;secure;SameSite=Strict;expires=${expiryDate}`
-      ); // see set cookie on MDN
-      return true;
+        `AuthToken=${token}; httpOnly; SameSite=Strict; expires=${expiryDate}`
+      ); // only use secure when https is available
+      return { success: true, userDetails };
     } else {
+      return { success: false };
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async logout(
+    @Ctx()
+    context: AuthContext
+  ) {
+    try {
+      // Set the cookie expiration to a past date to invalidate it
+      context.res.setHeader(
+        "Set-Cookie",
+        "AuthToken=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 GMT;"
+      );
+      return true;
+    } catch {
       return false;
+    }
+  }
+
+  @Query(() => AuthResponse)
+  async userData(
+    @Ctx()
+    context: AuthContext
+  ) {
+    const email = context.cookie?.email;
+
+    if (!email) {
+      return { success: false };
+    } else {
+      const user = await User.findOne({
+        where: { email: email },
+        relations: {
+          role: true,
+        },
+      });
+      if (user) {
+        const userDetails = {
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          role: user.role.label,
+        };
+
+        return { success: true, userDetails };
+      } else {
+        return { success: false };
+      }
     }
   }
 }
