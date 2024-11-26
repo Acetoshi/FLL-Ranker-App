@@ -78,15 +78,19 @@ export default class UserResolver {
         role: user.role.label,
       };
 
-      const token = jwt.sign(userDetails, process.env.API_SECRET_KEY as string);
+      const token = jwt.sign(
+        userDetails,
+        process.env.API_SECRET_KEY as string,
+        { expiresIn: "24h" }
+      );
+
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 24); // Token expires in 24 hours
 
       context.res.setHeader(
         "Set-Cookie",
-        `AuthToken=${token};SameSite=Strict;expires=${expiryDate}`
+        `AuthToken=${token}; httpOnly; SameSite=Strict; expires=${expiryDate}`
       ); // only use secure when https is available
-      // httpOnly was deactivated so that the AuthContext can read values for user name, ect directly from the cookie.
       return { success: true, userDetails };
     } else {
       return { success: false };
