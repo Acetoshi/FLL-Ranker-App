@@ -6,7 +6,7 @@ import connexion from "./services/connexion";
 import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
-import TeamsManagement from "./pages/TeamsManagement.tsx";
+import TeamsManagement from "./pages/UsersManagement.tsx";
 import JuriesManagement from "./pages/JuriesManagement.tsx";
 import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
 import SessionsManagement from "./pages/SessionsManagement.tsx";
@@ -18,6 +18,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AuthProvider from "./contexts/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import UsersManagement from "./pages/UsersManagement.tsx";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
                 element: <JuriesManagement />,
               },
             ],
+          },
+          {
+            path: "users",
+            element: <UsersManagement />,
           },
         ],
       },
