@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useGetTeamsOfCompetitionByIdQuery } from "../types/graphql-types";
-import TeamRow from "../components/TeamRow";
-import MiniNavbar from "../components/MiniNavbar";
+import { useGetTeamsOfCompetitionByIdQuery } from "../../types/graphql-types";
+import TeamRow from "./TeamRow";
+import MiniNavbar from "../../components/MiniNavbar";
 import {
   TableContainer,
   Table,
@@ -13,7 +13,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import CenteredSpinner from "../components/CenteredSpinner";
+import CenteredSpinner from "../../components/CenteredSpinner";
 
 export default function TeamsManagement() {
   const competitionId = parseInt(useParams().competitionId as string);

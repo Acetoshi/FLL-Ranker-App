@@ -1,4 +1,4 @@
-import { useAllUsersQuery } from "../types/graphql-types";
+import { useAllUsersQuery } from "../../types/graphql-types";
 import {
   TableContainer,
   Table,
@@ -10,7 +10,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import CenteredSpinner from "../components/CenteredSpinner";
+import CenteredSpinner from "../../components/CenteredSpinner";
+import UserRow from "./UsersRow";
 
 export default function UsersManagement() {
   const { loading, error, data } = useAllUsersQuery();
@@ -41,9 +42,10 @@ export default function UsersManagement() {
           >
             <TableHead>
               <TableRow>
+                <TableCell>Prénom</TableCell>
                 <TableCell>Nom</TableCell>
-                <TableCell>Contact</TableCell>
-                <TableCell>Provenance</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Rôle</TableCell>
                 <TableCell align="right" style={{ minWidth: 250 }}>
                   Actions
                 </TableCell>
@@ -52,7 +54,7 @@ export default function UsersManagement() {
             <TableBody>
               {data &&
                 data.allUsers.reduce((aggregat: JSX.Element[], user) => {
-                  aggregat.unshift(<p>{user.email}</p>);
+                  aggregat.unshift(<UserRow user={user} />);
                   return aggregat;
                 }, [])}
             </TableBody>

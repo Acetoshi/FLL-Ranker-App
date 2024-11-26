@@ -1,13 +1,12 @@
 import { RefObject } from "react";
 import {
   TeamInput,
-  TeamIdInput,
   useCreateTeamMutation,
   useDeleteTeamMutation,
   useEditTeamMutation,
   DeleteTeamMutation,
-} from "../types/graphql-types";
-import { DataHandlerResult, RefMap } from "../types/types";
+} from "../../types/graphql-types";
+import { DataHandlerResult, RefMap } from "../../types/types";
 
 export const useTeamsOperations = () => {
   // mutations used for CRUD operations

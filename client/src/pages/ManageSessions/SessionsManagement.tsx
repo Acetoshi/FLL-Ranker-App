@@ -9,10 +9,10 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { useGetCompetitionByIdQuery } from "../types/graphql-types";
-import SessionCell from "../components/SessionCell";
-import MiniNavbar from "../components/MiniNavbar";
-import CenteredSpinner from "../components/CenteredSpinner";
+import { useGetCompetitionByIdQuery } from "../../types/graphql-types";
+import SessionCell from "./SessionCell";
+import MiniNavbar from "../../components/MiniNavbar";
+import CenteredSpinner from "../../components/CenteredSpinner";
 
 export default function CompetitionsManagement() {
   const { competitionId } = useParams();
@@ -104,7 +104,7 @@ export default function CompetitionsManagement() {
                 {competition &&
                   competition.juries.map((jury) => (
                     <SessionCell
-                      key = {`jury-${jury.id}-${timeSlot.startTime}-${timeSlot.endTime}`}
+                      key={`jury-${jury.id}-${timeSlot.startTime}-${timeSlot.endTime}`}
                       initialSession={filterSessionByStartTimeAndJuryId(
                         timeSlot.startTime,
                         jury.id

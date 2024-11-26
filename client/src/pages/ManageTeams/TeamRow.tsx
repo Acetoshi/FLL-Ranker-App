@@ -1,12 +1,17 @@
 import { useState, useRef, RefObject } from "react";
 import { TableRow, TableCell, Stack } from "@mui/material";
-import BtnCRUD from "./BtnCRUD";
-import { BooleanMap, Mode, RefMap, TeamRowProps } from "../types/types";
-import { useTeamsOperations } from "../services/teams";
-import { useNotification } from "../hooks/useNotification";
-import EditableTextCell from "./EditableTextCell";
-import { useDialog } from "../hooks/useDialog";
-export default function TeamRow({ mode, team, refetch, competitionId }: TeamRowProps) {
+import BtnCRUD from "../../components/BtnCRUD";
+import { BooleanMap, Mode, RefMap, TeamRowProps } from "../../types/types";
+import { useTeamsOperations } from "./teams";
+import { useNotification } from "../../hooks/useNotification";
+import EditableTextCell from "../../components/EditableTextCell";
+import { useDialog } from "../../hooks/useDialog";
+export default function TeamRow({
+  mode,
+  team,
+  refetch,
+  competitionId,
+}: TeamRowProps) {
   const [displayMode, setDisplayMode] = useState<Mode>(mode);
 
   // used to give feedback to the user
@@ -88,7 +93,11 @@ export default function TeamRow({ mode, team, refetch, competitionId }: TeamRowP
   };
 
   const submitCreation = async () => {
-    const { success, message } = await handleAdd(teamRef, competitionId, validateInput);
+    const { success, message } = await handleAdd(
+      teamRef,
+      competitionId,
+      validateInput
+    );
     if (success) {
       notifySuccess("équipe créée avec succès");
       clearInputFields(teamRef);
@@ -121,10 +130,7 @@ export default function TeamRow({ mode, team, refetch, competitionId }: TeamRowP
     ),
     consult: (
       <Stack direction="row" spacing={2} justifyContent="flex-end">
-        <BtnCRUD
-          type="edit"
-          handleClick={() => setDisplayMode("edit")}
-        />
+        <BtnCRUD type="edit" handleClick={() => setDisplayMode("edit")} />
         <BtnCRUD type="delete" handleClick={submitDeletion} />
       </Stack>
     ),

@@ -3,10 +3,10 @@ import {
   useGetJuriesOfCompetitionQuery,
   Jury,
   GetCompetitionByIdQueryVariables,
-} from "../types/graphql-types";
-import ManageJuryAddRow from "../components/ManageJuryAddRow";
-import ManageJuryRow from "../components/ManageJuryRow";
-import MiniNavbar from "../components/MiniNavbar";
+} from "../../types/graphql-types";
+import ManageJuryAddRow from "./ManageJuryAddRow";
+import ManageJuryRow from "./ManageJuryRow";
+import MiniNavbar from "../../components/MiniNavbar";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography, Box, Stack } from "@mui/material";
-import CenteredSpinner from "../components/CenteredSpinner";
+import CenteredSpinner from "../../components/CenteredSpinner";
 
 export default function JuriesManagement() {
   const { competitionId } = useParams<string>();
@@ -73,11 +73,11 @@ export default function JuriesManagement() {
                         refetch={refetch}
                         key={jury.id}
                         jury={jury as Jury}
-                      />,
+                      />
                     );
                     return aggregate;
                   },
-                  [],
+                  []
                 )}
             </TableBody>
           </Table>

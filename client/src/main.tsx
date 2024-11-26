@@ -6,10 +6,10 @@ import connexion from "./services/connexion";
 import App from "./App.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import Juries from "./pages/Juries.tsx";
-import TeamsManagement from "./pages/TeamsManagement.tsx";
-import JuriesManagement from "./pages/JuriesManagement.tsx";
-import CompetitionsManagement from "./pages/CompetitionsManagement.tsx";
-import SessionsManagement from "./pages/SessionsManagement.tsx";
+import TeamsManagement from "./pages/ManageTeams/TeamsManagement.tsx";
+import JuriesManagement from "./pages/ManageJuries/JuriesManagement.tsx";
+import CompetitionsManagement from "./pages/ManageCompetitions/CompetitionsManagement.tsx";
+import SessionsManagement from "./pages/ManageSessions/SessionsManagement.tsx";
 import Evaluation from "./pages/Evaluation.tsx";
 import RankingNotFound from "./pages/RankingNotFound.tsx";
 import "@fontsource/roboto/300.css";
@@ -18,7 +18,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AuthProvider from "./contexts/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
-import UsersManagement from "./pages/UsersManagement.tsx";
+import UsersManagement from "./pages/ManageUsers/UsersManagement.tsx";
 
 const router = createBrowserRouter([
   {

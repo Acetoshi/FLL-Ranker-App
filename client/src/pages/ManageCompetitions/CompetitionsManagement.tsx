@@ -9,9 +9,9 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { useGetAllCompetitionsQuery } from "../types/graphql-types";
-import CompetitionRow from "../components/CompetitionRow";
-import CenteredSpinner from "../components/CenteredSpinner";
+import { useGetAllCompetitionsQuery } from "../../types/graphql-types";
+import CompetitionRow from "./CompetitionRow";
+import CenteredSpinner from "../../components/CenteredSpinner";
 
 export default function CompetitionsManagement() {
   const { loading, error, data } = useGetAllCompetitionsQuery();
@@ -49,7 +49,11 @@ export default function CompetitionsManagement() {
               data.getAllCompetitions.reduce(
                 (aggregat: JSX.Element[], competition) => {
                   aggregat.unshift(
-                    <CompetitionRow key={competition.id} mode="consult" competition={competition} />
+                    <CompetitionRow
+                      key={competition.id}
+                      mode="consult"
+                      competition={competition}
+                    />
                   );
                   return aggregat;
                 },

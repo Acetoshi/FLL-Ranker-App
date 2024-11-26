@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useCreateNewJuryMutation } from "../types/graphql-types";
-import { JuriesOfCompetitionRefetchType } from "../types/types";
+import { useCreateNewJuryMutation } from "../../types/graphql-types";
+import { JuriesOfCompetitionRefetchType } from "../../types/types";
 import {
   TableRow,
   TableCell,
