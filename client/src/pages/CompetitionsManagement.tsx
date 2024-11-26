@@ -48,7 +48,7 @@ export default function CompetitionsManagement() {
               data.getAllCompetitions.reduce(
                 (aggregat: JSX.Element[], competition) => {
                   aggregat.unshift(
-                    <CompetitionRow mode="consult" competition={competition} />
+                    <CompetitionRow key={competition.id} mode="consult" competition={competition} />
                   );
                   return aggregat;
                 },

@@ -4,6 +4,8 @@ import Typography from "@mui/material/Typography";
 import { Link as MUILink } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import Login from "./Login";
+import { useAuth } from "../hooks/useAuth";
+import Logout from "./Logout";
 
 const pages = [
   { content: "Page d'accueil", to: "/" },
@@ -11,6 +13,7 @@ const pages = [
 ];
 
 function NavBar() {
+  const { user } = useAuth();
   // needed despite the existence of Navlink to have only one underlined link even though routes are nested
   const location = useLocation();
 
@@ -70,7 +73,7 @@ function NavBar() {
             {page.content}
           </MUILink>
         ))}
-        <Login />
+        {user ? <Logout /> : <Login />}
       </Box>
     </AppBar>
   );

@@ -67,6 +67,12 @@ export type JuryInput = {
   juryId: Scalars['Float']['input'];
 };
 
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  success: Scalars['Boolean']['output'];
+  userDetails?: Maybe<UserDetails>;
+};
+
 export type ModifyTeamOfSessionInput = {
   id: Scalars['Float']['input'];
   teamId: Scalars['Float']['input'];
@@ -167,7 +173,7 @@ export type Query = {
   getAllJuries: Array<Jury>;
   getCompetitionById: Competition;
   getUsersByRole: Array<User>;
-  login: Scalars['Boolean']['output'];
+  login: LoginResponse;
 };
 
 
@@ -236,6 +242,14 @@ export type User = {
   juries: Array<Jury>;
   lastname: Scalars['String']['output'];
   role: Role;
+};
+
+export type UserDetails = {
+  __typename?: 'UserDetails';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  lastname: Scalars['String']['output'];
+  role: Scalars['String']['output'];
 };
 
 export type UserInput = {
@@ -392,7 +406,7 @@ export type LoginQueryVariables = Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: boolean };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoginResponse', success: boolean, userDetails?: { __typename?: 'UserDetails', email: string, firstname: string, lastname: string, role: string } | null } };
 
 
 export const CreateNewJuryDocument = gql`
@@ -1191,7 +1205,15 @@ export type GetTeamsOfCompetitionByIdSuspenseQueryHookResult = ReturnType<typeof
 export type GetTeamsOfCompetitionByIdQueryResult = Apollo.QueryResult<GetTeamsOfCompetitionByIdQuery, GetTeamsOfCompetitionByIdQueryVariables>;
 export const LoginDocument = gql`
     query Login($password: String!, $email: String!) {
-  login(password: $password, email: $email)
+  login(password: $password, email: $email) {
+    success
+    userDetails {
+      email
+      firstname
+      lastname
+      role
+    }
+  }
 }
     `;
 

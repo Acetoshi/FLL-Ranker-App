@@ -9,12 +9,12 @@ import {
   TextField,
 } from "@mui/material";
 import { RefMap } from "../types/types";
-import { useLoginLazyQuery } from "../types/graphql-types";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const [open, setOpen] = useState(false);
-  const [login] = useLoginLazyQuery();
-  // const [login, loading, error] = useLoginLazyQuery();
+  const [loading, setLoading] = useState(false);
+  const { handleLogin } = useAuth();
 
   const credentialsRef: RefMap = {
     email: useRef<HTMLInputElement>(null),
@@ -29,20 +29,27 @@ export default function Login() {
     setOpen(true);
   };
 
-  const handleLogin = async () => {
+  //TODO : write a function that checks if fields aren't empty
+
+  const submitLogin = async () => {
+    setLoading(true);
+
     const email =
       credentialsRef.email.current && credentialsRef.email.current.value;
     const password =
       credentialsRef.password.current && credentialsRef.password.current.value;
 
-    await login({
-      variables: { email: email as string, password: password as string },
-    });
+    const { success } = await handleLogin(email as string, password as string);
+
+    if (success) {
+      handleClose();
+    }
+    setLoading(false);
   };
 
   return (
     <>
-      <Button variant="outlined" color="white" onClick={handleOpen}>
+      <Button variant="outlined" color="changeIt" onClick={handleOpen}>
         Se Connecter
       </Button>
 
@@ -97,7 +104,8 @@ export default function Login() {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleLogin}
+              disabled={loading}
+              onClick={submitLogin}
               autoFocus
             >
               Se connecter
