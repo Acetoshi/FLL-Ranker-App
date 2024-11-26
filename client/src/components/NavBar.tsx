@@ -1,21 +1,29 @@
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { Link as MUILink } from "@mui/material";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Login from "./Login";
 import Logout from "./Logout";
 
-const pages = [
-  { content: "Page d'accueil", to: "/" },
-  { content: "Tableau de bord", to: "/manage/competitions" },
-];
 
 function NavBar() {
   const { user } = useAuth();
   // needed despite the existence of Navlink to have only one underlined link even though routes are nested
   const location = useLocation();
+
+  // display different links based on the user's role
+  const getPages = () => {
+    if (user?.role === "Organisateur") {
+      return [
+        { content: "Utilisateurs", to: "/manage/users" },
+        { content: "Compétitions", to: "/manage/competitions" },
+      ];
+    } else if (user?.role === "Juré") {
+      return [{ content: "Tableau de bord", to: "/juries" }];
+    }
+    return [];
+  };
 
   return (
     <AppBar
@@ -29,12 +37,13 @@ function NavBar() {
         alignItems: "center",
       }}
     >
-      <Typography
+      <MUILink
+        color="secondary.contrastText"
+        component={RouterLink}
+        to={"/"}
         variant="h6"
-        noWrap
-        component="a"
-        href="#app-bar-with-responsive-menu"
         sx={{
+          textTransform: "uppercase",
           mr: 2,
           display: { xs: "none", md: "flex" },
           fontFamily: "monospace",
@@ -45,7 +54,7 @@ function NavBar() {
         }}
       >
         FLL
-      </Typography>
+      </MUILink>
 
       <Box
         component="nav"
@@ -57,7 +66,7 @@ function NavBar() {
           gap: "16px",
         }}
       >
-        {pages.map((page) => (
+        {getPages().map((page) => (
           <MUILink
             key={page.to}
             color="secondary.contrastText"

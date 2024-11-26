@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { RefMap } from "../types/types";
 import { useAuth } from "../hooks/useAuth";
 import { useNotification } from "../hooks/useNotification";
+import { useNavigate } from "react-router";
 
 export default function Login() {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,7 @@ export default function Login() {
   const { handleLogin } = useAuth();
   const { notifySuccess } = useNotification();
   const [inputError, setInputError] = useState(false);
+  const navigate = useNavigate();
 
   const credentialsRef: RefMap = {
     email: useRef<HTMLInputElement>(null),
@@ -34,8 +36,6 @@ export default function Login() {
   const handleOpen = () => {
     setOpen(true);
   };
-
-  //TODO : write a function that checks if fields aren't empty
 
   const submitLogin = async () => {
     setLoading(true);
@@ -55,6 +55,11 @@ export default function Login() {
       notifySuccess(
         `Vous êtes connecté en tant que ${userDetails?.firstname} ${userDetails?.lastname}`
       );
+      if (userDetails?.role === "Organisateur") {
+        navigate("/manage/competitions");
+      } else if (userDetails?.role === "Juré") {
+        navigate("/juries");
+      }
     } else {
       setInputError(true);
     }
@@ -76,17 +81,15 @@ export default function Login() {
         <DialogTitle id="alert-dialog-title">
           <Box
             sx={{
-              flexGrow: 1,
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "flex-start",
-              gap: "16px",
             }}
           >
             Connexion
-            <IconButton sx={{ padding: 0 }}>
-              <CloseIcon onClick={handleClose} />
+            <IconButton sx={{ padding: 0 }} onClick={handleClose}>
+              <CloseIcon />
             </IconButton>
           </Box>
         </DialogTitle>
