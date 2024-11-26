@@ -10,18 +10,20 @@ import { useLoginLazyQuery } from "../types/graphql-types";
 interface AuthContextType {
   user: UserDetails | null;
   loading: boolean;
-  handleLogin: (email: string, password: string) => AuthResponse;
-  handleLogout: () => boolean;
+  handleLogin: (email: string, password: string) => Promise<AuthResponse>;
+  handleLogout: () => Promise<boolean>;
 }
 
-const AuthContext = createContext<AuthContextType>({
+const authContextInitialValue = {
   user: null,
   loading: true,
-  handleLogin: () => {
+  handleLogin: async () => {
     return { success: false };
   },
-  handleLogout: () => false,
-});
+  handleLogout: async () => false,
+};
+
+const AuthContext = createContext<AuthContextType>(authContextInitialValue);
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserDetails | null>(null);
@@ -33,29 +35,32 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
 
   // This part is responsible for login persistence after hard refresh
-  // TODO : understand cycle here
   useEffect(() => {
     if (data?.userData.userDetails) {
       setUser(data.userData.userDetails as UserDetails);
       setLoading(false);
-    } else if (data?.userData.success === false){
+    } else if (data?.userData.success === false) {
       setLoading(false);
     }
   }, [data]);
 
-  const handleLogin = async (email: string, password: string)=> {
+  const handleLogin = async (email: string, password: string) => {
     const response = await login({
       variables: { email, password },
     });
+
+    const returnValue: AuthResponse = { success: false, userDetails: null };
+
     if (response.data) {
       const { success, userDetails } = response.data.login;
-      if (success) {
-        setUser(userDetails as UserDetails);
-        return { success, userDetails };
-      } else {
-        return { success };
-      }
+
+      returnValue.success = success;
+      returnValue.userDetails = userDetails;
+
+      if (success) setUser(userDetails as UserDetails);
     }
+
+    return returnValue;
   };
 
   const handleLogout = async () => {
@@ -69,9 +74,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, handleLogin, handleLogout }}
-    >
+    <AuthContext.Provider value={{ user, loading, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
