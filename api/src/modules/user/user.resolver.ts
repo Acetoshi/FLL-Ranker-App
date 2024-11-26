@@ -5,6 +5,7 @@ import { User } from "./user.entity";
 import { UserInput } from "./user.input";
 import { Role } from "../role/role.entity";
 import verifyPassword from "./verifyPassword.util";
+import { LoginResponse } from "./loginResponse.type";
 
 @Resolver(User)
 export default class UserResolver {
@@ -51,7 +52,7 @@ export default class UserResolver {
     });
   }
 
-  @Query(() => Boolean)
+  @Query(() => LoginResponse)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
@@ -65,31 +66,30 @@ export default class UserResolver {
       },
     });
 
-    if (!user) return false;
+    if (!user) return { success: false };
 
     const passwordMatches = await verifyPassword(user.password, password);
 
     if (passwordMatches) {
-      //generate JWT token
-      const token = jwt.sign(
-        {
-          email: "tex@test.com",
-          firstname: user.firstname,
-          lastname: user.lastname,
-          role: user.role.id,
-        },
-        process.env.API_SECRET_KEY as string
-      );
+      const userDetails = {
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role.label,
+      };
+
+      const token = jwt.sign(userDetails, process.env.API_SECRET_KEY as string);
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 24); // Token expires in 24 hours
 
       context.res.setHeader(
         "Set-Cookie",
-        `AuthToken=${token};httpOnly;secure;SameSite=Strict;expires=${expiryDate}`
-      ); // see set cookie on MDN
-      return true;
+        `AuthToken=${token};SameSite=Strict;expires=${expiryDate}`
+      ); // only use secure when https is available
+      // httpOnly was deactivated so that the AuthContext can read values for user name, ect directly from the cookie.
+      return { success: true, userDetails };
     } else {
-      return false;
+      return { success: false };
     }
   }
 }
