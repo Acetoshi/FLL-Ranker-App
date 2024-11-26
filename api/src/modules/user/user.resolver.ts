@@ -92,4 +92,23 @@ export default class UserResolver {
       return { success: false };
     }
   }
+
+  @Mutation(() => Boolean)
+  async logout(
+    @Ctx()
+    context: {
+      res: { setHeader: (name: string, value: string) => void };
+    }
+  ) {
+    try {
+      // Set the cookie expiration to a past date to invalidate it
+      context.res.setHeader(
+        "Set-Cookie",
+        "AuthToken=; SameSite=Strict; expires=Thu, 01 Jan 1970 00:00:00 GMT;"
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }

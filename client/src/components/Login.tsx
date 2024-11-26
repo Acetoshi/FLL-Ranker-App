@@ -10,11 +10,13 @@ import {
 } from "@mui/material";
 import { RefMap } from "../types/types";
 import { useAuth } from "../hooks/useAuth";
+import { useNotification } from "../hooks/useNotification";
 
 export default function Login() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { handleLogin } = useAuth();
+  const { notifySuccess } = useNotification();
 
   const credentialsRef: RefMap = {
     email: useRef<HTMLInputElement>(null),
@@ -39,10 +41,11 @@ export default function Login() {
     const password =
       credentialsRef.password.current && credentialsRef.password.current.value;
 
-    const { success } = await handleLogin(email as string, password as string);
+    const { success, userDetails } = await handleLogin(email as string, password as string);
 
     if (success) {
       handleClose();
+      notifySuccess(`Vous êtes connecté en tant que ${userDetails?.firstname} ${userDetails?.lastname}`)
     }
     setLoading(false);
   };
